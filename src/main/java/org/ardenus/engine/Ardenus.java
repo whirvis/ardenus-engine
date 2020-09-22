@@ -21,4 +21,8 @@ public class Ardenus {
 	 */
 	public static final File ENGINE_ROOT = new File("./ardenus/");
 	
+	private Ardenus() {
+		// Static class
+	}
+	
 }
