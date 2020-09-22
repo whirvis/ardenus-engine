@@ -1,0 +1,8 @@
+/target/
+/.apt_generated/
+/.settings/
+/ardenus/
+/vapora/
+.classpath
+.factorypath
+.project

@@ -1,0 +1,81 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<!-- Maven coordinates -->
+	<groupId>org.ardenus</groupId>
+	<artifactId>engine</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>jar</packaging>
+	
+	<!-- Project information -->
+	<name>Ardenus Engine</name>
+	<description>A</description>
+	<url>http://gitlab.com/ardenus/ardenus-engine/</url>
+	<inceptionYear>2020</inceptionYear>
+	
+	<!-- Build properties -->
+	<properties>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+	
+	<!-- Project developers -->
+	<developers>
+		<developer>
+			<id>Whirvis</id>
+			<name>Trent Summerlin</name>
+			<email>whirvis@ardenus.org</email>
+			<url>http://whirvis.com/</url>
+			<organization>Ardenus Studios</organization>
+			<organizationUrl>http://ardenus.org/</organizationUrl>
+			<roles>
+				<role>owner</role>
+				<role>developer</role>
+			</roles>
+			<timezone>America/Chicago</timezone>
+		</developer>
+	</developers>
+	
+	<!-- Project licensing -->
+	<licenses>
+		<license>
+			<name>MIT License</name>
+			<url>https://opensource.org/licenses/mit-license.php</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+	
+	<!-- Project dependencies -->
+	<dependencies>
+		<!-- Logging interface -->
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-api</artifactId>
+			<version>2.11.1</version>
+		</dependency>
+
+		<!-- Logging implementation -->
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+			<version>2.11.1</version>
+		</dependency>
+	
+		<!-- Command line interface -->
+		<dependency>
+			<groupId>com.whirvex</groupId>
+			<artifactId>cmd</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+		
+		<!-- Testing framework -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.13</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+</project>
