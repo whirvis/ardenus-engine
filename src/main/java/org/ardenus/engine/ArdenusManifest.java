@@ -12,6 +12,8 @@ import java.util.jar.Manifest;
  * @since Ardenus Engine v0.0.1-SNAPSHOT
  */
 public class ArdenusManifest extends Manifest {
+	
+	public static final String PATH = "/META-INF/ARDENUS.MF";
 
 	public static final Name MAIN = new Name("Main");
 
