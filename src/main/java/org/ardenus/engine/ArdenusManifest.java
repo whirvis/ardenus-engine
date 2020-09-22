@@ -44,7 +44,7 @@ public class ArdenusManifest extends Manifest {
 		if (names != null) {
 			for (Name name : names) {
 				if (name != null && !this.hasMainAttribute(name)) {
-					throw new IOException("Missing required main attribute "
+					throw new IOException("missing required main attribute "
 							+ name.toString());
 				}
 			}
