@@ -30,6 +30,7 @@ public abstract class GameState {
 			throw new IllegalStateException("state already initialized");
 		}
 		this.game = Objects.requireNonNull(game, "game cannot be null");
+		this.init(game);
 		this.initialized = true;
 	}
 
@@ -51,6 +52,64 @@ public abstract class GameState {
 	 */
 	public Game getGame() {
 		return this.game;
+	}
+
+	/**
+	 * Initializes the game state after internal initialization through
+	 * {@link #init(Game)}. This should not be called by another method.
+	 * 
+	 * @param game
+	 *            the game the state is initialized under.
+	 * @throws Exception
+	 *             if an error occurs.
+	 */
+	public void onInit(Game game) throws Exception {
+	}
+
+	/**
+	 * Enters the game state, preparing it for {@link #onUpdate(Game, long)} and
+	 * {@link #onRender(Game)} calls.
+	 * 
+	 * @param game
+	 *            the game the state is initialized under.
+	 * @throws Exception
+	 *             if an error occurs.
+	 */
+	public void onEnter(Game game) throws Exception {
+	}
+
+	/**
+	 * Updates the game state.
+	 * 
+	 * @param game
+	 *            the game the state is initialized under.
+	 * @param delta
+	 *            how many milliseconds have passed since the last engine
+	 *            update.
+	 * @throws Exception
+	 *             if an error occurs.
+	 */
+	public abstract void onUpdate(Game game, long delta) throws Exception;
+
+	/**
+	 * Renders the game state.
+	 * 
+	 * @param game
+	 *            the game the state is initialized under.
+	 * @throws Exception
+	 *             if an error occurs.
+	 */
+	public abstract void onRender(Game game) throws Exception;
+
+	/**
+	 * Leaves the game state.
+	 * 
+	 * @param game
+	 *            the game the state is initialized under.
+	 * @throws Exception
+	 *             if an error occurs.
+	 */
+	public void onLeave(Game game) throws Exception {
 	}
 
 }
