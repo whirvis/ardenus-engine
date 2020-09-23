@@ -2,6 +2,9 @@ package org.ardenus.engine;
 
 import java.io.File;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.whirvex.cmd.Option;
 import com.whirvex.cmd.args.Args;
 
@@ -38,7 +41,7 @@ public class Ardenus {
 	 * <p>
 	 * TODO: Define what development mode being enabled means.
 	 * <p>
-	 * Development mode is enabled by specifying the <code>--devmode</code>
+	 * Development mode is enabled by specifying the <code>devmode</code>
 	 * option at startup via the JVM program arguments.
 	 * 
 	 * @return <code>true</code> if the engine is running in development mode,
@@ -73,10 +76,17 @@ public class Ardenus {
 	 *            the program arguments.
 	 */
 	public static void main(String[] args) {
+		Logger logger = LogManager.getLogger("main");
+		
+		// Instantiate startup options
+		logger.info("Instantiating startup options");
 		Option help = Option.opt().key('h', "help").value(false)
 				.desc("Displays engine info and start options").build();
 		Option devmode = Option.opt().key("devmode").value(false)
 				.desc("If the engine should run in development mode").build();
+		
+		// Start engine
+		logger.info("Starting engine");
 		start(Args.parse(args, help, devmode));
 	}
 
