@@ -14,6 +14,7 @@ import org.apache.logging.log4j.Logger;
 public class Game {
 
 	private Logger logger;
+	private boolean running;
 	
 	/**
 	 * The games title. By default, this is what the window title is set to.
@@ -31,6 +32,21 @@ public class Game {
 	protected Game(String title) {
 		this.logger = LogManager.getLogger("game");
 		this.title = Objects.requireNonNull(title, "title cannot be null");
+	}
+	
+	public synchronized final void start() {
+		if(running == true) {
+			throw new IllegalStateException("game already running");
+		}
+		this.running = true;
+	}
+	
+	public synchronized final void stop() {
+		if(running == false) {
+			throw new IllegalStateException("game not running");
+		}
+		
+		this.running = false;
 	}
 
 }
