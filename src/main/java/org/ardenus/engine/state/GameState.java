@@ -24,13 +24,15 @@ public abstract class GameState {
 	 *             if this state has already been initialized.
 	 * @throws NullPointerException
 	 *             if <code>game</code> is <code>null</code>.
+	 * @throws Exception
+	 *             if an error occurs within {@link #onInit(Game)}.
 	 */
-	public final void init(Game game) {
+	public final void init(Game game) throws Exception {
 		if (initialized == true) {
 			throw new IllegalStateException("state already initialized");
 		}
 		this.game = Objects.requireNonNull(game, "game cannot be null");
-		this.init(game);
+		this.onInit(game);
 		this.initialized = true;
 	}
 
