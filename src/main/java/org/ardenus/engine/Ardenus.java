@@ -1,6 +1,7 @@
 package org.ardenus.engine;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -31,6 +32,8 @@ public class Ardenus {
 
 	private static boolean started;
 	private static boolean devmode;
+	private static Game game;
+	private static long startTime;
 
 	private Ardenus() {
 		// Static class
@@ -41,14 +44,33 @@ public class Ardenus {
 	 * <p>
 	 * TODO: Define what development mode being enabled means.
 	 * <p>
-	 * Development mode is enabled by specifying the <code>devmode</code>
-	 * option at startup via the JVM program arguments.
+	 * Development mode is enabled by specifying the <code>devmode</code> option
+	 * at startup via the JVM program arguments.
 	 * 
 	 * @return <code>true</code> if the engine is running in development mode,
 	 *         <code>false</code> otherwise.
 	 */
 	public static boolean devmode() {
 		return devmode;
+	}
+
+	/**
+	 * Returns the game being run by the engine.
+	 * 
+	 * @return the game.
+	 */
+	public static Game game() {
+		return game;
+	}
+
+	/**
+	 * Returns the time the engine started as according to
+	 * {@link System#currentTimeMillis()}.
+	 * 
+	 * @return the time the engine started.
+	 */
+	public static long startTime() {
+		return startTime;
 	}
 
 	/**
@@ -66,6 +88,20 @@ public class Ardenus {
 			throw new IllegalStateException("engine already started");
 		}
 		devmode = args.has("devmode");
+
+		if (args.has("game")) {
+			try {
+				File gameFile = new File(args.get("game"));
+				game = Game.load(gameFile);
+			} catch (IOException e) {
+				// TODO
+			}
+		} else if (game == null) {
+			args.require().opts("game");
+		}
+
+		startTime = System.currentTimeMillis();
+
 		started = true;
 	}
 
@@ -77,17 +113,31 @@ public class Ardenus {
 	 */
 	public static void main(String[] args) {
 		Logger logger = LogManager.getLogger("main");
-		
+
 		// Instantiate startup options
 		logger.info("Instantiating startup options");
 		Option help = Option.opt().key('h', "help").value(false)
 				.desc("Displays engine info and start options").build();
 		Option devmode = Option.opt().key("devmode").value(false)
 				.desc("If the engine should run in development mode").build();
-		
+		Option game = Option.opt().key('g', "game").value(true)
+				.desc("The path to the game JAR").build();
+
 		// Start engine
 		logger.info("Starting engine");
-		start(Args.parse(args, help, devmode));
+		start(Args.parse(args, help, devmode, game));
+	}
+
+	/**
+	 * Java program entry point where the game being run can be specified. This
+	 * is meant purely for testing
+	 * 
+	 * @param game
+	 * @param args
+	 */
+	public static void main(Game game, String[] args) {
+		Ardenus.game = game;
+		main(args);
 	}
 
 }

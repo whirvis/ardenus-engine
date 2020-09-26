@@ -2,6 +2,7 @@ package org.ardenus.engine;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Objects;
 import java.util.jar.Attributes.Name;
 import java.util.jar.Manifest;
 
@@ -12,13 +13,14 @@ import java.util.jar.Manifest;
  * @since Ardenus Engine v0.0.1-SNAPSHOT
  */
 public class ArdenusManifest extends Manifest {
-	
-	public static final String PATH = "/META-INF/ARDENUS.MF";
+
+	public static final String PATH = "META-INF/ARDENUS.MF";
 
 	public static final Name MAIN = new Name("Main");
+	public static final Name TITLE = new Name("Title");
 
 	/**
-	 * Loads an Ardenus Engine manifest from an input stream.
+	 * Loads an Ardenus Engine manifest from an <code>InputStream</code>.
 	 * 
 	 * @param in
 	 *            the input stream.
@@ -27,7 +29,23 @@ public class ArdenusManifest extends Manifest {
 	 */
 	public ArdenusManifest(InputStream in) throws IOException {
 		super(in);
-		this.requireMainAttributes(MAIN);
+		this.requireMainAttributes(MAIN, TITLE);
+	}
+
+	/**
+	 * Loads an Ardenus Engine manifest from a <code>ClassLoader</code>.
+	 * <p>
+	 * This constructor is a shorthand for calling
+	 * {@link #ArdenusManifest(InputStream)} with the parameter being the the
+	 * resource at path {@value #PATH} grabbed and its stream opened.
+	 * 
+	 * @param loader
+	 *            the class loader.
+	 * @throws IOException
+	 *             if an I/O error occurs.
+	 */
+	public ArdenusManifest(ClassLoader loader) throws IOException {
+		this(loader.getResource(PATH).openStream());
 	}
 
 	/**
@@ -87,6 +105,35 @@ public class ArdenusManifest extends Manifest {
 	public String getMainAttribute(Name name, String fallback) {
 		String value = this.getMainAttribute(name);
 		return value != null ? value : fallback;
+	}
+
+	/**
+	 * Initializes and returns the main class of a game.
+	 * 
+	 * @param loader
+	 *            the game's class loader.
+	 * @return the main class.
+	 * @throws NullPointerException
+	 *             if <code>loader</code> is <code>null</code>.
+	 * @throws ClassNotFoundException
+	 *             if the main class, as specified by the {@link #MAIN}
+	 *             attribute within the manifest, could not be found.
+	 */
+	@SuppressWarnings("unchecked")
+	public Class<? extends Game> getMain(ClassLoader loader)
+			throws ClassNotFoundException {
+		Objects.requireNonNull(loader, "loader cannot be null");
+		return (Class<? extends Game>) Class
+				.forName(this.getMainAttribute(MAIN), true, loader);
+	}
+
+	/**
+	 * Returns the game title.
+	 * 
+	 * @return the game title.
+	 */
+	public String getTitle() {
+		return this.getMainAttribute(TITLE);
 	}
 
 }
