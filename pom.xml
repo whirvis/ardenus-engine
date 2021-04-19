@@ -10,9 +10,9 @@
 	
 	<!-- Project information -->
 	<name>Ardenus Engine</name>
-	<description>A</description>
+	<description>A statically linked LWJGL based game engine.</description>
 	<url>http://gitlab.com/ardenus/ardenus-engine/</url>
-	<inceptionYear>2020</inceptionYear>
+	<inceptionYear>2017</inceptionYear>
 	
 	<!-- Build properties -->
 	<properties>
@@ -21,31 +21,20 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 	
-	<!-- Project developers -->
-	<developers>
-		<developer>
-			<id>Whirvis</id>
-			<name>Trent Summerlin</name>
-			<email>whirvis@ardenus.org</email>
-			<url>http://whirvis.com/</url>
-			<organization>Ardenus Studios</organization>
-			<organizationUrl>http://ardenus.org/</organizationUrl>
-			<roles>
-				<role>owner</role>
-				<role>developer</role>
-			</roles>
-			<timezone>America/Chicago</timezone>
-		</developer>
-	</developers>
-	
 	<!-- Project licensing -->
 	<licenses>
 		<license>
-			<name>MIT License</name>
-			<url>https://opensource.org/licenses/mit-license.php</url>
+			<name>GNU LGPL License v3</name>
+			<url>https://opensource.org/licenses/LGPL-3.0</url>
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
+	
+	<!-- Organization information -->
+	<organization>
+		<name>Ardenus Studios</name>
+		<url>https://ardenus.org/</url>
+	</organization>
 	
 	<!-- Project dependencies -->
 	<dependencies>
@@ -62,12 +51,26 @@
 			<artifactId>log4j-core</artifactId>
 			<version>2.11.1</version>
 		</dependency>
+		
+		<!-- Arguments parsing -->
+		<dependency>
+			<groupId>com.whirvex</groupId>
+			<artifactId>args</artifactId>
+			<version>5.1.2</version>
+		</dependency>
 	
 		<!-- Command line interface -->
 		<dependency>
 			<groupId>com.whirvex</groupId>
 			<artifactId>cmd</artifactId>
-			<version>1.0.0</version>
+			<version>1.0.0-BETA</version>
+		</dependency>
+		
+		<!-- Event system -->
+		<dependency>
+			<groupId>com.whirvex</groupId>
+			<artifactId>event</artifactId>
+			<version>1.0.0-BETA</version>
 		</dependency>
 		
 		<!-- Testing framework -->

@@ -6,8 +6,9 @@ import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.whirvex.cmd.Option;
-import com.whirvex.cmd.args.Args;
+import com.whirvex.args.Args;
+import com.whirvex.args.ArgsParser;
+import com.whirvex.args.Option;
 
 /**
  * The Ardenus game engine.
@@ -40,7 +41,7 @@ public class Ardenus {
 	}
 
 	/**
-	 * Returns whether or not the engine is running in development mode.
+	 * Returns if the engine is running in development mode.
 	 * <p>
 	 * TODO: Define what development mode being enabled means.
 	 * <p>
@@ -87,17 +88,17 @@ public class Ardenus {
 		if (started == true) {
 			throw new IllegalStateException("engine already started");
 		}
-		devmode = args.has("devmode");
+		devmode = args.hasFlag("--devmode");
 
-		if (args.has("game")) {
+		if (args.hasFlag("--game")) {
 			try {
-				File gameFile = new File(args.get("game"));
+				File gameFile = new File(args.getFlag("--game", 0));
 				game = Game.load(gameFile);
 			} catch (IOException e) {
 				// TODO
 			}
 		} else if (game == null) {
-			args.require().opts("game");
+			args.require.hasFlag("--game");
 		}
 
 		startTime = System.currentTimeMillis();
@@ -116,16 +117,15 @@ public class Ardenus {
 
 		// Instantiate startup options
 		logger.info("Instantiating startup options");
-		Option help = Option.opt().key('h', "help").value(false)
-				.desc("Displays engine info and start options").build();
-		Option devmode = Option.opt().key("devmode").value(false)
-				.desc("If the engine should run in development mode").build();
-		Option game = Option.opt().key('g', "game").value(true)
-				.desc("The path to the game JAR").build();
-
+		
+		
+		Option help = new Option("help", "Displays engine info and start options", false, "-h", "--help");
+		Option devmode = new Option("devmode", "If the engine should run in development mode", false, "--demode");
+		Option game = new Option("game", "The path to the game JAR", true, "-g", "--game");
+		
 		// Start engine
 		logger.info("Starting engine");
-		start(Args.parse(args, help, devmode, game));
+		start(ArgsParser.parse(args, help, devmode, game));
 	}
 
 	/**
