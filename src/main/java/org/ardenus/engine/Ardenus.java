@@ -5,6 +5,7 @@ import java.io.IOException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.ardenus.engine.audio.Audio;
 
 import com.whirvex.args.Args;
 import com.whirvex.args.ArgsParser;
@@ -18,7 +19,7 @@ import com.whirvex.args.Option;
  * @author Trent Summerlin
  * @since Ardenus Engine v0.0.1-SNAPSHOT
  */
-public class Ardenus {
+public final class Ardenus {
 
 	public static final String ENGINE_NAME = "Ardenus Engine";
 	public static final String ENGINE_VERSION = "v0.0.1 ALPHA";
@@ -100,9 +101,9 @@ public class Ardenus {
 		} else if (game == null) {
 			args.require.hasFlag("--game");
 		}
-
+		
 		startTime = System.currentTimeMillis();
-
+		
 		started = true;
 	}
 
@@ -120,7 +121,7 @@ public class Ardenus {
 		
 		
 		Option help = new Option("help", "Displays engine info and start options", false, "-h", "--help");
-		Option devmode = new Option("devmode", "If the engine should run in development mode", false, "--demode");
+		Option devmode = new Option("devmode", "If the engine should run in development mode", false, "--devmode");
 		Option game = new Option("game", "The path to the game JAR", true, "-g", "--game");
 		
 		// Start engine
