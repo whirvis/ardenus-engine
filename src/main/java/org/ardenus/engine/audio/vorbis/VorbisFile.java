@@ -7,14 +7,10 @@ import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ShortBuffer;
-import java.util.Scanner;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import org.ardenus.engine.audio.Audio;
 import org.ardenus.engine.audio.AudioSource;
-import org.ardenus.engine.audio.sound.Sound;
-import org.ardenus.engine.audio.sound.StreamedSound;
 import org.lwjgl.system.MemoryStack;
 
 /**
@@ -23,28 +19,6 @@ import org.lwjgl.system.MemoryStack;
 public class VorbisFile implements AudioSource, Closeable {
 
 	private static final int VORBIS_BITS_PER_SAMPLE = 16;
-	
-	public static void main(String[] args) throws Exception {
-		Audio.init(null);
-		
-		Sound ss = new StreamedSound(new VorbisFile("C:/Users/Trent/Desktop/cb77_reaktion.ogg"));
-		ss.play();
-		
-		Scanner console = new Scanner(System.in);
-		while(ss.isPlaying()) {
-			if(console.hasNextLine()) {
-				String line = console.nextLine();
-				float pos = Float.parseFloat(line);
-				if(pos < 0) {
-					ss.stop();
-				}
-				
-				ss.setOffset(pos);
-				System.out.println("Set position to " + pos + " seconds");
-			}
-		}
-		Audio.terminate();
-	}
 
 	private static long vorbisOpen(File file) throws IOException {
 		int[] p_error = new int[1];
