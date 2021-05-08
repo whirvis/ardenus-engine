@@ -123,7 +123,11 @@ public class VorbisFile implements AudioSource, Closeable {
 			}
 
 			/*
-			 * 
+			 * A ShortBuffer must be used here, since using a ByteBuffer and
+			 * passing it as a ShortBuffer using the asShortBuffer() method
+			 * causes some wacky stuff to go down (audio cutting out for no
+			 * reason, playback failing entirely, etc.) It is unknown why issues
+			 * arise when this happens, but a ShortBuffer must be used here.
 			 */
 			ShortBuffer pcmBuf = MemoryStack.stackMallocShort(len / 2);
 			pcmBuf.limit(stb_vorbis_get_samples_short_interleaved(
@@ -132,16 +136,14 @@ public class VorbisFile implements AudioSource, Closeable {
 				return -1;
 			}
 
-			/*
-			 * 
-			 */
-			int index = 0, size = pcmBuf.limit() * 2;
+			int index = 0;
+			int size = pcmBuf.limit() * 2;
 			while (index < size) {
 				short sample = pcmBuf.get();
 				buf[index++] = (byte) (sample & 0xFF);
 				buf[index++] = (byte) ((sample >> 8) & 0xFF);
 			}
-			
+
 			this.expectedOffset += size;
 			return size;
 		} finally {
