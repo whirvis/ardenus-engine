@@ -22,7 +22,7 @@ public final class Program {
 	private Program() {
 		/* static class */
 	}
-	
+
 	/**
 	 * A hack that lowers the program usage of a Java program on the CPU.
 	 * <p>
@@ -105,12 +105,12 @@ public final class Program {
 		}
 		return -1;
 	}
-	
+
 	/**
 	 * Attemps to result the operating system this machine is running on.
 	 * 
-	 * @return the operating system this machine is running on, {@link #UNKNOWN}
-	 *         if it could not be determined.
+	 * @return the operating system this machine is running on,
+	 *         {@link OperatingSystem#UNKNOWN} if it could not be determined.
 	 */
 	public static OperatingSystem getOS() {
 		String os_name = System.getProperty("os.name");

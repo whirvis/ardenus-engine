@@ -99,6 +99,8 @@ public class ArdenusManifest extends Manifest {
 	 * 
 	 * @param name
 	 *            the attribute name.
+	 * @param fallback
+	 *            the value to fallback to.
 	 * @return the value of the attribute, trimmed by {@link String#trim()},
 	 *         <code>fallback</code> (untrimmed) if it does not exist.
 	 */

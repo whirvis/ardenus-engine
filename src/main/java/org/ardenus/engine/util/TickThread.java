@@ -6,7 +6,7 @@ import java.util.Objects;
 /**
  * A thread which runs tick cycles forever until interrupted.
  * 
- * @see #onTick()
+ * @see #onTick(long)
  * @see #onInterrupt()
  */
 public abstract class TickThread extends Thread {
@@ -18,7 +18,8 @@ public abstract class TickThread extends Thread {
 	 * Constructs a new {@code TickThread}.
 	 * 
 	 * @param tick
-	 *            how long to wait in between in each call to {@link #onTick()}.
+	 *            how long to wait in between in each call to
+	 *            {@link #onTick(long)}.
 	 * @throws NullPointerException
 	 *             if {@code tick} is {@code null}.
 	 * @throws IllegalArgumentException

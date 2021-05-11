@@ -134,7 +134,9 @@ public final class Ardenus {
 	 * is meant purely for testing
 	 * 
 	 * @param game
+	 * the game.
 	 * @param args
+	 * the arguments.
 	 */
 	public static void main(Game game, String[] args) {
 		Ardenus.game = game;
