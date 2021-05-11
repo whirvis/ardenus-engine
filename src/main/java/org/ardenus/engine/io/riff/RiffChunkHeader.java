@@ -1,6 +1,7 @@
 package org.ardenus.engine.io.riff;
 
 import java.io.IOException;
+import java.util.Objects;
 
 /**
  * Describes a chunk within a {@link RiffFile RIFF} file.
@@ -15,10 +16,14 @@ public class RiffChunkHeader {
 	 * 
 	 * @param in
 	 *            the {@code RIFF} container's input stream.
+	 * @return the chunk header just read.
+	 * @throws NullPointerException
+	 *             if {@code in} is {@code null}.
 	 * @throws IOException
 	 *             if an I/O error occurs.
 	 */
 	public static RiffChunkHeader read(RiffInputStream in) throws IOException {
+		Objects.requireNonNull(in, "in");
 		byte[] id = new byte[CHUNK_ID_LEN];
 		in.read(id);
 		int size = in.readIntLE();

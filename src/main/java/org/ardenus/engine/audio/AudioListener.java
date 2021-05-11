@@ -2,6 +2,7 @@ package org.ardenus.engine.audio;
 
 import static org.lwjgl.openal.AL10.*;
 
+import java.util.Objects;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -61,9 +62,15 @@ public class AudioListener {
 	 * @param dest
 	 *            where to store the components.
 	 * @return {@code dest} now storing the components of {@code alParam}.
+	 * @throws NullPointerException
+	 *             if {@code dest} is {@code null}.
+	 * @throws IllegalStateException
+	 *             if the audio system is not initialized.
 	 */
 	private static Vector3f getListener3f(int alParam, Vector3f dest) {
+		Objects.requireNonNull(dest, "dest");
 		Audio.requireInit();
+
 		PVAL_LOCK.lock();
 		try {
 			alGetListener3f(alParam, PVAL[0], PVAL[1], PVAL[2]);
@@ -108,9 +115,15 @@ public class AudioListener {
 	 * @param dest
 	 *            where to store the components.
 	 * @return {@code dest} now storing the components of {@code alParam}.
+	 * @throws NullPointerException
+	 *             if {@code dest} is {@code null}.
+	 * @throws IllegalStateException
+	 *             if the audio system is not initialized.
 	 */
 	private static Vector2f getListener2f(int alParam, Vector2f dest) {
+		Objects.requireNonNull(dest, "dest");
 		Audio.requireInit();
+
 		PVAL_LOCK.lock();
 		try {
 			alGetListener3f(alParam, PVAL[0], PVAL[1], PVAL[2]);

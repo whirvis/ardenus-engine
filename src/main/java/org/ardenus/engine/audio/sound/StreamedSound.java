@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.apache.logging.log4j.LogManager;
@@ -26,12 +27,82 @@ import org.lwjgl.BufferUtils;
 public class StreamedSound extends Sound {
 
 	private static final Logger LOG = LogManager.getLogger(StreamedSound.class);
-	private static final int MIN_BUFSIZE = 4096;
+	private static final int MIN_BUFSIZE = 4096; /* usually just enough */
 	private static final int MAX_BUFSIZE = 176400; /* 1s of 16-bit stereo */
+	private static final Lock BUFSIZE_LOCK = new ReentrantLock();
+
+	private static int minBufSize = MIN_BUFSIZE;
+	private static boolean warnedMaxBuf;
+
+	/**
+	 * Returns the minimum buffer size for each intsance of
+	 * {@code StreamedSound}.
+	 * 
+	 * @return the minimum buffer size.
+	 * @see #setMinBufferSize(int)
+	 */
+	public static int getMinBufferSize() {
+		return minBufSize;
+	}
+
+	/**
+	 * Sets the minimum buffer size for all streamed sounds.
+	 * <p>
+	 * This guarantees the internal buffer size of each {@code StreamedSound} is
+	 * no smaller than {@code bufSize}. If the current buffer size is less than
+	 * {@code bufSize} it will be increased accordingly on the next update.
+	 * <p>
+	 * At one time the minimum buffer size was local to each instance of a
+	 * {@code StreamedSound}. However, it was determined that if one instance
+	 * was falling behind in playback and needed an increase, it is likely all
+	 * the others would fall behind also.
+	 * 
+	 * @param bufSize
+	 *            the new minimum buffer size. Due to OpenAL requirements, this
+	 *            will be increased to a multiple of four if it is not already.
+	 * @throws IllegalArgumentException
+	 *             if {@code bufSize} is less than {@value #MIN_BUFSIZE} or
+	 *             greater than {@value #MAX_BUFSIZE}.
+	 */
+	public static void setMinBufferSize(int bufSize) {
+		if (bufSize < MIN_BUFSIZE) {
+			throw new IllegalArgumentException("bufSize < " + MIN_BUFSIZE);
+		} else if (bufSize > MAX_BUFSIZE) {
+			throw new IllegalArgumentException("bufSize > " + MAX_BUFSIZE);
+		}
+
+		BUFSIZE_LOCK.lock();
+		try {
+			bufSize += bufSize % 4; /* see fillAndQueue() */
+			minBufSize = bufSize;
+		} finally {
+			BUFSIZE_LOCK.unlock();
+		}
+	}
+
+	private static void recoupBuffer() {
+		int recoupSize = minBufSize * 2;
+		if (recoupSize < MAX_BUFSIZE) {
+			setMinBufferSize(recoupSize);
+			LOG.warn("Audio is falling behind!"
+					+ " Increased minimum buffer size to " + minBufSize
+					+ " bytes");
+		} else if (warnedMaxBuf == false) {
+			LOG.error("Audio is falling behind even at max buffer size!"
+					+ " Is there an issue with the storage medium?");
+			warnedMaxBuf = true; /* only warn once */
+		}
+	}
 
 	private final int[] h_alBuffers;
 	private final Lock alReadLock;
 	private final Lock alWriteLock;
+
+	private byte[] readBuf;
+	private int readPos;
+	private boolean updateOffset;
+	private ByteBuffer heapBuf;
+	private int processedBytes;
 
 	/*
 	 * An internal alState and looping variable variable are used so intended
@@ -41,26 +112,19 @@ public class StreamedSound extends Sound {
 	 * be restarted as soon as the next buffer is loaded.
 	 * 
 	 * Traditional OpenAL looping cannot be used since streamed sounds load the
-	 * next buffer as the current one is playing. Sometimes the a buffer will
-	 * fail to load before the current playing buffer stops. When this happens,
-	 * the sound must stop to indicate this.
+	 * next buffer as the current one is playing. Sometimes the buffer will fail
+	 * to load before the current playing buffer stops. When this happens, the
+	 * sound must stop to indicate this.
 	 * 
 	 * Additional note: While requireOpen() is manually called for some
 	 * overriding functions in this class, it is not done for others. That is
 	 * because these overriding functions call their corresponding super method,
-	 * which call requireOpen() themselves.
+	 * which call requireOpen() themselves (TL;DR would be redundant).
 	 */
 	private boolean looping;
 	private int alState;
 	private boolean initialize;
-
-	private int minBufSize;
-	private byte[] readBuf;
-	private int readPos;
-	private boolean updateOffset;
-	private ByteBuffer heapBuf;
-	private boolean warnedMaxBuf;
-	private int processedBytes;
+	private boolean closed;
 
 	/**
 	 * Constructs a new {@code StreamedSound} and prepares the audio data for
@@ -90,7 +154,7 @@ public class StreamedSound extends Sound {
 		this.alWriteLock = alLock.writeLock();
 
 		this.alState = AL_INITIAL;
-		this.setMinBufferSize(MIN_BUFSIZE);
+		this.setBufferSize(minBufSize);
 		Audio.maintain(this);
 	}
 
@@ -116,40 +180,10 @@ public class StreamedSound extends Sound {
 		this.heapBuf = BufferUtils.createByteBuffer(bufSize);
 	}
 
-	/**
-	 * Sets the minimum buffer size.
-	 * <p>
-	 * This guarantees the internal buffer sizes are no smaller than
-	 * {@code minBufSize}. If the current {@code bufSize} is less than
-	 * {@code minBufSize} (or is {@code null}), it will be increased
-	 * accordingly.
-	 * 
-	 * @param minBufSize
-	 *            the new minimum buffer size. Due to OpenAL requirements, this
-	 *            will be increased to a multiple of four if it is not already.
-	 * @throws IllegalArgumentException
-	 *             if {@code minBufSize} is less than {@value #MIN_BUFSIZE}.
-	 */
-	private void setMinBufferSize(int minBufSize) {
-		if (minBufSize < MIN_BUFSIZE) {
-			throw new IllegalArgumentException("minBufSize < " + MIN_BUFSIZE);
-		}
-		minBufSize += minBufSize % 4; /* see fillAndQueue() */
-		this.minBufSize = minBufSize;
-		if (readBuf == null || readBuf.length < minBufSize) {
-			this.setBufferSize(minBufSize);
-		}
-	}
-
 	@Override
-	public int getALState() {
-		this.requireOpen(); /* mimic super */
-		return this.alState;
-	}
-
-	@Override
-	public boolean isInALState(int state) {
-		return this.getALState() == state;
+	public boolean isPlaying() {
+		this.requireOpen();
+		return alState == AL_PLAYING;
 	}
 
 	@Override
@@ -164,7 +198,7 @@ public class StreamedSound extends Sound {
 				/*
 				 * If the sound is paused, that means the audio data buffers
 				 * have already been initialized. Initializing the buffers again
-				 * would result in a part of the sound being skipped over.
+				 * would result in a portion of the sound being skipped over.
 				 */
 				this.initialize = !this.isPaused();
 			}
@@ -173,6 +207,12 @@ public class StreamedSound extends Sound {
 		} finally {
 			alWriteLock.unlock();
 		}
+	}
+
+	@Override
+	public boolean isPaused() {
+		this.requireOpen();
+		return alState == AL_PAUSED;
 	}
 
 	@Override
@@ -200,6 +240,12 @@ public class StreamedSound extends Sound {
 	}
 
 	@Override
+	public boolean isStopped() {
+		this.requireOpen();
+		return alState == AL_STOPPED;
+	}
+
+	@Override
 	public void stop() {
 		this.requireOpen();
 		if (this.isStopped()) {
@@ -213,6 +259,7 @@ public class StreamedSound extends Sound {
 				alSourceUnqueueBuffers(h_alSource);
 			}
 			this.readPos = 0;
+			this.processedBytes = 0;
 			this.alState = AL_STOPPED;
 		} finally {
 			alWriteLock.unlock();
@@ -221,13 +268,13 @@ public class StreamedSound extends Sound {
 
 	@Override
 	public boolean isLooping() {
-		this.requireOpen(); /* mimic super */
+		this.requireOpen();
 		return this.looping;
 	}
 
 	@Override
 	public void setLooping(boolean looping) {
-		this.requireOpen(); /* mimic super */
+		this.requireOpen();
 		this.looping = looping;
 	}
 
@@ -244,14 +291,13 @@ public class StreamedSound extends Sound {
 	 */
 	@Override
 	public void setPitch(float pitch) {
-		this.requireOpen(); /* mimic super */
-
 		/*
 		 * The pitch affects how fast the song is played. As such, if the pitch
 		 * is set to anything above 1.0F, the buffer size (not the minimum
 		 * buffer size) should be increased to accomodate the higher speed of
 		 * the sound if necessary.
 		 */
+		this.requireOpen();
 		if (pitch > 1.0F) {
 			alWriteLock.lock();
 			try {
@@ -264,7 +310,11 @@ public class StreamedSound extends Sound {
 			}
 		}
 
-		/* update pitch after buffer size increase */
+		/*
+		 * Only update the pitch after the buffer sizes have been appropriately
+		 * increased. Updating the pitch beforehand may result in the sound
+		 * stopping intermittently, resulting in a false warning.
+		 */
 		super.setPitch(pitch);
 	}
 
@@ -284,6 +334,7 @@ public class StreamedSound extends Sound {
 		if (byteOffset < 0) {
 			throw new IndexOutOfBoundsException("byteOffset < 0");
 		}
+
 		alWriteLock.lock();
 		try {
 			byteOffset += byteOffset % 4; /* see fillAndQueue() */
@@ -349,7 +400,7 @@ public class StreamedSound extends Sound {
 		int read = audio.readPCM(readPos, readBuf, readBuf.length);
 		if (read == -1) {
 			if (this.isLooping()) {
-				this.readPos = 0;
+				this.setByteOffset(0);
 				return this.fillAndQueue(h_alBuffer);
 			}
 			return false;
@@ -389,11 +440,14 @@ public class StreamedSound extends Sound {
 	}
 
 	@Override
-	public void update() throws Exception {
+	public void update() throws IOException {
+		this.requireOpen();
+		if (readBuf.length < minBufSize) {
+			this.setBufferSize(minBufSize);
+		}
+
 		alWriteLock.lock();
 		try {
-			
-
 			/*
 			 * If readPos has been updated by an outside force, restart the
 			 * sound to have it reinitialize at the new position. With how fast
@@ -435,25 +489,15 @@ public class StreamedSound extends Sound {
 			}
 
 			/*
-			 * If this sound should be playing but is not playing, that
-			 * indicates buffers are not being filled fast enough. Increase the
-			 * minimum buffer size (if possible) and notify the user of the
-			 * situation. After this, start the sound via super so as not to
-			 * restart it from the beginning.
+			 * If this sound should be playing but the super indicates it is not
+			 * playing, the buffers are not being filled fast enough. Increase
+			 * the minimum buffer size if possible. Afterwards, start the sound
+			 * via super so as not to restart it from the beginning.
 			 */
 			if (this.isPlaying() && !super.isPlaying()) {
-				if (minBufSize < MAX_BUFSIZE) {
-					this.setMinBufferSize(minBufSize * 2);
-					LOG.warn("Audio is falling behind, increased minimum buffer"
-							+ " size to " + minBufSize + " bytes");
-				} else if (warnedMaxBuf == false) {
-					LOG.error("Audio is falling behind even at max buffer size!"
-							+ " Is there an issue with the storage medium?");
-					this.warnedMaxBuf = true; /* only warn once */
-				}
+				recoupBuffer();
 				super.play();
 			}
-			
 			super.update();
 		} finally {
 			alWriteLock.unlock();
@@ -462,8 +506,18 @@ public class StreamedSound extends Sound {
 
 	@Override
 	public void close() throws IOException {
-		super.close();
-		alDeleteBuffers(h_alBuffers);
+		if (closed == true) {
+			return;
+		}
+
+		alWriteLock.lock();
+		try {
+			super.close();
+			alDeleteBuffers(h_alBuffers);
+			this.closed = true;
+		} finally {
+			alWriteLock.unlock();
+		}
 	}
 
 }

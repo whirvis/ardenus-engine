@@ -83,15 +83,4 @@ public final class VolumeChannel {
 		}
 	}
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(id, name);
-	}
-
-	@Override
-	public String toString() {
-		return "VolumeChannel [id=" + id + ", name=" + name + ", volume="
-				+ volume + "]";
-	}
-
 }

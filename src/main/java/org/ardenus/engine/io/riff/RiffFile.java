@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -43,13 +44,15 @@ public class RiffFile implements Closeable {
 	 *            indicates the format should not be validated.
 	 * @param file
 	 *            the {@code RIFF} file.
+	 * @throws NullPointerException
+	 *             if {@code file} is {@code null}.
 	 * @throws RiffException
 	 *             if {@code file} is not a valid {@code RIFF} container.
 	 * @throws IOException
 	 *             If an I/O error occurs while reading.
 	 */
 	public RiffFile(byte[] format, File file) throws IOException {
-		this.file = file;
+		this.file = Objects.requireNonNull(file, "file");
 		this.access = new RandomAccessFile(file, "r");
 		this.in = new RiffInputStream(access);
 
@@ -97,6 +100,8 @@ public class RiffFile implements Closeable {
 	 *            indicates the format should not be validated.
 	 * @param file
 	 *            the {@code RIFF} file.
+	 * @throws NullPointerException
+	 *             if {@code file} is {@code null}.
 	 * @throws RiffException
 	 *             if {@code file} is not a valid {@code RIFF} container.
 	 * @throws IOException
@@ -117,6 +122,8 @@ public class RiffFile implements Closeable {
 	 * 
 	 * @param file
 	 *            the {@code RIFF} file.
+	 * @throws NullPointerException
+	 *             if {@code file} is {@code null}.
 	 * @throws RiffException
 	 *             if {@code file} is not a valid {@code RIFF} container.
 	 * @throws IOException
@@ -215,7 +222,7 @@ public class RiffFile implements Closeable {
 	 */
 	public RiffChunkInputStream openChunk(String id) throws IOException {
 		if (closed == true) {
-			throw new IOException("closed container");
+			throw new RiffException("closed container");
 		} else if (chunkIn != null) {
 			chunkIn.close();
 		}

@@ -27,7 +27,7 @@ public class SoundTriggerEvent extends SoundEvent {
 	 * @param time
 	 *            the intended trigger time.
 	 * @param delay
-	 *            how late the trigger was, if at all.
+	 *            how late the trigger was in milliseconds, if at all.
 	 * @throws NullPointerException
 	 *             if {@code sound} or {@code trigger} are {@code null}.
 	 */
@@ -60,7 +60,9 @@ public class SoundTriggerEvent extends SoundEvent {
 	}
 
 	/**
-	 * Returns how many time this trigger has been triggered.
+	 * Returns how many time this trigger has gone off in relation to the
+	 * current offset of the sound. If the sound was rewound (thus causing a
+	 * trigger to go off again), the index will be appropiately lowered.
 	 * 
 	 * @return the trigger index.
 	 */
@@ -83,10 +85,10 @@ public class SoundTriggerEvent extends SoundEvent {
 	}
 
 	/**
-	 * Returns how late the the trigger was in being triggered for this index,
-	 * if at all.
+	 * Returns how late the the trigger was in being set off for this index, if
+	 * at all.
 	 * 
-	 * @return the trigger delay was in milliseconds.
+	 * @return the trigger delay in milliseconds.
 	 */
 	public long getDelay() {
 		return this.delay;

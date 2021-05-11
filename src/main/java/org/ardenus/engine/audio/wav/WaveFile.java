@@ -45,7 +45,7 @@ public class WaveFile extends RiffFile implements AudioSource {
 	private final WaveFormat wavFormat;
 	private final int alFormat;
 	private final int dataSize;
-	private final Lock pcmLock;
+	private final Lock dataLock;
 	private RiffChunkInputStream dataIn;
 	private int expectedOffset;
 
@@ -58,8 +58,11 @@ public class WaveFile extends RiffFile implements AudioSource {
 	 * 
 	 * @param file
 	 *            the {@code RIFF} file.
+	 * @throws NullPointerException
+	 *             if {@code file} is {@code null}.
 	 * @throws RiffException
-	 *             if {@code file} is not a valid {@code RIFF} container.
+	 *             if {@code file} is not a valid {@code RIFF} container or is
+	 *             missing the {@code "data"} chunk.
 	 * @throws IOException
 	 *             If an I/O error occurs while reading.
 	 */
@@ -67,7 +70,7 @@ public class WaveFile extends RiffFile implements AudioSource {
 		super("WAVE", file);
 		this.wavFormat = WaveFormat.read(this);
 		this.alFormat = alFormat(wavFormat);
-		this.pcmLock = new ReentrantLock();
+		this.dataLock = new ReentrantLock();
 
 		/* check against null for more accurate detail message */
 		RiffChunkHeader dataHeader = this.getChunkHeader("data");
@@ -86,8 +89,11 @@ public class WaveFile extends RiffFile implements AudioSource {
 	 * 
 	 * @param path
 	 *            the {@code RIFF} file path.
+	 * @throws NullPointerException
+	 *             if {@code path} is {@code null}.
 	 * @throws RiffException
-	 *             if {@code file} is not a valid {@code RIFF} container.
+	 *             if the file at {@code path} is not a valid {@code RIFF}
+	 *             container or is missing the {@code "data"} chunk.
 	 * @throws IOException
 	 *             If an I/O error occurs while reading.
 	 */
@@ -145,7 +151,7 @@ public class WaveFile extends RiffFile implements AudioSource {
 
 	@Override
 	public int readPCM(int offset, byte[] buf, int len) throws IOException {
-		pcmLock.lock();
+		dataLock.lock();
 		try {
 			/*
 			 * Only open the data chunk when it is actually needed. This allows
@@ -166,7 +172,7 @@ public class WaveFile extends RiffFile implements AudioSource {
 			this.expectedOffset += read;
 			return read;
 		} finally {
-			pcmLock.unlock();
+			dataLock.unlock();
 		}
 	}
 

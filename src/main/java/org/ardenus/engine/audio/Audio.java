@@ -16,11 +16,11 @@ import com.whirvex.event.EventManager;
  * 
  * @see Sound
  * @see AudioListener
- * @see Audio#init()
+ * @see Audio#init(EventManager)
  */
 public class Audio {
 
-	private static final Logger LOG = LogManager.getLogger(Audio.class);
+	protected static final Logger LOG = LogManager.getLogger(Audio.class);
 
 	private static boolean initialized;
 	private static EventManager manager;
@@ -33,6 +33,8 @@ public class Audio {
 	 * 
 	 * @param eventManager
 	 *            the event manager, may be {@code null}.
+	 * @throws AudioException
+	 *             if the OpenAL context could not be made current.
 	 * @see #sendEvent(AudioEvent)
 	 */
 	public static void init(EventManager eventManager) {
@@ -47,7 +49,7 @@ public class Audio {
 		device = alcOpenDevice((String) null);
 		context = alcCreateContext(device, (int[]) null);
 		if (!alcMakeContextCurrent(context)) {
-			throw new RuntimeException("failed to make context current");
+			throw new AudioException("failed to make context current");
 		}
 
 		LOG.info("Creating capabilities...");
@@ -70,6 +72,8 @@ public class Audio {
 	 * @param event
 	 *            the audio event.
 	 * @return {@code event} as passed.
+	 * @throws NullPointerException
+	 *             if {@code event} is {@code null}.
 	 */
 	public static <T extends AudioEvent> T sendEvent(T event) {
 		return manager.send(event);
@@ -83,6 +87,8 @@ public class Audio {
 	 *            the sound to maintain.
 	 * @throws IllegalStateException
 	 *             if the audio system has not been initialized.
+	 * @throws NullPointerException
+	 *             if {@code sound} is {@code null}.
 	 */
 	public static void maintain(Sound sound) {
 		Audio.requireInit();

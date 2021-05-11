@@ -1,6 +1,7 @@
 package org.ardenus.engine.audio.wav;
 
 import java.io.IOException;
+import java.util.Objects;
 
 import org.ardenus.engine.io.riff.RiffException;
 import org.ardenus.engine.io.riff.RiffFile;
@@ -17,14 +18,23 @@ public class WaveFormat {
 	 * Constructs a new {@code WaveFormat} by reading the parameters directly
 	 * from a {@code RIFF} container.
 	 * 
-	 * @param file
+	 * @param riff
 	 *            the {@code RIFF} file.
+	 * @throws NullPointerException
+	 *             if {@code riff} is {@code null}.
+	 * @throws RiffException
+	 *             if {@code riff} is missing the {@code "fmt "} chunk or the
+	 *             extra params chunk is larger than {@code file}.
 	 * @throws IOException
 	 *             if an I/O error occurs.
 	 * @return the {@code WAV} format container.
 	 */
 	public static WaveFormat read(RiffFile riff) throws IOException {
+		Objects.requireNonNull(riff, "riff");
 		RiffInputStream fmt = riff.openChunk("fmt ");
+		if (fmt == null) {
+			throw new RiffException("missing format chunk");
+		}
 
 		short audioFormat = fmt.readShortLE();
 		short channelCount = fmt.readShortLE();

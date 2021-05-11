@@ -28,6 +28,8 @@ public class RiffInputStream extends FilterInputStream
 	 *
 	 * @param file
 	 *            the file to read from.
+	 * @throws NullPointerException
+	 *             if {@code file} is {@code null}.
 	 */
 	public RiffInputStream(RandomAccessFile file) {
 		super(new RandomAccessFileInputStream(file));

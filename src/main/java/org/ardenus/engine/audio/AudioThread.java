@@ -17,7 +17,8 @@ public class AudioThread extends TickThread {
 		/*
 		 * A synchronized set looks overkill here at first glance. However,
 		 * every now and then a NullPointerException will get thrown when this
-		 * thread is started.
+		 * thread is started unless this set is synchronized. The exact cause
+		 * for this is currently unknown.
 		 */
 		this.sounds = Collections.synchronizedSet(new HashSet<Sound>());
 	}
@@ -28,7 +29,7 @@ public class AudioThread extends TickThread {
 	}
 
 	public void abandon(Sound sound) {
-		sounds.remove(sound);	
+		sounds.remove(sound);
 	}
 
 	@Override
@@ -38,7 +39,7 @@ public class AudioThread extends TickThread {
 			try {
 				soundI.next().update();
 			} catch (Exception e) {
-				e.printStackTrace();
+				Audio.LOG.error("Error updating sound", e);
 				soundI.remove();
 			}
 		}

@@ -18,6 +18,7 @@ import org.ardenus.engine.audio.VolumeChannel;
 import org.ardenus.engine.audio.sound.event.SoundPauseEvent;
 import org.ardenus.engine.audio.sound.event.SoundPlayEvent;
 import org.ardenus.engine.audio.sound.event.SoundStopEvent;
+import org.ardenus.engine.audio.wav.WaveFile;
 import org.ardenus.engine.util.fade.Fade;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
@@ -43,6 +44,17 @@ public abstract class Sound implements Closeable {
 	private boolean stopAfterFade;
 	private long fadeStartTimeMillis;
 
+	public static void main(String[] args) throws Exception {
+		Audio.init(null);
+		Sound s = BufferedSound
+				.load(new WaveFile("C:/Users/Trent/Desktop/test.wav"));
+		s.setLooping(true);
+		s.play();
+		while (true) {
+			System.out.println(s.getOffset());
+		}
+	}
+
 	private final Set<SoundTrigger> triggers;
 	private final Lock updateLock;
 	private boolean closed;
@@ -60,6 +72,8 @@ public abstract class Sound implements Closeable {
 	 *            before {@link #update()} can be called.
 	 * @throws NullPointerException
 	 *             if {@code audio} is {@code null}.
+	 * @throws SoundException
+	 *             if the OpenAL source fails to generate.
 	 */
 	protected Sound(AudioSource audio, boolean maintain) {
 		this.audio = Objects.requireNonNull(audio, "audio");
@@ -74,7 +88,12 @@ public abstract class Sound implements Closeable {
 		this.triggers = new HashSet<>();
 		this.updateLock = new ReentrantLock();
 
-		/* auto-update on audio thread */
+		/*
+		 * Only maintain at the end of construction when specified. This is
+		 * because an extending class may require some additional setup before
+		 * the first call to update() is made. In this case however, they are
+		 * expected to notify the audio system of required maintenance.
+		 */
 		if (maintain == true) {
 			Audio.maintain(this);
 		}
@@ -88,6 +107,8 @@ public abstract class Sound implements Closeable {
 	 *            the audio source to read from.
 	 * @throws NullPointerException
 	 *             if {@code audio} is {@code null}.
+	 * @throws SoundException
+	 *             if the OpenAL source fails to generate.
 	 */
 	public Sound(AudioSource audio) {
 		this(audio, true);
@@ -158,9 +179,15 @@ public abstract class Sound implements Closeable {
 	 * @param dest
 	 *            where to store the components.
 	 * @return {@code dest} now storing the components of {@code alParam}.
+	 * @throws NullPointerException
+	 *             if {@code dest} is {@code null}.
+	 * @throws IllegalStateException
+	 *             if this sound is closed.
 	 */
 	protected Vector3f getSource3f(int alParam, Vector3f dest) {
+		Objects.requireNonNull(dest, "dest");
 		this.requireOpen();
+
 		pvalLock.lock();
 		try {
 			alGetSource3f(h_alSource, alParam, pval[0], pval[1], pval[2]);
@@ -200,16 +227,20 @@ public abstract class Sound implements Closeable {
 	 * {@code pval} array to store these values before storing them inside a
 	 * destination {@code Vector2f} acts as a workaround to this problem.
 	 * 
-	 * @param h_alSource
-	 *            the OpenAL source handle.
 	 * @param alParam
 	 *            then OpenAL parameter.
 	 * @param dest
 	 *            where to store the components.
 	 * @return {@code dest} now storing the components of {@code alParam}.
+	 * @throws NullPointerException
+	 *             if {@code dest} is {@code null}.
+	 * @throws IllegalStateException
+	 *             if this sound is closed.
 	 */
 	protected Vector2f getSource2f(int alParam, Vector2f dest) {
+		Objects.requireNonNull(dest, "dest");
 		this.requireOpen();
+
 		pvalLock.lock();
 		try {
 			alGetSource3f(h_alSource, alParam, pval[0], pval[1], pval[2]);
@@ -222,34 +253,13 @@ public abstract class Sound implements Closeable {
 	}
 
 	/**
-	 * Returns the current OpenAL source state of this sound.
-	 * 
-	 * @return the state of this sound, {@code -1} if this sound has been
-	 *         closed.
-	 */
-	public int getALState() {
-		return this.getSourcei(AL_SOURCE_STATE);
-	}
-
-	/**
-	 * Returns if this sound is currently in an OpenAL source state.
-	 * 
-	 * @param alState
-	 *            the OpenAL source state.
-	 * @return {@code true} if the sound's source is currently in {@code state},
-	 *         {@code false} otherwise.
-	 */
-	public boolean isInALState(int alState) {
-		return this.getALState() == alState;
-	}
-
-	/**
 	 * Returns if this sound is playing.
 	 * 
 	 * @return {@code true} if this sound is playing, {@code false} otherwise.
 	 */
 	public boolean isPlaying() {
-		return this.isInALState(AL_PLAYING);
+		int alState = this.getSourcei(AL_SOURCE_STATE);
+		return alState == AL_PLAYING;
 	}
 
 	/**
@@ -267,7 +277,8 @@ public abstract class Sound implements Closeable {
 	 * @return {@code true} if the sound is paused, {@code false} otherwise.
 	 */
 	public boolean isPaused() {
-		return this.isInALState(AL_PAUSED);
+		int alState = this.getSourcei(AL_SOURCE_STATE);
+		return alState == AL_PAUSED;
 	}
 
 	/**
@@ -288,7 +299,8 @@ public abstract class Sound implements Closeable {
 	 * @return {@code true} if this sound is stopped, {@code false} otherwise.
 	 */
 	public boolean isStopped() {
-		return this.isInALState(AL_STOPPED);
+		int alState = this.getSourcei(AL_SOURCE_STATE);
+		return alState == AL_STOPPED;
 	}
 
 	/**
@@ -625,7 +637,7 @@ public abstract class Sound implements Closeable {
 	 * 
 	 * @param byteOffset
 	 *            the byte offset.
-	 * @throws IndexOutOfBoundException
+	 * @throws IndexOutOfBoundsException
 	 *             if {@code byteOffset} is negative.
 	 */
 	public void setByteOffset(int byteOffset) {
@@ -650,7 +662,7 @@ public abstract class Sound implements Closeable {
 	 * 
 	 * @param sampleOffset
 	 *            the sample offset.
-	 * @throws IndexOutOfBoundException
+	 * @throws IndexOutOfBoundsException
 	 *             if {@code sampleOffset} is negative.
 	 */
 	public void setSampleOffset(int sampleOffset) {
@@ -704,7 +716,7 @@ public abstract class Sound implements Closeable {
 	 * 
 	 * @param offset
 	 *            the offset in seconds.
-	 * @throws IndexOutOfBoundException
+	 * @throws IndexOutOfBoundsException
 	 *             if {@code offset} is negative.
 	 */
 	public void setOffset(float offset) {
@@ -735,7 +747,7 @@ public abstract class Sound implements Closeable {
 	 * 
 	 * @param offsetMillis
 	 *            the offset in milliseconds.
-	 * @throws IndexOutOfBoundException
+	 * @throws IndexOutOfBoundsException
 	 *             if {@code offsetMillis} is negative.
 	 */
 	public void setOffsetMillis(long offsetMillis) {
@@ -865,6 +877,7 @@ public abstract class Sound implements Closeable {
 	 * of the volume channel (or simply {@code 1.0F} if no volume channel).
 	 * 
 	 * @param volumeChannel
+	 *            the volume channel.
 	 * @see #setVolume(float)
 	 */
 	public void setVolumeChannel(VolumeChannel volumeChannel) {
@@ -941,13 +954,19 @@ public abstract class Sound implements Closeable {
 	 * 
 	 * @param trigger
 	 *            the trigger.
-	 * @throws NullPointerException
-	 *             if {@code trigger} is {@code null}.
 	 * @return {@code true} if {@code trigger} was added, {@code false}
 	 *         otherwise.
+	 * @throws NullPointerException
+	 *             if {@code trigger} is {@code null}.
+	 * @throws IllegalStateException
+	 *             if this sound is playing.
 	 */
 	public boolean addTrigger(SoundTrigger trigger) {
 		Objects.requireNonNull(trigger, "trigger");
+		if (this.isPlaying()) {
+			throw new IllegalStateException(
+					"cannot add triggers during playback");
+		}
 		return triggers.add(trigger);
 	}
 
@@ -958,8 +977,14 @@ public abstract class Sound implements Closeable {
 	 *            the trigger.
 	 * @return {@code true} if {@code trigger} was removed, {@code false}
 	 *         otherwise.
+	 * @throws IllegalStateException
+	 *             if this sound is playing.
 	 */
 	public boolean removeTrigger(SoundTrigger trigger) {
+		if (this.isPlaying()) {
+			throw new IllegalStateException(
+					"cannot remove triggers during playback");
+		}
 		return triggers.remove(trigger);
 	}
 
@@ -984,6 +1009,9 @@ public abstract class Sound implements Closeable {
 	}
 
 	private void testTriggers() {
+		if (!this.isPlaying()) {
+			return;
+		}
 		long offsetMillis = this.getOffsetMillis();
 		for (SoundTrigger trigger : triggers) {
 			trigger.test(this, offsetMillis);
@@ -993,10 +1021,10 @@ public abstract class Sound implements Closeable {
 	/**
 	 * Updates the sound.
 	 * 
-	 * @throws Exception
-	 *             if an error occurs.
+	 * @throws IOException
+	 *             if an I/O error occurs.
 	 */
-	public void update() throws Exception {
+	public void update() throws IOException {
 		this.requireOpen();
 		updateLock.lock();
 		try {
@@ -1013,12 +1041,6 @@ public abstract class Sound implements Closeable {
 		}
 	}
 
-	/**
-	 * Requires the sound to not be closed.
-	 * 
-	 * @throws IllegalStateException
-	 *             if this sound has been closed.
-	 */
 	protected void requireOpen() {
 		if (closed == true) {
 			throw new IllegalStateException("sound closed");
@@ -1031,12 +1053,15 @@ public abstract class Sound implements Closeable {
 			return;
 		}
 
-		/* prevent memory leak */
-		Audio.abandon(this);
-
-		this.stop();
-		alDeleteSources(h_alSource);
-		this.closed = true;
+		updateLock.lock();
+		try {
+			Audio.abandon(this);
+			this.stop();
+			alDeleteSources(h_alSource);
+			this.closed = true;
+		} finally {
+			updateLock.unlock();
+		}
 	}
 
 }

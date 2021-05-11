@@ -2,6 +2,8 @@ package org.ardenus.engine.audio.vorbis;
 
 import static org.lwjgl.stb.STBVorbis.*;
 
+import java.util.Objects;
+
 import org.lwjgl.stb.STBVorbisInfo;
 import org.lwjgl.system.MemoryStack;
 
@@ -11,14 +13,28 @@ import org.lwjgl.system.MemoryStack;
 public class VorbisInfo {
 
 	/**
-	 * Constructs a new {@link VorbisInfo} by getting the vorbis info from a
-	 * {@code OGG} vorbis decoder.
+	 * Constructs a new {@link VorbisInfo} by getting the Vorbis info from a
+	 * {@code OGG} Vorbis decoder.
 	 * 
-	 * @param h_stbVorbisDecoder
-	 *            the {@code OGG} vorbis decoder.
+	 * @param vorbis
+	 *            the {@code OGG} Vorbis file.
 	 * @return the {@code OGG} stream info container.
+	 * @throws NullPointerException
+	 *             if {@code vorbis} is {@code null}.
+	 * @throws VorbisException
+	 *             if {@code vorbis} has no decoder or is closed.
 	 */
-	public static VorbisInfo get(long h_stbVorbisDecoder) {
+	public static VorbisInfo get(VorbisFile vorbis) throws VorbisException {
+		/*
+		 * This function originally took in the handle of the stb_vorbis_info
+		 * struct. However, passing in any invalid handle results in the JVM
+		 * crashing unrecoverably with an EXCEPTION_ACCESS_VIOLATION. Entrusting
+		 * the VorbisFile class to generate this structure beforehand reduces
+		 * the possibility of the JVM being crashed through this method.
+		 */
+		Objects.requireNonNull(vorbis, "vorbis");
+		long h_stbVorbisDecoder = vorbis.getDecoderHandle();
+
 		try (MemoryStack stack = MemoryStack.stackPush()) {
 			STBVorbisInfo p_vorbisInfo = STBVorbisInfo.mallocStack();
 			stb_vorbis_get_info(h_stbVorbisDecoder, p_vorbisInfo);

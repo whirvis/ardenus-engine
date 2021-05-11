@@ -17,6 +17,7 @@ public final class SoundTrigger {
 
 	public final long id;
 	public final long[] timesMillis;
+	private long lastOffsetMillis;
 	private int triggerIndex;
 
 	/**
@@ -92,11 +93,28 @@ public final class SoundTrigger {
 	 *            the sound offset in milliseconds.
 	 */
 	protected void test(Sound sound, long offsetMillis) {
+		/*
+		 * If the current offset is less than the last offset, that means the
+		 * sound has been rewound. When this occurs, the triggerIndex must be
+		 * updated to accomodate, or events will not be triggered again like
+		 * they should. The new triggerIndex can be determined by finding the
+		 * first trigger time the current offset is less than or equal to.
+		 */
+		if (offsetMillis < lastOffsetMillis) {
+			for (int i = 0; i < timesMillis.length; i++) {
+				if (offsetMillis <= timesMillis[i]) {
+					this.triggerIndex = i;
+					break;
+				}
+			}
+		}
+		this.lastOffsetMillis = offsetMillis;
+
 		for (int i = triggerIndex; i < timesMillis.length; i++) {
 			/*
 			 * A negative delay signals that the trigger has not been reached
-			 * yet. When this happens, break the loop since that means none of
-			 * the other triggers after this one will be triggered either.
+			 * yet. When this happens, break the loop early since that means
+			 * none of the later triggers will be triggered either.
 			 */
 			long triggerTime = timesMillis[i];
 			long delay = offsetMillis - triggerTime;

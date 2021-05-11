@@ -54,6 +54,8 @@ public class BufferedSound extends Sound {
 	 * @param audio
 	 *            the audio source.
 	 * @return the loadable {@code BufferedSound}.
+	 * @throws NullPointerException
+	 *             if {@code audio} is {@code null}.
 	 */
 	public static Resource<BufferedSound> rsrc(AudioSource audio) {
 		return new BufferedSoundResource(audio);
@@ -65,10 +67,13 @@ public class BufferedSound extends Sound {
 	 * @param audio
 	 *            the audio source.
 	 * @return the generated buffer.
+	 * @throws NullPointerException
+	 *             if {@code audio} is {@code null}.
 	 * @throws IOException
 	 *             if an I/O error occurs.
 	 */
 	public static ByteBuffer loadData(AudioSource audio) throws IOException {
+		Objects.requireNonNull(audio, "audio");
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 
 		byte[] chunk = new byte[1024];
@@ -103,8 +108,13 @@ public class BufferedSound extends Sound {
 	 * 
 	 * @param audio
 	 *            the audio source.
+	 * @return the sound just buffered into memory.
+	 * @throws NullPointerException
+	 *             if {@code audio} is {@code null}.
 	 * @throws IOException
 	 *             if an I/O error occurs.
+	 * @throws SoundException
+	 *             if the OpenAL source or buffer fails to generate.
 	 * @see #loadData(AudioSource)
 	 */
 	public static BufferedSound load(AudioSource audio) throws IOException {
@@ -113,6 +123,7 @@ public class BufferedSound extends Sound {
 	}
 
 	private final int h_alBuffer;
+	private boolean closed;
 
 	/**
 	 * Constructs a new {@code BufferedSound} from an audio source and PCM data
@@ -123,13 +134,21 @@ public class BufferedSound extends Sound {
 	 *            the audio source.
 	 * @param data
 	 *            the loaded audio data buffer.
-	 * @throws IOException
-	 *             if an I/O error occurs.
+	 * @throws NullPointerException
+	 *             if {@code audio} or {@code data} are {@code null}.
+	 * @throws SoundException
+	 *             if the OpenAL source or buffer fails to generate.
 	 * @see #load(AudioSource)
 	 */
 	public BufferedSound(AudioSource audio, ByteBuffer data) {
 		super(audio);
+		Objects.requireNonNull(data, "data");
+
 		this.h_alBuffer = alGenBuffers();
+		if (h_alBuffer == AL_NONE) {
+			throw new SoundException("failed to generate OpenAL buffer");
+		}
+
 		alBufferData(h_alBuffer, audio.getALFormat(), data,
 				audio.getFrequencyHz());
 		alSourcei(h_alSource, AL_BUFFER, h_alBuffer);
@@ -137,8 +156,12 @@ public class BufferedSound extends Sound {
 
 	@Override
 	public void close() throws IOException {
+		if (closed == true) {
+			return;
+		}
 		super.close();
 		alDeleteBuffers(h_alBuffer);
+		this.closed = true;
 	}
 
 }

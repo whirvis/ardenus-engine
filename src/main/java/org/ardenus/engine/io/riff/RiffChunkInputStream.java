@@ -2,6 +2,7 @@ package org.ardenus.engine.io.riff;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.util.Objects;
 
 /**
  * A {@link RiffInputStream} which limits itself to a specific chunk of a
@@ -25,15 +26,17 @@ public class RiffChunkInputStream extends RiffInputStream {
 	 *            the file to read from.
 	 * @param header
 	 *            the header of the {@code RIFF} chunk.
-	 * @throws IOException
-	 *             if an I/O error occurrs.
+	 * @throws NullPointerException
+	 *             if {@code file} or {@code header} are {@code null}.
 	 * @throws RiffException
 	 *             if {@code this.ptr()} does not point to {@code header.ptr}.
+	 * @throws IOException
+	 *             if an I/O error occurrs.
 	 */
 	public RiffChunkInputStream(RandomAccessFile file, RiffChunkHeader header)
 			throws IOException {
 		super(file);
-		this.header = header;
+		this.header = Objects.requireNonNull(header, "header");
 		if (this.ptr() != header.ptr) {
 			throw new RiffException("must seek to chunk");
 		}
