@@ -18,7 +18,6 @@ import org.ardenus.engine.audio.VolumeChannel;
 import org.ardenus.engine.audio.sound.event.SoundPauseEvent;
 import org.ardenus.engine.audio.sound.event.SoundPlayEvent;
 import org.ardenus.engine.audio.sound.event.SoundStopEvent;
-import org.ardenus.engine.audio.wav.WaveFile;
 import org.ardenus.engine.util.fade.Fade;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
@@ -43,17 +42,6 @@ public abstract class Sound implements Closeable {
 	private Fade volumeFade;
 	private boolean stopAfterFade;
 	private long fadeStartTimeMillis;
-
-	public static void main(String[] args) throws Exception {
-		Audio.init(null);
-		Sound s = BufferedSound
-				.load(new WaveFile("C:/Users/Trent/Desktop/test.wav"));
-		s.setLooping(true);
-		s.play();
-		while (true) {
-			System.out.println(s.getOffset());
-		}
-	}
 
 	private final Set<SoundTrigger> triggers;
 	private final Lock updateLock;
