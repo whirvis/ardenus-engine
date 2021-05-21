@@ -154,7 +154,7 @@ public class StreamedSound extends Sound {
 	public StreamedSound(AudioSource audio) throws IOException {
 		super(audio, false);
 
-		this.h_alBuffers = new int[2];
+		this.h_alBuffers = new int[3];
 		for (int i = 0; i < h_alBuffers.length; i++) {
 			int h_alBuffer = alGenBuffers();
 			if (h_alBuffer == AL_NONE) {
