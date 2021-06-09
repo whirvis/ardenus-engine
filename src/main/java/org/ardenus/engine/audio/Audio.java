@@ -16,14 +16,14 @@ import com.whirvex.event.EventManager;
  * 
  * @see Sound
  * @see AudioListener
- * @see Audio#init(EventManager)
+ * @see #init(EventManager)
  */
 public class Audio {
 
 	protected static final Logger LOG = LogManager.getLogger(Audio.class);
 
 	private static boolean initialized;
-	private static EventManager manager;
+	private static EventManager events;
 	private static long device;
 	private static long context;
 	private static AudioThread audioThread;
@@ -39,11 +39,11 @@ public class Audio {
 	 */
 	public static void init(EventManager eventManager) {
 		if (initialized == true) {
-			LOG.error("Audio already initialized");
+			LOG.error("Already initialized");
 			return;
 		}
 
-		manager = EventManager.valueOf(eventManager);
+		events = EventManager.valueOf(eventManager);
 
 		LOG.info("Opening default device...");
 		device = alcOpenDevice((String) null);
@@ -76,7 +76,7 @@ public class Audio {
 	 *             if {@code event} is {@code null}.
 	 */
 	public static <T extends AudioEvent> T sendEvent(T event) {
-		return manager.send(event);
+		return events.send(event);
 	}
 
 	/**
