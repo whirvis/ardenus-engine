@@ -80,21 +80,21 @@
 		<!-- Arguments parsing -->
 		<dependency>
 			<groupId>com.whirvex</groupId>
-			<artifactId>args</artifactId>
+			<artifactId>stdio.args</artifactId>
 			<version>5.1.2</version>
 		</dependency>
 	
 		<!-- Command line interface -->
 		<dependency>
 			<groupId>com.whirvex</groupId>
-			<artifactId>cmd</artifactId>
+			<artifactId>stdio.cmd</artifactId>
 			<version>1.0.0-BETA</version>
 		</dependency>
 		
 		<!-- Event system -->
 		<dependency>
 			<groupId>com.whirvex</groupId>
-			<artifactId>event</artifactId>
+			<artifactId>stdio.events</artifactId>
 			<version>1.0.0-BETA</version>
 		</dependency>
 		
