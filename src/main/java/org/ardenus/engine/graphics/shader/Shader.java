@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.Objects;
 
@@ -54,7 +55,7 @@ public class Shader {
 
 	protected final int glShaderType;
 	protected final int h_glShader;
-	
+
 	private boolean hasSource;
 	private boolean compiled;
 	protected Program program;
@@ -158,6 +159,33 @@ public class Shader {
 		String src = IOUtils.toString(in, (Charset) null);
 		return this.setSource(src);
 	}
+	
+	/**
+	 * Updates the shader source.
+	 * <p>
+	 * Once the source code for a shader has been set, it must be compiled via
+	 * the {@link #compile()} method.
+	 * <p>
+	 * <p>
+	 * This function is a shorthand {@link #setSource(InputStream)}, with the
+	 * contents of {@code url} being opened as a stream and passed as the value
+	 * for {@code in}.
+	 * 
+	 * @param url
+	 *            the URL whose contents to use as the shader source.
+	 * @return this shader.
+	 * @throws NullPointerException
+	 *             if {@code url} is {@code null}.
+	 * @throws IllegalStateException
+	 *             if the shader is closed or has already been compiled.
+	 * @throws IOException
+	 *             if an I/O error occurs.
+	 */
+	public Shader setSource(URL url) throws IOException {
+		Objects.requireNonNull(url, "url");
+		InputStream in = url.openStream();
+		return this.setSource(in);
+	}
 
 	/**
 	 * Updates the shader source.
@@ -217,7 +245,7 @@ public class Shader {
 	 * Deletes the shader from OpenGL.
 	 * <p>
 	 * Usually, a method like this would be an implementation of Java's
-	 * {@link Closeable} interface. However, this method should only be called
+	 * {@code Closeable} interface. However, this method should only be called
 	 * after this shader has been compiled and attached to a linked OpenGL
 	 * program. Implementing the interface would prevent us from having this
 	 * marked as {@code protected} so only {@link Program} could call it.
