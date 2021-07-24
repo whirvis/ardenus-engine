@@ -161,7 +161,7 @@ public class ScriptCommandCenter extends CommandCenter {
 		center.register(new OptionCommand());
 
 		if (args.length < 1) {
-			throw new IllegalArgumentException("Missing script file");
+			throw new IllegalArgumentException("missing script file");
 		}
 		File scriptFile = new File(args[0]);
 		center.executeScript(scriptFile);
