@@ -2,6 +2,7 @@ package org.ardenus.engine.graphics;
 
 import java.util.Objects;
 
+import org.ardenus.engine.graphics.provider.ViewProvider;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
@@ -9,10 +10,9 @@ import org.joml.Vector3f;
  * Represents a camera, which is used to travel around the game world and what
  * is currently being rendered.
  * 
- * @see Window
  * @see Viewport
  */
-public class Camera {
+public class Camera implements ViewProvider {
 
 	public final Viewport viewport;
 	public final Vector3f pos;
@@ -41,12 +41,7 @@ public class Camera {
 		return this.viewport;
 	}
 
-	/**
-	 * Returns the generated view model matrix. This can be used in shaders to
-	 * apply the proper effect of having an in-game camera.
-	 * 
-	 * @return the view model matrix.
-	 */
+	@Override
 	public Matrix4f getViewMatrix() {
 		viewMatrix.setTranslation(-pos.x, -pos.y, -pos.z);
 		return this.viewMatrix;

@@ -1,15 +1,16 @@
 package org.ardenus.engine.graphics;
 
+import org.ardenus.engine.graphics.provider.OrthoProvider;
+import org.ardenus.engine.graphics.provider.ProjectionProvider;
 import org.joml.Matrix4f;
 
 /**
  * Represents a render viewport, which is used to contain the contents of a
  * rendered scene at a pre-defined position and scale.
  * 
- * @see Window
  * @see Camera
  */
-public class Viewport {
+public class Viewport implements OrthoProvider, ProjectionProvider {
 
 	public final float x, y;
 	public final float width, height;
@@ -61,6 +62,16 @@ public class Viewport {
 				new Matrix4f().ortho(x, x + width, y + height, y, zNear, zFar);
 		this.projection = new Matrix4f().perspective(
 				(float) Math.toRadians(fov), aspectRatio, zNear, zFar);
+	}
+
+	@Override
+	public Matrix4f getOrthoMatrix() {
+		return this.ortho;
+	}
+
+	@Override
+	public Matrix4f getProjectionMatrix() {
+		return this.projection;
 	}
 
 }
