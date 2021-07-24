@@ -25,6 +25,10 @@ public class Program implements Closeable {
 	 * <p>
 	 * This is a cheap operation at the cost of parameter checks.<br>
 	 * If an invalid uniform location is specified, tough!
+	 * <p>
+	 * Also note the value of a uniform is retained (even between program
+	 * switches) once it is set. Use this knowledge to reduce the uniform
+	 * updates for programs, as their cheap cost can build up.
 	 * 
 	 * @param location
 	 *            the uniform location.
