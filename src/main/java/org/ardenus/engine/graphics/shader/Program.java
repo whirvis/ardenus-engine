@@ -5,6 +5,7 @@ import static org.lwjgl.opengl.GL20.*;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.nio.FloatBuffer;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -12,6 +13,13 @@ import java.util.Objects;
 
 import org.ardenus.engine.graphics.GraphicsException;
 import org.ardenus.engine.util.BeResponsible;
+import org.joml.Matrix2f;
+import org.joml.Matrix3f;
+import org.joml.Matrix4f;
+import org.joml.Vector2f;
+import org.joml.Vector3f;
+import org.joml.Vector4f;
+import org.lwjgl.system.MemoryStack;
 
 /**
  * An OpenGL program made up of shaders.
@@ -40,6 +48,194 @@ public class Program implements Closeable {
 	@BeResponsible
 	public static void setUniform(int location, int value) {
 		glUniform1i(location, value);
+	}
+
+	/**
+	 * Sets a uniform for the currently installed program.
+	 * <p>
+	 * This is a cheap operation at the cost of parameter checks.<br>
+	 * If an invalid uniform location is specified, tough!
+	 * <p>
+	 * Also note the value of a uniform is retained (even between program
+	 * switches) once it is set. Use this knowledge to reduce the uniform
+	 * updates for programs, as their cheap cost can build up.
+	 * 
+	 * @param location
+	 *            the uniform location.
+	 * @param value
+	 *            the new uniform value.
+	 * @see #getUniformLocation(String)
+	 * @see #use()
+	 */
+	@BeResponsible
+	public static void setUniform(int location, float value) {
+		glUniform1f(location, value);
+	}
+
+	/**
+	 * Sets a uniform for the currently installed program.
+	 * <p>
+	 * This is a cheap operation at the cost of parameter checks.<br>
+	 * If an invalid uniform location is specified, tough!
+	 * <p>
+	 * Also note the value of a uniform is retained (even between program
+	 * switches) once it is set. Use this knowledge to reduce the uniform
+	 * updates for programs, as their cheap cost can build up.
+	 * 
+	 * @param location
+	 *            the uniform location.
+	 * @param value
+	 *            the new uniform value.
+	 * @see #getUniformLocation(String)
+	 * @see #use()
+	 */
+	@BeResponsible
+	public static void setUniform(int location, boolean value) {
+		glUniform1i(location, value ? 0x01 : 0x00);
+	}
+
+	/**
+	 * Sets a uniform for the currently installed program.
+	 * <p>
+	 * This is a cheap operation at the cost of parameter checks.<br>
+	 * If an invalid uniform location is specified, tough!
+	 * <p>
+	 * Also note the value of a uniform is retained (even between program
+	 * switches) once it is set. Use this knowledge to reduce the uniform
+	 * updates for programs, as their cheap cost can build up.
+	 * 
+	 * @param location
+	 *            the uniform location.
+	 * @param value
+	 *            the new uniform value.
+	 * @see #getUniformLocation(String)
+	 * @see #use()
+	 */
+	@BeResponsible
+	public static void setUniform(int location, Vector2f value) {
+		glUniform2f(location, value.x, value.y);
+	}
+
+	/**
+	 * Sets a uniform for the currently installed program.
+	 * <p>
+	 * This is a cheap operation at the cost of parameter checks.<br>
+	 * If an invalid uniform location is specified, tough!
+	 * <p>
+	 * Also note the value of a uniform is retained (even between program
+	 * switches) once it is set. Use this knowledge to reduce the uniform
+	 * updates for programs, as their cheap cost can build up.
+	 * 
+	 * @param location
+	 *            the uniform location.
+	 * @param value
+	 *            the new uniform value.
+	 * @see #getUniformLocation(String)
+	 * @see #use()
+	 */
+	@BeResponsible
+	public static void setUniform(int location, Vector3f value) {
+		glUniform3f(location, value.x, value.y, value.z);
+	}
+
+	/**
+	 * Sets a uniform for the currently installed program.
+	 * <p>
+	 * This is a cheap operation at the cost of parameter checks.<br>
+	 * If an invalid uniform location is specified, tough!
+	 * <p>
+	 * Also note the value of a uniform is retained (even between program
+	 * switches) once it is set. Use this knowledge to reduce the uniform
+	 * updates for programs, as their cheap cost can build up.
+	 * 
+	 * @param location
+	 *            the uniform location.
+	 * @param value
+	 *            the new uniform value.
+	 * @see #getUniformLocation(String)
+	 * @see #use()
+	 */
+	@BeResponsible
+	public static void setUniform(int location, Vector4f value) {
+		glUniform4f(location, value.x, value.y, value.z, value.w);
+	}
+
+	/**
+	 * Sets a uniform for the currently installed program.
+	 * <p>
+	 * This is a cheap operation at the cost of parameter checks.<br>
+	 * If an invalid uniform location is specified, tough!
+	 * <p>
+	 * Also note the value of a uniform is retained (even between program
+	 * switches) once it is set. Use this knowledge to reduce the uniform
+	 * updates for programs, as their cheap cost can build up.
+	 * 
+	 * @param location
+	 *            the uniform location.
+	 * @param value
+	 *            the new uniform value.
+	 * @see #getUniformLocation(String)
+	 * @see #use()
+	 */
+	@BeResponsible
+	public static void setUniform(int location, Matrix2f value) {
+		try (MemoryStack stack = MemoryStack.stackPush()) {
+			FloatBuffer buffer = stack.mallocFloat(8);
+			value.get(buffer);
+			glUniformMatrix2fv(location, false, buffer);
+		}
+	}
+
+	/**
+	 * Sets a uniform for the currently installed program.
+	 * <p>
+	 * This is a cheap operation at the cost of parameter checks.<br>
+	 * If an invalid uniform location is specified, tough!
+	 * <p>
+	 * Also note the value of a uniform is retained (even between program
+	 * switches) once it is set. Use this knowledge to reduce the uniform
+	 * updates for programs, as their cheap cost can build up.
+	 * 
+	 * @param location
+	 *            the uniform location.
+	 * @param value
+	 *            the new uniform value.
+	 * @see #getUniformLocation(String)
+	 * @see #use()
+	 */
+	@BeResponsible
+	public static void setUniform(int location, Matrix3f value) {
+		try (MemoryStack stack = MemoryStack.stackPush()) {
+			FloatBuffer buffer = stack.mallocFloat(12);
+			value.get(buffer);
+			glUniformMatrix3fv(location, false, buffer);
+		}
+	}
+
+	/**
+	 * Sets a uniform for the currently installed program.
+	 * <p>
+	 * This is a cheap operation at the cost of parameter checks.<br>
+	 * If an invalid uniform location is specified, tough!
+	 * <p>
+	 * Also note the value of a uniform is retained (even between program
+	 * switches) once it is set. Use this knowledge to reduce the uniform
+	 * updates for programs, as their cheap cost can build up.
+	 * 
+	 * @param location
+	 *            the uniform location.
+	 * @param value
+	 *            the new uniform value.
+	 * @see #getUniformLocation(String)
+	 * @see #use()
+	 */
+	@BeResponsible
+	public static void setUniform(int location, Matrix4f value) {
+		try (MemoryStack stack = MemoryStack.stackPush()) {
+			FloatBuffer buffer = stack.mallocFloat(16);
+			value.get(buffer);
+			glUniformMatrix4fv(location, false, buffer);
+		}
 	}
 
 	private final int h_glProgram;
