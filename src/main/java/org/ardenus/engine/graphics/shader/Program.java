@@ -145,7 +145,7 @@ public class Program implements Closeable {
 	 * 
 	 * @throws IllegalStateException
 	 *             if the program is already linked; if there is no attached
-	 *             {@code GL_VERTEX_SHADER} or {@code GL_FRAGMENT_SHADER}.
+	 *             {@code GL_VERTEX_SHADER}.
 	 * @throws GraphicsException
 	 *             if the program fails to link.
 	 */
