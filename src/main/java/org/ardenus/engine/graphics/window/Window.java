@@ -11,7 +11,7 @@ import org.lwjgl.glfw.GLFWErrorCallbackI;
 import org.lwjgl.system.MemoryUtil;
 
 /**
- * A windows created and managed via the <a href="https://www.glfw.org">GLFW</a>
+ * A window created and managed via the <a href="https://www.glfw.org">GLFW</a>
  * interface.
  */
 public class Window implements Closeable {
