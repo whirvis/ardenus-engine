@@ -5,6 +5,8 @@ import static org.lwjgl.opengl.GL20.*;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.nio.FloatBuffer;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -374,6 +376,14 @@ public class Program implements Closeable {
 			attachedI.remove();
 		}
 
+		/*
+		 * Automatically resolve the uniform locations for the convenience of
+		 * classes that extend this class.
+		 */
+		Class<?> clazz = this.getClass();
+		this.resolveUniformLocs(clazz, null); /* static */
+		this.resolveUniformLocs(clazz, this); /* instance */
+
 		this.linked = true;
 	}
 
@@ -404,6 +414,22 @@ public class Program implements Closeable {
 	 *     
 	 * }
 	 * </pre>
+	 * <p>
+	 * An even cleaner way to accomplish this is by using the
+	 * {@link Uniform @Uniform} annotation:
+	 * 
+	 * <pre>
+	 * public class BubblesProgram extends Program {
+	 *     
+	 *     /&ast; it even works for private fields! &ast;/
+	 *     &commat;Uniform
+	 *     private int bubble_x,
+	 *         bubble_y,
+	 *         bubble_color;
+	 *     
+	 * }
+	 * </pre>
+	 * 
 	 * 
 	 * @param name
 	 *            the uniform name.
@@ -430,6 +456,138 @@ public class Program implements Closeable {
 					"no such uniform \"" + name + "\"");
 		}
 		return location;
+	}
+
+	/**
+	 * Resolves the uniform locations for the {@link Uniform @Uniform} annotated
+	 * fields of a class.
+	 * <p>
+	 * This works by going through each field inside of {@code clazz}, and
+	 * checking for the presence of the {@link Uniform @Uniform} annotation. If
+	 * present, the value of the field will be set to the location of the
+	 * uniform.
+	 * 
+	 * @param clazz
+	 *            the class whose {@code @Uniform} annotated fields to resolve
+	 *            uniform locations for.
+	 * @throws NullPointerException
+	 *             if {@code clazz} is {@code null}.
+	 */
+	public void resolveUniformLocs(Class<?> clazz) {
+		this.resolveUniformLocs(clazz, null);
+	}
+
+	/**
+	 * Resolves the uniform locations for the {@link Uniform @Uniform} annotated
+	 * fields of an object.
+	 * 
+	 * @param instance
+	 *            the instance whose fields to update.
+	 * @throws NullPointerException
+	 *             if {@code instance} is {@code null}.
+	 */
+	public void resolveUniformLocs(Object instance) {
+		Objects.requireNonNull(instance, "instance");
+		this.resolveUniformLocs(instance.getClass(), instance);
+	}
+
+	/**
+	 * Resolves the uniform locations for the {@link Uniform @Uniform} annotated
+	 * fields of a class.<br>
+	 * Depending on if {@code instance} is specified, either the static or
+	 * instance fields will be set.
+	 * <p>
+	 * This works by going through each field inside of {@code clazz}, and
+	 * checking for the presence of the {@link Uniform @Uniform} annotation. If
+	 * present, the value of the field will be set to the location of the
+	 * uniform.
+	 * 
+	 * @param clazz
+	 *            the class whose {@code @Uniform} annotated fields to resolve
+	 *            uniform locations for.
+	 * @param instance
+	 *            the instance whose fields to update. A {@code null} value is
+	 *            permitted, and signals that the static fields of {@code clazz}
+	 *            should be resolved instead.
+	 * @throws NullPointerException
+	 *             if {@code clazz} is {@code null}.
+	 * @throws IllegalArgumentException
+	 *             if {@code instance} is not {@code null} and
+	 *             {@code instance.getClass()} is not equal to {@code clazz}.
+	 */
+	private void resolveUniformLocs(Class<?> clazz, Object instance) {
+		Objects.requireNonNull(clazz, "clazz");
+		if (instance != null && clazz != instance.getClass()) {
+			throw new IllegalArgumentException(
+					"instance != null && instance.getClass() != clazz");
+		}
+
+		for (Field field : clazz.getDeclaredFields()) {
+			Uniform uniform = field.getAnnotation(Uniform.class);
+			if (uniform == null) {
+				continue;
+			}
+
+			/*
+			 * All variables containing uniforms must be of the type int, as
+			 * that is how OpenGL returns their locations. Do not ignore this
+			 * issue, and throw an exception. It is likely this was a silly
+			 * mistake by the programmer.
+			 */
+			if (field.getType() != int.class) {
+				throw new GraphicsException("expecting field type int for "
+						+ "@Uniform " + field.getName());
+			}
+
+			/*
+			 * If the variable is static but an instance was specified, ignore
+			 * it. This means that the caller only wants to update the variables
+			 * for the specific instance.
+			 * 
+			 * If the variable is not static but no instance was specified,
+			 * ignore it. This means that the caller only wants to update the
+			 * static fields, nothing for a specific instance.
+			 */
+			boolean statik = Modifier.isStatic(field.getModifiers());
+			if ((statik && instance != null) || (!statik && instance == null)) {
+				continue;
+			}
+
+			String name = uniform.value();
+			if (name.isEmpty()) {
+				/*
+				 * If no value was specified for the annotation, default to the
+				 * name of the field. Usually, a null check would be done
+				 * instead of an empty string check. But, Java annotations have
+				 * forced my hand.
+				 */
+				name = field.getName();
+			}
+
+			int location = this.getUniformLoc(name);
+
+			/*
+			 * Sometimes we'll encounter one of those spooky "private" variables
+			 * or something like that. If it's not accessible to us, temporarily
+			 * grant ourselves access to modify the field's contents. We'll
+			 * revert the accessibility back to its original state later.
+			 */
+			boolean tempAccess = false;
+			if (!field.isAccessible()) {
+				field.setAccessible(true);
+				tempAccess = true;
+			}
+
+			try {
+				field.set(instance, location);
+			} catch (IllegalAccessException e) {
+				throw new GraphicsException("failure to set accessible", e);
+			} finally {
+				if (tempAccess) {
+					field.setAccessible(false);
+				}
+			}
+		}
 	}
 
 	/**
