@@ -436,6 +436,8 @@ public class Program implements Closeable {
 	 * @return the uniform location.
 	 * @throws NullPointerException
 	 *             if {@code name} is {@code null}.
+	 * @throws IllegalStateException
+	 *             if this program is not linked.
 	 * @throws IllegalArgumentException
 	 *             if no such uniform {@code name} exists in this program.
 	 * @see #setUniform(int, int)
@@ -472,6 +474,10 @@ public class Program implements Closeable {
 	 *            uniform locations for.
 	 * @throws NullPointerException
 	 *             if {@code clazz} is {@code null}.
+	 * @throws IllegalStateException
+	 *             if this program is not linked.
+	 * @throws IllegalArgumentException
+	 *             if a uniform with no such name is encountered.
 	 */
 	public void resolveUniformLocs(Class<?> clazz) {
 		this.resolveUniformLocs(clazz, null);
@@ -485,6 +491,10 @@ public class Program implements Closeable {
 	 *            the instance whose fields to update.
 	 * @throws NullPointerException
 	 *             if {@code instance} is {@code null}.
+	 * @throws IllegalStateException
+	 *             if this program is not linked.
+	 * @throws IllegalArgumentException
+	 *             if a uniform with no such name is encountered.
 	 */
 	public void resolveUniformLocs(Object instance) {
 		Objects.requireNonNull(instance, "instance");
@@ -513,7 +523,10 @@ public class Program implements Closeable {
 	 *             if {@code clazz} is {@code null}.
 	 * @throws IllegalArgumentException
 	 *             if {@code instance} is not {@code null} and
-	 *             {@code instance.getClass()} is not equal to {@code clazz}.
+	 *             {@code instance.getClass()} is not equal to {@code clazz}; if
+	 *             a uniform with no such name is encountered.
+	 * @throws IllegalStateException
+	 *             if this program is not linked.
 	 */
 	private void resolveUniformLocs(Class<?> clazz, Object instance) {
 		Objects.requireNonNull(clazz, "clazz");
