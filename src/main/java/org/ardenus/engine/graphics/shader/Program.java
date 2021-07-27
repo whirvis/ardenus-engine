@@ -397,9 +397,9 @@ public class Program implements Closeable {
 	 *     public void link() {
 	 *         super.link();
 	 *         
-	 *         this.u_bubbleX = this.getUniformLocation("bubble_x");
-	 *         this.u_bubbleY = this.getUniformLocation("bubble_y");
-	 *         this.u_bubbleColor = this.getUniformLocation("bubble_color");
+	 *         this.u_bubbleX = this.getUniformLoc("bubble_x");
+	 *         this.u_bubbleY = this.getUniformLoc("bubble_y");
+	 *         this.u_bubbleColor = this.getUniformLoc("bubble_color");
 	 *     }
 	 *     
 	 * }
