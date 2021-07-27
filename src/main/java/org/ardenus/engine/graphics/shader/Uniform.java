@@ -30,4 +30,15 @@ public @interface Uniform {
 	 */
 	public String value() default "";
 
+	/**
+	 * Returns whether or not this uniform may be absent.
+	 * <p>
+	 * By default, this will return {@code false}.<br>
+	 * In this scenario, the uniform is expected to be present.
+	 * 
+	 * @return {@code true} if the uniform may be absent, {@code false}
+	 *         otherwise.
+	 */
+	boolean optional() default false;
+
 }

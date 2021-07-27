@@ -433,16 +433,21 @@ public class Program implements Closeable {
 	 * 
 	 * @param name
 	 *            the uniform name.
-	 * @return the uniform location.
+	 * @param optional
+	 *            {@code true} if this uniform may be absent and {@code -1}
+	 *            returned for its location, {@code false} otherwise.
+	 * @return the uniform location, {@code -1} if no such uniform
+	 *         {@code name exists} and {@code optional} is {@code true}.
 	 * @throws NullPointerException
 	 *             if {@code name} is {@code null}.
 	 * @throws IllegalStateException
 	 *             if this program is not linked.
 	 * @throws IllegalArgumentException
-	 *             if no such uniform {@code name} exists in this program.
+	 *             if no such uniform {@code name} exists in this program and
+	 *             {@code optional} is {@code false}.
 	 * @see #setUniform(int, int)
 	 */
-	public int getUniformLoc(String name) {
+	public int getUniformLoc(String name, boolean optional) {
 		/*
 		 * Usually for get methods, I would just have this return something like
 		 * -1. However, I've come to think that is a bit silly. From now on, I
@@ -453,11 +458,73 @@ public class Program implements Closeable {
 		this.requireLinked();
 
 		int location = glGetUniformLocation(h_glProgram, name);
-		if (location < 0) {
+		if (location < 0 && !optional) {
 			throw new IllegalArgumentException(
 					"no such uniform \"" + name + "\"");
 		}
 		return location;
+	}
+
+	/**
+	 * Queries OpenGL for the location of a uniform based on its name.
+	 * <p>
+	 * This function is a shorthand for {@link #getUniformLoc(String, boolean)},
+	 * with {@code optional} being set to {@code false}.
+	 * <p>
+	 * This is required for safe code that will consistently update the correct
+	 * uniform. However, this is a costly operation. It is recommended to cache
+	 * the values returned from this method into a variable somewhere for later.
+	 * A clean and easy way to do this would be to make a class extending
+	 * {@code Program}, override {@link #link()}, and fetch the uniforms there:
+	 * 
+	 * <pre>
+	 * public class BubblesProgram extends Program {
+	 *     
+	 *     private int u_bubbleX;
+	 *     private int u_bubblyY;
+	 *     private int u_bubbleColor;
+	 *     
+	 *     &commat;Override
+	 *     public void link() {
+	 *         super.link();
+	 *         
+	 *         this.u_bubbleX = this.getUniformLoc("bubble_x");
+	 *         this.u_bubbleY = this.getUniformLoc("bubble_y");
+	 *         this.u_bubbleColor = this.getUniformLoc("bubble_color");
+	 *     }
+	 *     
+	 * }
+	 * </pre>
+	 * <p>
+	 * An even cleaner way to accomplish this is by using the
+	 * {@link Uniform @Uniform} annotation:
+	 * 
+	 * <pre>
+	 * public class BubblesProgram extends Program {
+	 *     
+	 *     /&ast; it even works for private fields! &ast;/
+	 *     &commat;Uniform
+	 *     private int bubble_x,
+	 *         bubble_y,
+	 *         bubble_color;
+	 *     
+	 * }
+	 * </pre>
+	 * 
+	 * 
+	 * @param name
+	 *            the uniform name.
+	 * @return the uniform location.
+	 * @throws NullPointerException
+	 *             if {@code name} is {@code null}.
+	 * @throws IllegalStateException
+	 *             if this program is not linked.
+	 * @throws IllegalArgumentException
+	 *             if no such uniform {@code name} exists in this program.
+	 * @see #setUniform(int, int)
+	 */
+	public int getUniformLoc(String name) {
+		return this.getUniformLoc(name, false);
 	}
 
 	/**
@@ -578,7 +645,7 @@ public class Program implements Closeable {
 				name = field.getName();
 			}
 
-			int location = this.getUniformLoc(name);
+			int location = this.getUniformLoc(name, uniform.optional());
 
 			/*
 			 * Sometimes we'll encounter one of those spooky "private" variables
