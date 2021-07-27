@@ -376,6 +376,8 @@ public class Program implements Closeable {
 			attachedI.remove();
 		}
 
+		this.linked = true;
+
 		/*
 		 * Automatically resolve the uniform locations for the convenience of
 		 * classes that extend this class.
@@ -383,8 +385,6 @@ public class Program implements Closeable {
 		Class<?> clazz = this.getClass();
 		this.resolveUniformLocs(clazz, null); /* static */
 		this.resolveUniformLocs(clazz, this); /* instance */
-
-		this.linked = true;
 	}
 
 	/**
