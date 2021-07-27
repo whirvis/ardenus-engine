@@ -345,13 +345,14 @@ public class Program implements Closeable {
 	 * will be deleted. Once a program has been linked, it must be installed
 	 * into OpenGL for rendering via {@link #use()}.
 	 * 
+	 * @return this program.
 	 * @throws IllegalStateException
 	 *             if the program is already linked; if there is no attached
 	 *             {@code GL_VERTEX_SHADER}.
 	 * @throws GraphicsException
 	 *             if the program fails to link.
 	 */
-	public void link() {
+	public Program link() {
 		this.requireUnlinked();
 		this.requireAttached(GL_VERTEX_SHADER);
 
@@ -385,6 +386,8 @@ public class Program implements Closeable {
 		Class<?> clazz = this.getClass();
 		this.resolveUniformLocs(clazz, null); /* static */
 		this.resolveUniformLocs(clazz, this); /* instance */
+
+		return this;
 	}
 
 	/**
@@ -404,12 +407,14 @@ public class Program implements Closeable {
 	 *     private int u_bubbleColor;
 	 *     
 	 *     &commat;Override
-	 *     public void link() {
+	 *     public Program link() {
 	 *         super.link();
 	 *         
 	 *         this.u_bubbleX = this.getUniformLoc("bubble_x");
 	 *         this.u_bubbleY = this.getUniformLoc("bubble_y");
 	 *         this.u_bubbleColor = this.getUniformLoc("bubble_color");
+	 *         
+	 *         return this;
 	 *     }
 	 *     
 	 * }
@@ -485,12 +490,14 @@ public class Program implements Closeable {
 	 *     private int u_bubbleColor;
 	 *     
 	 *     &commat;Override
-	 *     public void link() {
+	 *     public Program link() {
 	 *         super.link();
 	 *         
 	 *         this.u_bubbleX = this.getUniformLoc("bubble_x");
 	 *         this.u_bubbleY = this.getUniformLoc("bubble_y");
 	 *         this.u_bubbleColor = this.getUniformLoc("bubble_color");
+	 *         
+	 *         return this;
 	 *     }
 	 *     
 	 * }
@@ -539,6 +546,7 @@ public class Program implements Closeable {
 	 * @param clazz
 	 *            the class whose {@code @Uniform} annotated fields to resolve
 	 *            uniform locations for.
+	 * @return this program.
 	 * @throws NullPointerException
 	 *             if {@code clazz} is {@code null}.
 	 * @throws IllegalStateException
@@ -546,8 +554,8 @@ public class Program implements Closeable {
 	 * @throws IllegalArgumentException
 	 *             if a uniform with no such name is encountered.
 	 */
-	public void resolveUniformLocs(Class<?> clazz) {
-		this.resolveUniformLocs(clazz, null);
+	public Program resolveUniformLocs(Class<?> clazz) {
+		return this.resolveUniformLocs(clazz, null);
 	}
 
 	/**
@@ -556,6 +564,7 @@ public class Program implements Closeable {
 	 * 
 	 * @param instance
 	 *            the instance whose fields to update.
+	 * @return this program.
 	 * @throws NullPointerException
 	 *             if {@code instance} is {@code null}.
 	 * @throws IllegalStateException
@@ -563,9 +572,9 @@ public class Program implements Closeable {
 	 * @throws IllegalArgumentException
 	 *             if a uniform with no such name is encountered.
 	 */
-	public void resolveUniformLocs(Object instance) {
+	public Program resolveUniformLocs(Object instance) {
 		Objects.requireNonNull(instance, "instance");
-		this.resolveUniformLocs(instance.getClass(), instance);
+		return this.resolveUniformLocs(instance.getClass(), instance);
 	}
 
 	/**
@@ -586,6 +595,7 @@ public class Program implements Closeable {
 	 *            the instance whose fields to update. A {@code null} value is
 	 *            permitted, and signals that the static fields of {@code clazz}
 	 *            should be resolved instead.
+	 * @return this program.
 	 * @throws NullPointerException
 	 *             if {@code clazz} is {@code null}.
 	 * @throws IllegalArgumentException
@@ -595,7 +605,7 @@ public class Program implements Closeable {
 	 * @throws IllegalStateException
 	 *             if this program is not linked.
 	 */
-	private void resolveUniformLocs(Class<?> clazz, Object instance) {
+	private Program resolveUniformLocs(Class<?> clazz, Object instance) {
 		Objects.requireNonNull(clazz, "clazz");
 		if (instance != null && clazz != instance.getClass()) {
 			throw new IllegalArgumentException(
@@ -669,6 +679,7 @@ public class Program implements Closeable {
 				}
 			}
 		}
+		return this;
 	}
 
 	/**
@@ -705,12 +716,14 @@ public class Program implements Closeable {
 	 * }
 	 * </pre>
 	 * 
+	 * @return this program.
 	 * @throws IllegalStateException
 	 *             if the program is not linked.
 	 */
-	public void use() {
+	public Program use() {
 		this.requireLinked();
 		glUseProgram(h_glProgram);
+		return this;
 	}
 
 	@Override
