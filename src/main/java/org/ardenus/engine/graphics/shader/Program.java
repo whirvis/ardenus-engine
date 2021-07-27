@@ -42,7 +42,7 @@ public class Program implements Closeable {
 	 *            the uniform location.
 	 * @param value
 	 *            the new uniform value.
-	 * @see #getUniformLocation(String)
+	 * @see #getUniformLoc(String)
 	 * @see #use()
 	 */
 	@BeResponsible
@@ -64,7 +64,7 @@ public class Program implements Closeable {
 	 *            the uniform location.
 	 * @param value
 	 *            the new uniform value.
-	 * @see #getUniformLocation(String)
+	 * @see #getUniformLoc(String)
 	 * @see #use()
 	 */
 	@BeResponsible
@@ -86,7 +86,7 @@ public class Program implements Closeable {
 	 *            the uniform location.
 	 * @param value
 	 *            the new uniform value.
-	 * @see #getUniformLocation(String)
+	 * @see #getUniformLoc(String)
 	 * @see #use()
 	 */
 	@BeResponsible
@@ -108,7 +108,7 @@ public class Program implements Closeable {
 	 *            the uniform location.
 	 * @param value
 	 *            the new uniform value.
-	 * @see #getUniformLocation(String)
+	 * @see #getUniformLoc(String)
 	 * @see #use()
 	 */
 	@BeResponsible
@@ -130,7 +130,7 @@ public class Program implements Closeable {
 	 *            the uniform location.
 	 * @param value
 	 *            the new uniform value.
-	 * @see #getUniformLocation(String)
+	 * @see #getUniformLoc(String)
 	 * @see #use()
 	 */
 	@BeResponsible
@@ -152,7 +152,7 @@ public class Program implements Closeable {
 	 *            the uniform location.
 	 * @param value
 	 *            the new uniform value.
-	 * @see #getUniformLocation(String)
+	 * @see #getUniformLoc(String)
 	 * @see #use()
 	 */
 	@BeResponsible
@@ -174,7 +174,7 @@ public class Program implements Closeable {
 	 *            the uniform location.
 	 * @param value
 	 *            the new uniform value.
-	 * @see #getUniformLocation(String)
+	 * @see #getUniformLoc(String)
 	 * @see #use()
 	 */
 	@BeResponsible
@@ -200,7 +200,7 @@ public class Program implements Closeable {
 	 *            the uniform location.
 	 * @param value
 	 *            the new uniform value.
-	 * @see #getUniformLocation(String)
+	 * @see #getUniformLoc(String)
 	 * @see #use()
 	 */
 	@BeResponsible
@@ -226,7 +226,7 @@ public class Program implements Closeable {
 	 *            the uniform location.
 	 * @param value
 	 *            the new uniform value.
-	 * @see #getUniformLocation(String)
+	 * @see #getUniformLoc(String)
 	 * @see #use()
 	 */
 	@BeResponsible
@@ -414,7 +414,7 @@ public class Program implements Closeable {
 	 *             if no such uniform {@code name} exists in this program.
 	 * @see #setUniform(int, int)
 	 */
-	public int getUniformLocation(String name) {
+	public int getUniformLoc(String name) {
 		/*
 		 * Usually for get methods, I would just have this return something like
 		 * -1. However, I've come to think that is a bit silly. From now on, I
