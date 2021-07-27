@@ -2,7 +2,6 @@ package org.ardenus.engine.graphics;
 
 import java.util.Objects;
 
-import org.ardenus.engine.graphics.scene.ViewProvider;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
@@ -12,11 +11,11 @@ import org.joml.Vector3f;
  * 
  * @see Viewport
  */
-public class Camera implements ViewProvider {
+public class Camera {
 
 	public final Viewport viewport;
 	public final Vector3f pos;
-	private Matrix4f viewMatrix;
+	private final Matrix4f view;
 
 	/**
 	 * Creates a camera.
@@ -29,7 +28,7 @@ public class Camera implements ViewProvider {
 	public Camera(Viewport viewport) {
 		this.viewport = Objects.requireNonNull(viewport, "viewport");
 		this.pos = new Vector3f(0.0F, 0.0F, 0.0F);
-		this.viewMatrix = new Matrix4f();
+		this.view = new Matrix4f();
 	}
 
 	/**
@@ -41,10 +40,9 @@ public class Camera implements ViewProvider {
 		return this.viewport;
 	}
 
-	@Override
 	public Matrix4f getViewMatrix() {
-		viewMatrix.setTranslation(-pos.x, -pos.y, -pos.z);
-		return this.viewMatrix;
+		view.setTranslation(-pos.x, -pos.y, -pos.z);
+		return this.view;
 	}
 
 }

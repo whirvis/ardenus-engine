@@ -1,7 +1,5 @@
 package org.ardenus.engine.graphics;
 
-import org.ardenus.engine.graphics.scene.OrthoProvider;
-import org.ardenus.engine.graphics.scene.ProjectionProvider;
 import org.joml.Matrix4f;
 
 /**
@@ -10,7 +8,7 @@ import org.joml.Matrix4f;
  * 
  * @see Camera
  */
-public class Viewport implements OrthoProvider, ProjectionProvider {
+public class Viewport {
 
 	public final float x, y;
 	public final float width, height;
@@ -62,16 +60,6 @@ public class Viewport implements OrthoProvider, ProjectionProvider {
 				new Matrix4f().ortho(x, x + width, y + height, y, zNear, zFar);
 		this.projection = new Matrix4f().perspective(
 				(float) Math.toRadians(fov), aspectRatio, zNear, zFar);
-	}
-
-	@Override
-	public Matrix4f getOrthoMatrix() {
-		return this.ortho;
-	}
-
-	@Override
-	public Matrix4f getProjectionMatrix() {
-		return this.projection;
 	}
 
 }
