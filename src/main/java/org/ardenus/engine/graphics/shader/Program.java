@@ -547,7 +547,8 @@ public class Program implements Closeable {
 			 * issue, and throw an exception. It is likely this was a silly
 			 * mistake by the programmer.
 			 */
-			if (field.getType() != int.class) {
+			if (field.getType() != int.class
+					&& field.getType() != Integer.class) {
 				throw new GraphicsException("expecting field type int for "
 						+ "@Uniform " + field.getName());
 			}
