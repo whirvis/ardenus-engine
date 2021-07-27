@@ -27,7 +27,7 @@ public class Camera {
 	 */
 	public Camera(Viewport viewport) {
 		this.viewport = Objects.requireNonNull(viewport, "viewport");
-		this.pos = new Vector3f(0.0F, 0.0F, 0.0F);
+		this.pos = new Vector3f();
 		this.view = new Matrix4f();
 	}
 
