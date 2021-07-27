@@ -45,7 +45,7 @@ public class Camera {
 	 * 
 	 * @return the camera view matrix.
 	 */
-	public Matrix4f getViewMatrix() {
+	public Matrix4f view() {
 		view.setTranslation(-pos.x, -pos.y, -pos.z);
 		return this.view;
 	}
