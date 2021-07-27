@@ -40,6 +40,11 @@ public class Camera {
 		return this.viewport;
 	}
 
+	/**
+	 * Returns the camera view matrix.
+	 * 
+	 * @return the camera view matrix.
+	 */
 	public Matrix4f getViewMatrix() {
 		view.setTranslation(-pos.x, -pos.y, -pos.z);
 		return this.view;
