@@ -1,4 +1,4 @@
-package org.ardenus.engine.graphics.provider;
+package org.ardenus.engine.graphics.scene;
 
 import org.joml.Matrix4f;
 

@@ -1,7 +1,7 @@
 package org.ardenus.engine.graphics;
 
-import org.ardenus.engine.graphics.provider.OrthoProvider;
-import org.ardenus.engine.graphics.provider.ProjectionProvider;
+import org.ardenus.engine.graphics.scene.OrthoProvider;
+import org.ardenus.engine.graphics.scene.ProjectionProvider;
 import org.joml.Matrix4f;
 
 /**

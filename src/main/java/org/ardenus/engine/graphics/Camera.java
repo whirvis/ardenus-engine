@@ -2,7 +2,7 @@ package org.ardenus.engine.graphics;
 
 import java.util.Objects;
 
-import org.ardenus.engine.graphics.provider.ViewProvider;
+import org.ardenus.engine.graphics.scene.ViewProvider;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
