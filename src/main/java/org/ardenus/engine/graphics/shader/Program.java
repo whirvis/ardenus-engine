@@ -453,12 +453,6 @@ public class Program implements Closeable {
 	 * @see #setUniform(int, int)
 	 */
 	public int getUniformLoc(String name, boolean optional) {
-		/*
-		 * Usually for get methods, I would just have this return something like
-		 * -1. However, I've come to think that is a bit silly. From now on, I
-		 * will write methods to throw exceptions for any value that doesn't
-		 * make sense in that context. So... why would you pass null to this?
-		 */
 		Objects.requireNonNull(name, "name");
 		this.requireLinked();
 
