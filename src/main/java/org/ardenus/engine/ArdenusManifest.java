@@ -1,108 +1,130 @@
 package org.ardenus.engine;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.Objects;
 import java.util.jar.Attributes.Name;
 import java.util.jar.Manifest;
 
 /**
- * The reader for the Ardenus Engine manifest file.
- * 
- * @author Trent Summerlin
- * @since Ardenus Engine v0.0.1-SNAPSHOT
+ * The manifest class for games written in the Ardenus engine. It is used to
+ * specify game information such as name, verison, etc. as well as how they
+ * should be run.
  */
 public class ArdenusManifest extends Manifest {
 
 	public static final String PATH = "META-INF/ARDENUS.MF";
 
 	public static final Name MAIN = new Name("Main");
-	public static final Name TITLE = new Name("Title");
+
+	private static InputStream open(ClassLoader loader) throws IOException {
+		Objects.requireNonNull(loader, "loader");
+		URL url = loader.getResource(PATH);
+		if (url == null) {
+			throw new FileNotFoundException("classpath missing " + PATH);
+		}
+		return url.openStream();
+	}
 
 	/**
-	 * Loads an Ardenus Engine manifest from an <code>InputStream</code>.
+	 * Constructs a new {@code ArdenusManifest} and loads it from an
+	 * {@code InputStream}.
 	 * 
 	 * @param in
 	 *            the input stream.
+	 * @throws NullPointerException
+	 *             if {@code in} is {@code null}.
 	 * @throws IOException
 	 *             if an I/O error occurs.
 	 */
 	public ArdenusManifest(InputStream in) throws IOException {
-		super(in);
-		this.requireMainAttributes(MAIN, TITLE);
+		super(Objects.requireNonNull(in, "in"));
+		this.requireMainAttributes(MAIN);
 	}
 
 	/**
 	 * Loads an Ardenus Engine manifest from a <code>ClassLoader</code>.
 	 * <p>
-	 * This constructor is a shorthand for calling
-	 * {@link #ArdenusManifest(InputStream)} with the parameter being the the
-	 * resource at path {@value #PATH} grabbed and its stream opened.
+	 * This constructor is a shorthand for
+	 * {@link #ArdenusManifest(InputStream)}, with the {@code in} parameter
+	 * being set to {@code loader.getResource(PATH).openStream()}.
 	 * 
 	 * @param loader
 	 *            the class loader.
+	 * @throws NullPointerException
+	 *             if {@code loader} is {@code null}.
 	 * @throws IOException
 	 *             if an I/O error occurs.
 	 */
 	public ArdenusManifest(ClassLoader loader) throws IOException {
-		this(loader.getResource(PATH).openStream());
+		this(open(loader));
 	}
 
 	/**
-	 * Ensures that a set of main attributes are present within this manifest.
-	 * If any are missing, an <code>IOException</code> will be thrown.
+	 * Requires that a set of main attributes are present within this
+	 * manifest.<br>
+	 * If any are missing, an {@code IOException} will be thrown.
 	 * 
 	 * @param names
-	 *            the names of the main attributes.
+	 *            the names of the required main attributes.
+	 * @throws NullPointerException
+	 *             if {@code names} or one of its elements are {@code null}.
 	 * @throws IOException
-	 *             if a main attribute under one of the names of
-	 *             <code>names</code> is not present within this manifest.
+	 *             if one of the specified required main attributes is absent
+	 *             from this manifest.
 	 */
 	private void requireMainAttributes(Name... names) throws IOException {
-		if (names != null) {
-			for (Name name : names) {
-				if (name != null && !this.hasMainAttribute(name)) {
-					throw new IOException("missing required main attribute "
-							+ name.toString());
-				}
+		Objects.requireNonNull(names, "names");
+		for (Name name : names) {
+			Objects.requireNonNull(name, "name");
+			if (!this.hasMainAttribute(name)) {
+				throw new IOException("missing " + name.toString());
 			}
 		}
 	}
 
 	/**
-	 * Checks and returns if a main attribute with a given name exists.
+	 * Returns if a main attribute exists.
 	 * 
 	 * @param name
 	 *            the attribute name.
-	 * @return <code>true</code> if an attribute under <code>name</code> exists,
-	 *         <code>false</code> otherwise.
+	 * @return {@code true} if an attribute under {@code name} exists,
+	 *         {@code false} otherwise.
 	 */
 	public boolean hasMainAttribute(Name name) {
+		if (name == null) {
+			return false;
+		}
 		return this.getMainAttributes().get(name) != null;
 	}
 
 	/**
-	 * Returns the value of a main attribute with the given name.
+	 * Returns the value of a main attribute.
 	 * 
 	 * @param name
 	 *            the attribute name.
-	 * @return the value of the attribute, trimmed by {@link String#trim()},
-	 *         <code>null</code> if it does not exist.
+	 * @return the value of the attribute trimmed by {@link String#trim()},
+	 *         {@code null} if it does not exist.
 	 */
 	public String getMainAttribute(Name name) {
+		if (name == null) {
+			return null;
+		}
 		String value = (String) this.getMainAttributes().get(name);
 		return value != null ? value.trim() : null;
 	}
 
 	/**
-	 * Returns the value of a main attribute with the given name.
+	 * Returns the value of a main attribute.
 	 * 
 	 * @param name
 	 *            the attribute name.
 	 * @param fallback
-	 *            the value to fallback to.
-	 * @return the value of the attribute, trimmed by {@link String#trim()},
-	 *         <code>fallback</code> (untrimmed) if it does not exist.
+	 *            the value to fallback to if no such attribute exists.
+	 * @return the value of the attribute trimmed by {@link String#trim()},
+	 *         {@code fallback} (untrimmed) if it does not exist.
 	 */
 	public String getMainAttribute(Name name, String fallback) {
 		String value = this.getMainAttribute(name);
@@ -110,13 +132,13 @@ public class ArdenusManifest extends Manifest {
 	}
 
 	/**
-	 * Initializes and returns the main class of a game.
+	 * Initializes and returns the {@code Game} class.
 	 * 
 	 * @param loader
 	 *            the game's class loader.
 	 * @return the main class.
 	 * @throws NullPointerException
-	 *             if <code>loader</code> is <code>null</code>.
+	 *             if {@code loader} is {@code null}.
 	 * @throws ClassNotFoundException
 	 *             if the main class, as specified by the {@link #MAIN}
 	 *             attribute within the manifest, could not be found.
@@ -124,18 +146,10 @@ public class ArdenusManifest extends Manifest {
 	@SuppressWarnings("unchecked")
 	public Class<? extends Game> getMain(ClassLoader loader)
 			throws ClassNotFoundException {
-		Objects.requireNonNull(loader, "loader cannot be null");
-		return (Class<? extends Game>) Class
-				.forName(this.getMainAttribute(MAIN), true, loader);
-	}
-
-	/**
-	 * Returns the game title.
-	 * 
-	 * @return the game title.
-	 */
-	public String getTitle() {
-		return this.getMainAttribute(TITLE);
+		Objects.requireNonNull(loader, "loader");
+		String gameClazzName = this.getMainAttribute(MAIN);
+		Class<?> gameClazz = Class.forName(gameClazzName, true, loader);
+		return (Class<? extends Game>) gameClazz;
 	}
 
 }
