@@ -6,11 +6,8 @@ import java.io.FileReader;
 import java.io.IOException;
 
 import com.whirvex.args.ArgsException;
-import com.whirvex.cmd.AliasCommand;
 import com.whirvex.cmd.CommandCenter;
 import com.whirvex.cmd.CommandSender;
-import com.whirvex.cmd.HelpCommand;
-import com.whirvex.cmd.OptionCommand;
 import com.whirvex.cmd.input.InputException;
 import com.whirvex.event.EventManager;
 
@@ -137,34 +134,6 @@ public class ScriptCommandCenter extends CommandCenter {
 
 		reader.close();
 		this.executing = false;
-	}
-
-	/**
-	 * The program entry point.
-	 * 
-	 * <pre>
-	 * # Example .scc file
-	 * alias          \
-	 *     -l "help"  \
-	 *     -l "alias"
-	 * </pre>
-	 * 
-	 * @param args
-	 *            the program arguments.
-	 * @throws IOException
-	 *             if an I/O error occurs.
-	 */
-	public static void main(String[] args) throws IOException {
-		ScriptCommandCenter center = new ScriptCommandCenter();
-		center.register(new HelpCommand());
-		center.register(new AliasCommand());
-		center.register(new OptionCommand());
-
-		if (args.length < 1) {
-			throw new IllegalArgumentException("missing script file");
-		}
-		File scriptFile = new File(args[0]);
-		center.executeScript(scriptFile);
 	}
 
 }
