@@ -4,14 +4,16 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Objects;
+import java.util.Queue;
 import java.util.Set;
 
 import org.ardenus.engine.audio.sound.Sound;
-import org.ardenus.engine.util.TickThread;
 
-public class AudioThread extends TickThread {
+public class AudioThread extends Thread {
 
 	protected Set<Sound> sounds;
+
+	protected Queue<Sound> abandonQueue;
 
 	protected AudioThread() {
 		/*
@@ -29,18 +31,26 @@ public class AudioThread extends TickThread {
 	}
 
 	public void abandon(Sound sound) {
-		sounds.remove(sound);
+		abandonQueue.add(sound);
 	}
 
 	@Override
-	protected void onTick(long delta) {
-		Iterator<Sound> soundI = sounds.iterator();
-		while (soundI.hasNext()) {
+	public void run() {
+		while (!this.isInterrupted()) {
 			try {
-				soundI.next().update();
-			} catch (Exception e) {
-				Audio.LOG.error("Error updating sound", e);
-				soundI.remove();
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				this.interrupt();
+			}
+
+			Iterator<Sound> soundI = sounds.iterator();
+			while (soundI.hasNext()) {
+				try {
+					soundI.next().update();
+				} catch (Exception e) {
+					Audio.LOG.error("Error updating sound", e);
+					soundI.remove();
+				}
 			}
 		}
 	}
