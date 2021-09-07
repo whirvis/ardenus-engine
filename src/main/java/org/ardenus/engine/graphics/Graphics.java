@@ -76,10 +76,7 @@ public final class Graphics {
 			setDebugLevel(GLMessageSeverity.LOW);
 		}
 		glDebugMessageCallback(new GLDebugLogger(), 0L);
-
-		LOGGER.info("Initializing components...");
-		/* TODO: Create components to initialize */
-
+		
 		initialized = true;
 		LOGGER.info("Initialized system");
 	}
