@@ -14,7 +14,7 @@ public class Viewport {
 	public final float width, height;
 	public final float aspectRatio, fov;
 	public final float zNear, zFar;
-	public final Matrix4f ortho, projection;
+	public final Matrix4f ortho, perspective;
 
 	/**
 	 * Creates a viewport.
@@ -58,7 +58,7 @@ public class Viewport {
 
 		this.ortho =
 				new Matrix4f().ortho(x, x + width, y + height, y, zNear, zFar);
-		this.projection = new Matrix4f().perspective(
+		this.perspective = new Matrix4f().perspective(
 				(float) Math.toRadians(fov), aspectRatio, zNear, zFar);
 	}
 
