@@ -186,8 +186,8 @@ public class Image implements Closeable {
 
 		/*
 		 * Only increment the image count once the image has been successfully
-		 * created. This will ensure close() shuts de-initializes the image
-		 * system even if another image fails to load.
+		 * created. This will ensure close() de-initializes the image system
+		 * even if another image fails to load.
 		 */
 		imgCount++;
 	}

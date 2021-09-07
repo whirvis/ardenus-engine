@@ -14,27 +14,12 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * A game running through the Ardenus Engine.
- * 
- * @author Trent Summerlin
- * @since Ardenus Engine v0.0.1-SNAPSHOT
  */
 public abstract class Game {
 
-	/**
-	 * The folder in which game dependencies are stored.
-	 */
+	
 	public static final File LIB_FOLDER = new File("./lib/");
 
-	/**
-	 * Creates a <code>ClassLoader</code> for a game JAR file.
-	 * <p>
-	 * TODO: Go more into more depth of what this method does.
-	 * 
-	 * @param gameFile
-	 *            the JAR file of the game.
-	 * @return the instantiated class loader, of which game files can be grabbed
-	 *         from.
-	 */
 	private static ClassLoader getClassLoader(File gameFile) {
 		try {
 			ArrayList<URL> libJars = new ArrayList<URL>();
@@ -111,7 +96,7 @@ public abstract class Game {
 
 	public synchronized final void start() {
 		if (running == true) {
-			throw new IllegalStateException("game already running");
+			throw new IllegalStateException("already running");
 		}
 
 		this.running = true;
@@ -119,7 +104,7 @@ public abstract class Game {
 
 	public synchronized final void stop() {
 		if (running == false) {
-			throw new IllegalStateException("game not running");
+			throw new IllegalStateException("already stopped");
 		}
 
 		this.running = false;

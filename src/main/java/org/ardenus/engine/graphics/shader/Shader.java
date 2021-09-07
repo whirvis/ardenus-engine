@@ -166,7 +166,6 @@ public class Shader {
 	 * Once the source code for a shader has been set, it must be compiled via
 	 * the {@link #compile()} method.
 	 * <p>
-	 * <p>
 	 * This function is a shorthand {@link #setSource(InputStream)}, with the
 	 * contents of {@code url} being opened as a stream and passed as the value
 	 * for {@code in}.
