@@ -35,7 +35,7 @@ public class RiffFile implements Closeable {
 	 * <p>
 	 * This constructor begins reading from the file. This is to validate that
 	 * {@code file} is a valid {@code RIFF} container, to check the format, and
-	 * to catche all chunk headers. Only the chunk <i>headers</i> are cached,
+	 * to cache all chunk headers. Only the chunk <i>headers</i> are cached,
 	 * not the actual chunk data. To read the data found within a chunk, use
 	 * {@link #openChunk(String)}.
 	 * 
@@ -91,7 +91,7 @@ public class RiffFile implements Closeable {
 	 * <p>
 	 * This constructor begins reading from the file. This is to validate that
 	 * {@code file} is a valid {@code RIFF} container, to check the format, and
-	 * to catche all chunk headers. Only the chunk <i>headers</i> are cached,
+	 * to cache all chunk headers. Only the chunk <i>headers</i> are cached,
 	 * not the actual chunk data. To read the data found within a chunk, use
 	 * {@link #openChunk(String)}.
 	 * 
@@ -116,7 +116,7 @@ public class RiffFile implements Closeable {
 	 * <p>
 	 * This constructor begins reading from the file. This is to validate that
 	 * {@code file} is a valid {@code RIFF} container, read the format, and to
-	 * catche all chunk headers. Only the chunk <i>headers</i> are cached, not
+	 * cache all chunk headers. Only the chunk <i>headers</i> are cached, not
 	 * the actual chunk data. To read the data found within a chunk, use
 	 * {@link #openChunk(String)}.
 	 * 

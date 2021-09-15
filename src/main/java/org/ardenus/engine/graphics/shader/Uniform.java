@@ -21,7 +21,7 @@ import java.lang.annotation.Target;
 public @interface Uniform {
 
 	/**
-	 * Returns the uniforn name.
+	 * Returns the uniform name.
 	 * <p>
 	 * By default, this will return an empty string.<br>
 	 * In this scenario, field name is assumed to be the uniform name.
