@@ -548,6 +548,11 @@ public class Program implements Closeable {
 	 *             if this program is not linked.
 	 * @throws IllegalArgumentException
 	 *             if a uniform with no such name is encountered.
+	 * @throws GraphicsException
+	 *             if a {@code @Uniform} annotated field is not of type
+	 *             {@code int} or {@code Integer}; if a {@code @Uniform}
+	 *             annotated field cannot be set as accessible or cannot be
+	 *             accessed by this class.
 	 */
 	public Program resolveUniformLocs(Class<?> clazz) {
 		return this.resolveUniformLocs(clazz, null);
@@ -566,6 +571,11 @@ public class Program implements Closeable {
 	 *             if this program is not linked.
 	 * @throws IllegalArgumentException
 	 *             if a uniform with no such name is encountered.
+	 * @throws GraphicsException
+	 *             if a {@code @Uniform} annotated field is not of type
+	 *             {@code int} or {@code Integer}; if a {@code @Uniform}
+	 *             annotated field cannot be set as accessible or cannot be
+	 *             accessed by this class.
 	 */
 	public Program resolveUniformLocs(Object instance) {
 		Objects.requireNonNull(instance, "instance");
@@ -599,6 +609,11 @@ public class Program implements Closeable {
 	 *             a uniform with no such name is encountered.
 	 * @throws IllegalStateException
 	 *             if this program is not linked.
+	 * @throws GraphicsException
+	 *             if a {@code @Uniform} annotated field is not of type
+	 *             {@code int} or {@code Integer}; if a {@code @Uniform}
+	 *             annotated field cannot be set as accessible or cannot be
+	 *             accessed by this class.
 	 */
 	private Program resolveUniformLocs(Class<?> clazz, Object instance) {
 		Objects.requireNonNull(clazz, "clazz");
