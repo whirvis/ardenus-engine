@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.ardenus.engine.input.Direction;
-import org.ardenus.engine.input.button.PressableState;
+import org.ardenus.engine.input.PressableState;
 import org.ardenus.engine.input.device.DeviceButton;
 import org.ardenus.engine.input.device.InputDevice;
 import org.ardenus.engine.input.device.adapter.DeviceAdapter;
@@ -34,7 +34,7 @@ public abstract class Controller extends InputDevice {
 	 * @throws NullPointerException
 	 *             if {@code adapter} is {@code null}.
 	 */
-	public Controller(DeviceAdapter<?, ?, ?> adapter) {
+	public Controller(DeviceAdapter<?> adapter) {
 		super(adapter);
 
 		this.directions = new HashMap<>();
