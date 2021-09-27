@@ -24,12 +24,17 @@
 		
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
-	
+
 	<repositories>
 		<repository>
 			<id>jcenter</id>
 			<url>https://jcenter.bintray.com</url>
 			<name>jcenter-bintray</name>
+		</repository>
+		
+		<repository>
+			<id>jitpack.io</id>
+			<url>https://jitpack.io</url>
 		</repository>
 	</repositories>
 	
@@ -77,6 +82,13 @@
 			<version>2.11.1</version>
 		</dependency>
 		
+		<!-- Utility annotations -->
+		<dependency>
+			<groupId>org.jetbrains</groupId>
+			<artifactId>annotations</artifactId>
+			<version>22.0.0</version>
+		</dependency>
+		
 		<!-- Arguments parsing -->
 		<dependency>
 			<groupId>com.whirvex</groupId>
@@ -104,6 +116,13 @@
     		<artifactId>java-discord-rpc</artifactId>
     		<version>2.0.1</version>
     	</dependency>
+    	
+    	<!-- XInput -->
+		<dependency>
+			<groupId>com.github.strikerx3</groupId>
+			<artifactId>jxinput</artifactId>
+			<version>1.0.0</version>
+		</dependency>
     	
 		<dependency>
 			<groupId>commons-io</groupId>
