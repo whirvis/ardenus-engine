@@ -1,13 +1,16 @@
 package org.ardenus.engine.input.device.adapter.xinput;
 
-import org.ardenus.engine.input.device.adapter.SourceAdapter;
+import org.ardenus.engine.input.InputException;
+import org.ardenus.engine.input.device.adapter.FeatureAdapter;
 import org.ardenus.engine.input.device.adapter.mapping.AdapterMapping;
 import org.ardenus.engine.input.device.adapter.mapping.AnalogMapping;
 import org.ardenus.engine.input.device.adapter.mapping.ButtonMapping;
+import org.ardenus.engine.input.device.adapter.mapping.FeatureMapping;
 import org.ardenus.engine.input.device.adapter.xinput.analog.XInputAnalogStickMapping;
 import org.ardenus.engine.input.device.adapter.xinput.analog.XInputAnalogTriggerMapping;
 import org.ardenus.engine.input.device.analog.Trigger1f;
 import org.ardenus.engine.input.device.button.Button1b;
+import org.ardenus.engine.input.device.controller.RumbleForce;
 import org.ardenus.engine.input.device.controller.XboxController;
 import org.joml.Vector3f;
 
@@ -76,14 +79,14 @@ public class XInputXboxControllerAdapter
 
 	protected boolean isPressed(XInputAnalogStickMapping mapping) {
 		XInputButtonMapping zMapping =
-				(XInputButtonMapping) this.getMapping(mapping.source.zButton);
+				(XInputButtonMapping) this.getMapping(mapping.feature.zButton);
 		if (zMapping == null) {
 			return false;
 		}
 		return zMapping.isPressed(buttons);
 	}
 
-	@SourceAdapter
+	@FeatureAdapter
 	public void updateAnalogStick(XInputAnalogStickMapping mapping,
 			Vector3f stick) {
 		stick.x = axes.get(mapping.xAxis);
@@ -91,13 +94,13 @@ public class XInputXboxControllerAdapter
 		stick.z = this.isPressed(mapping) ? -1.0F : 0.0F;
 	}
 
-	@SourceAdapter
+	@FeatureAdapter
 	public void updateAnalogTrigger(XInputAnalogTriggerMapping mapping,
 			Trigger1f trigger) {
 		trigger.force = axes.get(mapping.triggerAxis);
 	}
 
-	@SourceAdapter
+	@FeatureAdapter
 	public void isPressed(XInputButtonMapping mapping, Button1b button) {
 		button.pressed = mapping.isPressed(buttons);
 	}
@@ -109,18 +112,6 @@ public class XInputXboxControllerAdapter
 		XInputComponents comps = xinput.getComponents();
 		this.axes = comps.getAxes();
 		this.buttons = comps.getButtons();
-	}
-
-	/* TODO: Standardize this feature */
-	public void setRumble(float left, float right) {
-		if (left < 0 || right < 0) {
-			throw new IllegalArgumentException("left < 0.0F || right < 0.0F");
-		} else if (left > 1.0F || right > 1.0F) {
-			throw new IllegalArgumentException("left > 1.0F || right > 1.0F");
-		}
-		int left_s = (int) (65535 * left);
-		int right_s = (int) (65535 * right);
-		xinput.setVibration(left_s, right_s);
 	}
 
 }
