@@ -5,12 +5,10 @@ import org.ardenus.engine.input.device.adapter.FeatureAdapter;
 import org.ardenus.engine.input.device.adapter.mapping.AdapterMapping;
 import org.ardenus.engine.input.device.adapter.mapping.AnalogMapping;
 import org.ardenus.engine.input.device.adapter.mapping.ButtonMapping;
-import org.ardenus.engine.input.device.adapter.mapping.FeatureMapping;
 import org.ardenus.engine.input.device.adapter.xinput.analog.XInputAnalogStickMapping;
 import org.ardenus.engine.input.device.adapter.xinput.analog.XInputAnalogTriggerMapping;
 import org.ardenus.engine.input.device.analog.Trigger1f;
 import org.ardenus.engine.input.device.button.Button1b;
-import org.ardenus.engine.input.device.controller.RumbleForce;
 import org.ardenus.engine.input.device.controller.XboxController;
 import org.joml.Vector3f;
 
