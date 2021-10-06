@@ -121,7 +121,7 @@ public class Window implements Closeable {
 		return version;
 	}
 
-	private final long h_glfwWindow;
+	private final long ptr_glfwWindow;
 
 	private int x, y;
 	private int width, height;
@@ -150,17 +150,17 @@ public class Window implements Closeable {
 			throw new IllegalArgumentException("width < 0 || height < 0");
 		}
 
-		this.h_glfwWindow = glfwCreateWindow(width, height, "", 0, 0);
+		this.ptr_glfwWindow = glfwCreateWindow(width, height, "", 0, 0);
 
 		this.width = width;
 		this.height = height;
 		this.setTitle(title);
 
-		glfwSetWindowSizeCallback(h_glfwWindow, (w, cw, ch) -> {
+		glfwSetWindowSizeCallback(ptr_glfwWindow, (w, cw, ch) -> {
 			this.width = cw;
 			this.height = ch;
 		});
-		glfwSetWindowPosCallback(h_glfwWindow, (w, cx, cy) -> {
+		glfwSetWindowPosCallback(ptr_glfwWindow, (w, cx, cy) -> {
 			this.x = cx;
 			this.y = cy;
 		});
@@ -193,7 +193,7 @@ public class Window implements Closeable {
 	 *            the Y position.
 	 */
 	public void setPosition(int x, int y) {
-		glfwSetWindowPos(h_glfwWindow, x, y);
+		glfwSetWindowPos(ptr_glfwWindow, x, y);
 	}
 
 	/**
@@ -228,7 +228,7 @@ public class Window implements Closeable {
 		if (width < 0 || height < 0) {
 			throw new IllegalArgumentException("width < 0 || height < 0");
 		}
-		glfwSetWindowSize(h_glfwWindow, width, height);
+		glfwSetWindowSize(ptr_glfwWindow, width, height);
 	}
 
 	/**
@@ -249,7 +249,7 @@ public class Window implements Closeable {
 	 */
 	public void setTitle(String title) {
 		this.title = title;
-		glfwSetWindowTitle(h_glfwWindow, title != null ? title : "");
+		glfwSetWindowTitle(ptr_glfwWindow, title != null ? title : "");
 	}
 
 	/**
@@ -258,7 +258,7 @@ public class Window implements Closeable {
 	 * @return {@code true} if the cursor is visible, {@code false} otherwise.
 	 */
 	public boolean isCursorVisible() {
-		return glfwGetInputMode(h_glfwWindow,
+		return glfwGetInputMode(ptr_glfwWindow,
 				GLFW_CURSOR) == GLFW_CURSOR_NORMAL;
 	}
 
@@ -270,7 +270,7 @@ public class Window implements Closeable {
 	 *            otherwise.
 	 */
 	public void setCursorVisible(boolean visible) {
-		glfwSetInputMode(h_glfwWindow, GLFW_CURSOR,
+		glfwSetInputMode(ptr_glfwWindow, GLFW_CURSOR,
 				visible ? GLFW_CURSOR_NORMAL : GLFW_CURSOR_HIDDEN);
 	}
 
@@ -280,7 +280,7 @@ public class Window implements Closeable {
 	 * @return {@code true} if this window is focused, {@code false} otherwise.
 	 */
 	public boolean isFocused() {
-		return glfwGetWindowAttrib(h_glfwWindow, GLFW_FOCUSED) == GLFW_TRUE;
+		return glfwGetWindowAttrib(ptr_glfwWindow, GLFW_FOCUSED) == GLFW_TRUE;
 	}
 
 	/**
@@ -290,7 +290,7 @@ public class Window implements Closeable {
 	 *         otherwise.
 	 */
 	public boolean isDecorated() {
-		return glfwGetWindowAttrib(h_glfwWindow, GLFW_FOCUSED) == GLFW_TRUE;
+		return glfwGetWindowAttrib(ptr_glfwWindow, GLFW_FOCUSED) == GLFW_TRUE;
 	}
 
 	/**
@@ -301,7 +301,7 @@ public class Window implements Closeable {
 	 *            otherwise.
 	 */
 	public void setDecorated(boolean decorated) {
-		glfwSetWindowAttrib(h_glfwWindow, GLFW_DECORATED,
+		glfwSetWindowAttrib(ptr_glfwWindow, GLFW_DECORATED,
 				decorated ? GL_TRUE : GL_FALSE);
 	}
 
@@ -312,7 +312,7 @@ public class Window implements Closeable {
 	 *         otherwise.
 	 */
 	public boolean isResizable() {
-		return glfwGetWindowAttrib(h_glfwWindow, GLFW_RESIZABLE) == GLFW_TRUE;
+		return glfwGetWindowAttrib(ptr_glfwWindow, GLFW_RESIZABLE) == GLFW_TRUE;
 	}
 
 	/**
@@ -323,7 +323,7 @@ public class Window implements Closeable {
 	 *            otherwise.
 	 */
 	public void setResizable(boolean resizable) {
-		glfwSetWindowAttrib(h_glfwWindow, GLFW_RESIZABLE,
+		glfwSetWindowAttrib(ptr_glfwWindow, GLFW_RESIZABLE,
 				resizable ? GL_TRUE : GL_FALSE);
 	}
 
@@ -333,7 +333,7 @@ public class Window implements Closeable {
 	 * @return {@code true} if this window is floating, {@code false} otherwise.
 	 */
 	public boolean isFloating() {
-		return glfwGetWindowAttrib(h_glfwWindow, GLFW_FLOATING) == GLFW_TRUE;
+		return glfwGetWindowAttrib(ptr_glfwWindow, GLFW_FLOATING) == GLFW_TRUE;
 	}
 
 	/**
@@ -344,7 +344,7 @@ public class Window implements Closeable {
 	 *            otherwise.
 	 */
 	public void setFloating(boolean floating) {
-		glfwSetWindowAttrib(h_glfwWindow, GLFW_FLOATING,
+		glfwSetWindowAttrib(ptr_glfwWindow, GLFW_FLOATING,
 				floating ? GL_TRUE : GL_FALSE);
 	}
 
@@ -355,7 +355,7 @@ public class Window implements Closeable {
 	 *         otherwise.
 	 */
 	public boolean focusesOnShow() {
-		return glfwGetWindowAttrib(h_glfwWindow,
+		return glfwGetWindowAttrib(ptr_glfwWindow,
 				GLFW_FOCUS_ON_SHOW) == GLFW_TRUE;
 	}
 
@@ -367,7 +367,7 @@ public class Window implements Closeable {
 	 *            {@code false} otherwise.
 	 */
 	public void setFocusOnShow(boolean focusOnShow) {
-		glfwSetWindowAttrib(h_glfwWindow, GLFW_FOCUS_ON_SHOW,
+		glfwSetWindowAttrib(ptr_glfwWindow, GLFW_FOCUS_ON_SHOW,
 				focusOnShow ? GL_TRUE : GL_FALSE);
 	}
 
@@ -375,35 +375,35 @@ public class Window implements Closeable {
 	 * Shows the window.
 	 */
 	public void show() {
-		glfwShowWindow(h_glfwWindow);
+		glfwShowWindow(ptr_glfwWindow);
 	}
 
 	/**
 	 * Hides the window.
 	 */
 	public void hide() {
-		glfwHideWindow(h_glfwWindow);
+		glfwHideWindow(ptr_glfwWindow);
 	}
 
 	/**
 	 * Minimizes the window.
 	 */
 	public void minimize() {
-		glfwIconifyWindow(h_glfwWindow);
+		glfwIconifyWindow(ptr_glfwWindow);
 	}
 
 	/**
 	 * Maximizes the window.
 	 */
 	public void maximimze() {
-		glfwRestoreWindow(h_glfwWindow);
+		glfwRestoreWindow(ptr_glfwWindow);
 	}
 
 	/**
 	 * Binds the window's GLFW context to the calling thread.
 	 */
 	public void makeContextCurrent() {
-		glfwMakeContextCurrent(h_glfwWindow);
+		glfwMakeContextCurrent(ptr_glfwWindow);
 	}
 
 	/**
@@ -411,7 +411,7 @@ public class Window implements Closeable {
 	 * rendered buffer.
 	 */
 	public void swapBuffers() {
-		glfwSwapBuffers(h_glfwWindow);
+		glfwSwapBuffers(ptr_glfwWindow);
 	}
 
 	/**
@@ -421,7 +421,7 @@ public class Window implements Closeable {
 	 *         {@code false} otherwise.
 	 */
 	public boolean shouldClose() {
-		return glfwWindowShouldClose(h_glfwWindow);
+		return glfwWindowShouldClose(ptr_glfwWindow);
 	}
 
 	/**
@@ -432,7 +432,7 @@ public class Window implements Closeable {
 	 *            otherwise.
 	 */
 	public void setShouldClose(boolean shouldClose) {
-		glfwSetWindowShouldClose(h_glfwWindow, shouldClose);
+		glfwSetWindowShouldClose(ptr_glfwWindow, shouldClose);
 	}
 
 	/**
@@ -450,7 +450,7 @@ public class Window implements Closeable {
 	public GLFWDeviceSeeker createSeeker(Class<? extends InputDevice> type) {
 		Objects.requireNonNull(type, "type");
 		if (type == XboxController.class) {
-			return new GLFWXboxControllerSeeker(h_glfwWindow);
+			return new GLFWXboxControllerSeeker(ptr_glfwWindow);
 		} else {
 			throw new IllegalArgumentException("unsupported device");
 		}
@@ -498,7 +498,7 @@ public class Window implements Closeable {
 		if (this.isDestroyed()) {
 			return;
 		}
-		glfwDestroyWindow(h_glfwWindow);
+		glfwDestroyWindow(ptr_glfwWindow);
 		this.destroyed = true;
 	}
 
