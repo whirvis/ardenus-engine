@@ -4,9 +4,16 @@ import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 
 import java.io.Closeable;
+import java.util.Objects;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.ardenus.engine.input.Input;
+import org.ardenus.engine.input.device.InputDevice;
+import org.ardenus.engine.input.device.controller.XboxController;
+import org.ardenus.engine.input.device.seeker.DeviceSeeker;
+import org.ardenus.engine.input.device.seeker.glfw.GLFWDeviceSeeker;
+import org.ardenus.engine.input.device.seeker.glfw.GLFWXboxControllerSeeker;
 import org.lwjgl.glfw.GLFWErrorCallbackI;
 import org.lwjgl.system.MemoryUtil;
 
@@ -426,6 +433,50 @@ public class Window implements Closeable {
 	 */
 	public void setShouldClose(boolean shouldClose) {
 		glfwSetWindowShouldClose(h_glfwWindow, shouldClose);
+	}
+
+	/**
+	 * Creates a device seeker for this window.
+	 * 
+	 * @param type
+	 *            the input device type.
+	 * @return the created device seeker.
+	 * @throws NullPointerException
+	 *             if {@code type} is {@code null}.
+	 * @throws IllegalArgumentException
+	 *             if {@code type} is unsupported.
+	 * @see Input#addSeeker(DeviceSeeker)
+	 */
+	public GLFWDeviceSeeker createSeeker(Class<? extends InputDevice> type) {
+		Objects.requireNonNull(type, "type");
+		if (type == XboxController.class) {
+			return new GLFWXboxControllerSeeker(h_glfwWindow);
+		} else {
+			throw new IllegalArgumentException("unsupported device");
+		}
+	}
+
+	/**
+	 * Create device seekers for this window.
+	 * 
+	 * @param types
+	 *            the input device types.
+	 * @return the created device seekers.
+	 * @throws NullPointerException
+	 *             if {@code types} is {@code null}.
+	 * @throws IllegalArgumentException
+	 *             if any types are unsupported.
+	 * @see Input#addSeekers(DeviceSeeker...)
+	 */
+	@SuppressWarnings("unchecked")
+	public GLFWDeviceSeeker[]
+			createSeekers(Class<? extends InputDevice>... types) {
+		Objects.requireNonNull(types, "types");
+		GLFWDeviceSeeker[] seekers = new GLFWDeviceSeeker[types.length];
+		for (int i = 0; i < seekers.length; i++) {
+			seekers[i] = this.createSeeker(types[i]);
+		}
+		return seekers;
 	}
 
 	/**
