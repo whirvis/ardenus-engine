@@ -3,11 +3,14 @@ package org.ardenus.engine.input.device.controller;
 import org.ardenus.engine.input.device.DeviceFeature;
 import org.ardenus.engine.input.device.InputDevice;
 import org.ardenus.engine.input.device.adapter.DeviceAdapter;
-import org.ardenus.engine.input.device.analog.AnalogStick;
-import org.ardenus.engine.input.device.analog.AnalogTrigger;
-import org.ardenus.engine.input.device.analog.Trigger1fc;
-import org.ardenus.engine.input.device.button.Button1bc;
-import org.ardenus.engine.input.device.button.DeviceButton;
+import org.ardenus.engine.input.device.feature.AnalogStick;
+import org.ardenus.engine.input.device.feature.AnalogTrigger;
+import org.ardenus.engine.input.device.feature.Button1bc;
+import org.ardenus.engine.input.device.feature.DeviceButton;
+import org.ardenus.engine.input.device.feature.DeviceFeature;
+import org.ardenus.engine.input.device.feature.RumbleMotor;
+import org.ardenus.engine.input.device.feature.Trigger1fc;
+import org.ardenus.engine.input.device.feature.Vibration1f;
 import org.joml.Vector3fc;
 
 /**
