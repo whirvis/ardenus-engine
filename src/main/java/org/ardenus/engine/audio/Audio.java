@@ -64,6 +64,12 @@ public class Audio {
 		LOG.info("Initialized system");
 	}
 
+	protected static void requireInit() {
+		if (initialized == false) {
+			throw new IllegalStateException("not initialized");
+		}
+	}
+
 	/**
 	 * Sends an {@link AudioEvent} to the audio system's event manager.
 	 * 
@@ -72,10 +78,13 @@ public class Audio {
 	 * @param event
 	 *            the audio event.
 	 * @return {@code event} as passed.
+	 * @throws IllegalStateException
+	 *             if the audio system is not initialized.
 	 * @throws NullPointerException
 	 *             if {@code event} is {@code null}.
 	 */
 	public static <T extends AudioEvent> T sendEvent(T event) {
+		Audio.requireInit();
 		return events.send(event);
 	}
 
@@ -107,12 +116,6 @@ public class Audio {
 	public static void abandon(Sound sound) {
 		Audio.requireInit();
 		audioThread.abandon(sound);
-	}
-
-	protected static void requireInit() {
-		if (initialized == false) {
-			throw new IllegalStateException("not initialized");
-		}
 	}
 
 	/**

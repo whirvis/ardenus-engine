@@ -16,7 +16,7 @@ public class SoundEvent extends AudioEvent {
 	 * Constructs a new {@code SoundEvent}.
 	 * 
 	 * @param sound
-	 *            the sound that trigged the event.
+	 *            the sound that triggered the event.
 	 * @throws NullPointerException
 	 *             if {@code sound} is {@code null}.
 	 */
