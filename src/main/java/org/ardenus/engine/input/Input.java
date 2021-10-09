@@ -60,4 +60,20 @@ public class Input {
 		return events.send(event);
 	}
 
+	/**
+	 * Terminates the input system.
+	 * <p>
+	 * If the input system has not been initialized (or previously terminated
+	 * before another initialization), then this method will do nothing.
+	 */
+	public static void terminate() {
+		if (initialized == false) {
+			LOG.error("Already terminated");
+			return;
+		}
+
+		initialized = false;
+		LOG.info("Terminated system");
+	}
+
 }
