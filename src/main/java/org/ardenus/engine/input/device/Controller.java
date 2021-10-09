@@ -1,4 +1,4 @@
-package org.ardenus.engine.input.device.controller;
+package org.ardenus.engine.input.device;
 
 import org.ardenus.engine.input.device.DeviceFeature;
 import org.ardenus.engine.input.device.InputDevice;
