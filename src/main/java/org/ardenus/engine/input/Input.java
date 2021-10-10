@@ -221,8 +221,25 @@ public class Input {
 	 */
 	public static void poll() {
 		Input.requireInit();
+
+		List<DeviceSeeker> failedPolls = new ArrayList<>();
 		for (DeviceSeeker seeker : seekers.values()) {
-			pollSeeker(seeker);
+			try {
+				pollSeeker(seeker);
+			} catch (Exception e) {
+				LOG.error("Error polling device seeker", e);
+				failedPolls.add(seeker);
+			}
+		}
+
+		/*
+		 * Yes, I know iterators exist. This is done intentionally to allow the
+		 * seeker to be properly removed via the removeSeeker() method. If it
+		 * were simply removed via the iterator's remove() method, leftover data
+		 * would not be disposed of properly.
+		 */
+		for (DeviceSeeker seeker : failedPolls) {
+			removeSeeker(seeker);
 		}
 	}
 
