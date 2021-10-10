@@ -213,8 +213,8 @@ public class Input {
 	 * <p>
 	 * Polling the input system is necessary for retrieving up to date input
 	 * information. If this is not done, it is possible a mix of both up to date
-	 * and out of date input data will be returned. As such, is recommended to
-	 * call this method once every update.
+	 * and out of date input data will be returned. As such, it is recommended
+	 * to call this method once every update.
 	 * 
 	 * @throws IllegalStateException
 	 *             if the input system is not initialized.
