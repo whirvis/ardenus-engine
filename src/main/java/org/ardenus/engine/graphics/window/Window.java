@@ -14,7 +14,7 @@ import org.ardenus.engine.input.device.PlayStationController;
 import org.ardenus.engine.input.device.SwitchController;
 import org.ardenus.engine.input.device.XboxController;
 import org.ardenus.engine.input.device.seeker.DeviceSeeker;
-import org.ardenus.engine.input.device.seeker.GLFWJoystickSeeker;
+import org.ardenus.engine.input.device.seeker.GLFWDeviceSeeker;
 import org.ardenus.engine.input.device.seeker.GLFWPlayStationControllerSeeker;
 import org.ardenus.engine.input.device.seeker.GLFWSwitchControllerSeeker;
 import org.ardenus.engine.input.device.seeker.GLFWXboxControllerSeeker;
@@ -451,7 +451,7 @@ public class Window implements Closeable {
 	 *             if {@code type} is unsupported.
 	 * @see Input#addSeeker(DeviceSeeker)
 	 */
-	public GLFWJoystickSeeker createSeeker(Class<? extends InputDevice> type) {
+	public GLFWDeviceSeeker createSeeker(Class<? extends InputDevice> type) {
 		Objects.requireNonNull(type, "type");
 		if (type == XboxController.class) {
 			return new GLFWXboxControllerSeeker(ptr_glfwWindow);
@@ -477,10 +477,10 @@ public class Window implements Closeable {
 	 * @see Input#addSeekers(DeviceSeeker...)
 	 */
 	@SuppressWarnings("unchecked")
-	public GLFWJoystickSeeker[]
+	public GLFWDeviceSeeker[]
 			createSeekers(Class<? extends InputDevice>... types) {
 		Objects.requireNonNull(types, "types");
-		GLFWJoystickSeeker[] seekers = new GLFWJoystickSeeker[types.length];
+		GLFWDeviceSeeker[] seekers = new GLFWDeviceSeeker[types.length];
 		for (int i = 0; i < seekers.length; i++) {
 			seekers[i] = this.createSeeker(types[i]);
 		}
