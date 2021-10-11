@@ -144,4 +144,34 @@ public abstract class Controller extends InputDevice {
 	 */
 	public abstract float getRightTrigger();
 
+	/**
+	 * Sets the vibration force of a rumble motor.
+	 * 
+	 * @param motor
+	 *            the motor to rumble.
+	 * @param force
+	 *            the vibration force to set the motor to.
+	 */
+	public void setVibration(RumbleMotor motor, float force) {
+		if (!this.hasFeature(motor)) {
+			return;
+		}
+		Vibration1f vibration = this.getState(motor);
+		vibration.force = force;
+	}
+
+	/**
+	 * Sets the vibration force of all rumble motors.
+	 * 
+	 * @param force
+	 *            the vibration force to set the motors to.
+	 */
+	public void setVibration(float force) {
+		for (DeviceFeature<?> feature : this.getFeatures()) {
+			if (feature instanceof RumbleMotor) {
+				this.setVibration((RumbleMotor) feature, force);
+			}
+		}
+	}
+
 }
