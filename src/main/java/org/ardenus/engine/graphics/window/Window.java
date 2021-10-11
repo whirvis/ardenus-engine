@@ -10,11 +10,13 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.ardenus.engine.input.Input;
 import org.ardenus.engine.input.device.InputDevice;
+import org.ardenus.engine.input.device.Keyboard;
 import org.ardenus.engine.input.device.PlayStationController;
 import org.ardenus.engine.input.device.SwitchController;
 import org.ardenus.engine.input.device.XboxController;
 import org.ardenus.engine.input.device.seeker.DeviceSeeker;
 import org.ardenus.engine.input.device.seeker.GLFWDeviceSeeker;
+import org.ardenus.engine.input.device.seeker.GLFWKeyboardSeeker;
 import org.ardenus.engine.input.device.seeker.GLFWPlayStationControllerSeeker;
 import org.ardenus.engine.input.device.seeker.GLFWSwitchControllerSeeker;
 import org.ardenus.engine.input.device.seeker.GLFWXboxControllerSeeker;
@@ -453,7 +455,9 @@ public class Window implements Closeable {
 	 */
 	public GLFWDeviceSeeker createSeeker(Class<? extends InputDevice> type) {
 		Objects.requireNonNull(type, "type");
-		if (type == XboxController.class) {
+		if (type == Keyboard.class) {
+			return new GLFWKeyboardSeeker(ptr_glfwWindow);
+		} else if (type == XboxController.class) {
 			return new GLFWXboxControllerSeeker(ptr_glfwWindow);
 		} else if (type == PlayStationController.class) {
 			return new GLFWPlayStationControllerSeeker(ptr_glfwWindow);
