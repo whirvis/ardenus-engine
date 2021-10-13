@@ -9,6 +9,7 @@ import java.util.Objects;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.ardenus.engine.input.Input;
+import org.ardenus.engine.input.UnicodeInputEvent;
 import org.ardenus.engine.input.device.InputDevice;
 import org.ardenus.engine.input.device.Keyboard;
 import org.ardenus.engine.input.device.PlayStationController;
@@ -439,6 +440,34 @@ public class Window implements Closeable {
 	 */
 	public void setShouldClose(boolean shouldClose) {
 		glfwSetWindowShouldClose(ptr_glfwWindow, shouldClose);
+	}
+
+	/**
+	 * Tells the window the send unicode input it receives to the input system.
+	 * <p>
+	 * This <i>must</i> be called after the input system has been
+	 * initialized.<br>
+	 * Otherwise, an {@code IllegalStateException} may be thrown!
+	 * 
+	 * @see UnicodeInputEvent
+	 */
+	public void registerUnicodeInput() {
+		Window window = this;
+		glfwSetCharCallback(ptr_glfwWindow, (w, c) -> {
+			Input.sendEvent(new UnicodeInputEvent(window, (char) c));
+		});
+	}
+
+	/**
+	 * Tells the window to stop sending unicode input it receives to the input
+	 * system.
+	 * <p>
+	 * This <i>must</i> be called immediately before the input system is
+	 * terminated.<br>
+	 * Otherwise, an {@code IllegalStateException} may be thrown!
+	 */
+	public void stopUnicodeInput() {
+		glfwSetCharCallback(ptr_glfwWindow, null);
 	}
 
 	/**

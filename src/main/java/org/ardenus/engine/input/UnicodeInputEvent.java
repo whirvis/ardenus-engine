@@ -5,8 +5,22 @@ package org.ardenus.engine.input;
  */
 public class UnicodeInputEvent extends InputEvent {
 
+	private final Object source;
 	private final char c;
 
+	/**
+	 * Constructs a new {@code UnicodeInputEvent}.
+	 * 
+	 * @param source
+	 *            the source of input, may be {@code null}.
+	 * @param c
+	 *            the character type.
+	 */
+	public UnicodeInputEvent(Object source, char c) {
+		this.source = source;
+		this.c = c;
+	}
+	
 	/**
 	 * Constructs a new {@code UnicodeInputEvent}.
 	 * 
@@ -14,7 +28,16 @@ public class UnicodeInputEvent extends InputEvent {
 	 *            the character type.
 	 */
 	public UnicodeInputEvent(char c) {
-		this.c = c;
+		this(null, c);
+	}
+	
+	/**
+	 * Returns the source of input.
+	 * 
+	 * @return the source of input, if any.
+	 */
+	public Object getSource() {
+		return this.source;
 	}
 
 	/**
