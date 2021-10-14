@@ -1,14 +1,20 @@
 package org.ardenus.engine;
 
+import static org.lwjgl.opengl.GL11.*;
+
 import java.io.File;
-import java.io.IOException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.ardenus.engine.audio.Audio;
+import org.ardenus.engine.graphics.Graphics;
+import org.ardenus.engine.graphics.window.Window;
+import org.ardenus.engine.input.Input;
 
 import com.whirvex.args.Args;
 import com.whirvex.args.ArgsParser;
 import com.whirvex.args.Option;
+import com.whirvex.event.EventManager;
 
 /**
  * The Ardenus game engine.
@@ -33,8 +39,13 @@ public final class Ardenus {
 
 	private static boolean started;
 	private static boolean devmode;
-	private static Game game;
+
 	private static long startTime;
+	private static long lastUpdate;
+	private static EventManager events;
+
+	private static Window window;
+	private static Game game;
 
 	private Ardenus() {
 		throw new UnsupportedOperationException();
@@ -65,6 +76,15 @@ public final class Ardenus {
 	}
 
 	/**
+	 * Returns the window being used by the engine.
+	 * 
+	 * @return the window.
+	 */
+	public static Window window() {
+		return window;
+	}
+
+	/**
 	 * Returns the time the engine started as according to
 	 * {@link System#currentTimeMillis()}.
 	 * 
@@ -72,6 +92,30 @@ public final class Ardenus {
 	 */
 	public static long startTime() {
 		return startTime;
+	}
+
+	private static void update() {
+		Window.pollEvents();
+		Input.poll();
+
+		long delta = 1;
+		long currentTime = System.currentTimeMillis();
+		if (lastUpdate != 0) {
+			delta = currentTime - lastUpdate;
+		}
+
+		game.update(delta);
+		if (window.shouldClose()) {
+			game.stop();
+		}
+
+		lastUpdate = currentTime;
+	}
+
+	private static void render() {
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		game.render();
+		window.swapBuffers();
 	}
 
 	/**
@@ -91,19 +135,37 @@ public final class Ardenus {
 		devmode = args.hasFlag("--devmode");
 
 		if (args.hasFlag("--game")) {
-			try {
-				File gameFile = new File(args.getFlag("--game", 0));
-				game = Game.load(gameFile);
-			} catch (IOException e) {
-				// TODO
-			}
+			// File gameFile = new File(args.getFlag("--game", 0));
+			// TODO: game = Game.load(gameFile);
 		} else if (game == null) {
 			args.require.hasFlag("--game");
 		}
-		
+
+		events = new EventManager();
+		events.register(game);
 		startTime = System.currentTimeMillis();
-		
+
+		Window.init();
+		window = new Window(1024, 768, game.getTitle());
+		window.makeContextCurrent();
+		Graphics.init();
+
+		Audio.init(events);
+		Input.init(events);
+
 		started = true;
+
+		game.start();
+		while (game.isRunning()) {
+			update();
+			render();
+		}
+
+		Input.terminate();
+		Audio.terminate();
+
+		window.close();
+		Window.terminate();
 	}
 
 	/**
@@ -117,12 +179,19 @@ public final class Ardenus {
 
 		// Instantiate startup options
 		logger.info("Instantiating startup options");
-		
-		
-		Option help = new Option("help", "Displays engine info and start options", false, "-h", "--help");
-		Option devmode = new Option("devmode", "If the engine should run in development mode", false, "--devmode");
-		Option game = new Option("game", "The path to the game JAR", true, "-g", "--game");
-		
+
+		/* @formatter: off */
+		Option help = new Option("help",
+				"Displays engine info and start options",
+				false, "-h", "--help");
+		Option devmode = new Option("devmode",
+				"If the engine should run in dev mode",
+				false, "--devmode");
+		Option game = new Option("game",
+				"The path to the game JAR",
+				true, "-g", "--game");
+		/* @formatter: on */
+
 		// Start engine
 		logger.info("Starting engine");
 		start(ArgsParser.parse(args, help, devmode, game));
@@ -133,9 +202,9 @@ public final class Ardenus {
 	 * is meant purely for testing
 	 * 
 	 * @param game
-	 * the game.
+	 *            the game.
 	 * @param args
-	 * the arguments.
+	 *            the arguments.
 	 */
 	public static void main(Game game, String[] args) {
 		Ardenus.game = game;
