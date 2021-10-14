@@ -38,7 +38,7 @@ public class AudioThread extends Thread {
 	public void run() {
 		while (!this.isInterrupted()) {
 			try {
-				Thread.sleep(1000);
+				Thread.sleep(0, 1);
 			} catch (InterruptedException e) {
 				this.interrupt();
 			}
