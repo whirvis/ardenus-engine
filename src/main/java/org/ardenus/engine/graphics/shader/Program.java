@@ -6,7 +6,6 @@ import static org.lwjgl.opengl.GL20.*;
 import java.io.Closeable;
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.lang.reflect.InaccessibleObjectException;
 import java.lang.reflect.Modifier;
 import java.nio.FloatBuffer;
 import java.util.HashMap;
@@ -674,11 +673,11 @@ public class Program implements Closeable {
 			 * revert the accessibility back to its original state later.
 			 */
 			boolean tempAccess = false;
-			if (!field.canAccess(instance)) {
+			if (!field.isAccessible()) {
 				try {
 					field.setAccessible(true);
 					tempAccess = true;
-				} catch (InaccessibleObjectException | SecurityException e) {
+				} catch (SecurityException e) {
 					throw new GraphicsException("failure to set accessible", e);
 				}
 			}
