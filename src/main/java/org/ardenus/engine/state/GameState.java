@@ -70,7 +70,11 @@ public abstract class GameState {
 	 */
 	protected void addEntity(Entity entity) {
 		Objects.requireNonNull(entity, "entity");
-		entity.setup(this);
+		try {
+			entity.setup(this);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 		entities.add(entity);
 	}
 
@@ -83,7 +87,11 @@ public abstract class GameState {
 	protected void removeEntity(Entity entity) {
 		if (entity != null && entities.contains(entity)) {
 			entities.remove(entity);
-			entity.kill(this);
+			try {
+				entity.kill(this);
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
 		}
 	}
 
@@ -179,7 +187,7 @@ public abstract class GameState {
 	 *             if an error occurs.
 	 */
 	public void leave() throws Exception {
-		for(Entity entity : entities) {
+		for (Entity entity : entities) {
 			entity.sleep(this);
 		}
 		this.onLeave();
