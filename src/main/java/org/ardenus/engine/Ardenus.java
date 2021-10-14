@@ -65,6 +65,10 @@ public final class Ardenus {
 	public static boolean devmode() {
 		return devmode;
 	}
+	
+	public static EventManager getEvents() {
+		return events;
+	}
 
 	/**
 	 * Returns the game being run by the engine.

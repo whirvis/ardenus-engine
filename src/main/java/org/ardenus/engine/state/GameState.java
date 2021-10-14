@@ -4,12 +4,15 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+import org.ardenus.engine.Ardenus;
 import org.ardenus.engine.Game;
+
+import com.whirvex.event.EventListener;
 
 /**
  * A state within a {@link Game} ran by the Ardenus Engine.
  */
-public abstract class GameState {
+public abstract class GameState implements EventListener {
 
 	public final String id;
 	public final Game game;
@@ -107,6 +110,7 @@ public abstract class GameState {
 		if (entered) {
 			return;
 		}
+		Ardenus.getEvents().register(this);
 		for (Entity entity : entities) {
 			entity.setup(this);
 		}
@@ -187,6 +191,7 @@ public abstract class GameState {
 	 *             if an error occurs.
 	 */
 	public void leave() throws Exception {
+		Ardenus.getEvents().unregister(this);
 		for (Entity entity : entities) {
 			entity.sleep(this);
 		}
