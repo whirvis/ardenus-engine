@@ -68,6 +68,20 @@
 	
 	<!-- Project dependencies -->
 	<dependencies>
+		<!-- hid4java for cross-platform HID USB -->
+		<dependency>
+			<groupId>org.hid4java</groupId>
+			<artifactId>hid4java</artifactId>
+			<version>0.7.0</version>
+		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/net.java.dev.jna/jna -->
+		<dependency>
+			<groupId>net.java.dev.jna</groupId>
+			<artifactId>jna</artifactId>
+			<version>5.9.0</version>
+		</dependency>
+
 		<!-- Logging interface -->
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
