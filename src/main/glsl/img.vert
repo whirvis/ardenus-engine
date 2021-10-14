@@ -3,12 +3,15 @@
 #define IMG_VERT_ID 0
 #define IMG_UV_ID   1
 
+#define AE_ORTHO_LOC 0
+#define AE_VIEW_LOC  1
+
 layout (location = IMG_VERT_ID) in vec2 vertex;
 layout (location = IMG_UV_ID)   in vec2 texture_uvVert;
 layout (location = IMG_UV_ID)  out vec2 texture_uvFrag;
 
-uniform mat4 ae_Ortho;
-uniform mat4 ae_View;
+layout (location = AE_ORTHO_LOC) uniform mat4 ae_Ortho;
+layout (location =  AE_VIEW_LOC) uniform mat4 ae_View;
 
 uniform vec2 img_scale;
 uniform vec2 img_pos;
