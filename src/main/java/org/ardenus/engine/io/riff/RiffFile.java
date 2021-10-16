@@ -35,8 +35,8 @@ public class RiffFile implements Closeable {
 	 * <p>
 	 * This constructor begins reading from the file. This is to validate that
 	 * {@code file} is a valid {@code RIFF} container, to check the format, and
-	 * to cache all chunk headers. Only the chunk <i>headers</i> are cached,
-	 * not the actual chunk data. To read the data found within a chunk, use
+	 * to cache all chunk headers. Only the chunk <i>headers</i> are cached, not
+	 * the actual chunk data. To read the data found within a chunk, use
 	 * {@link #openChunk(String)}.
 	 * 
 	 * @param format
@@ -91,8 +91,8 @@ public class RiffFile implements Closeable {
 	 * <p>
 	 * This constructor begins reading from the file. This is to validate that
 	 * {@code file} is a valid {@code RIFF} container, to check the format, and
-	 * to cache all chunk headers. Only the chunk <i>headers</i> are cached,
-	 * not the actual chunk data. To read the data found within a chunk, use
+	 * to cache all chunk headers. Only the chunk <i>headers</i> are cached, not
+	 * the actual chunk data. To read the data found within a chunk, use
 	 * {@link #openChunk(String)}.
 	 * 
 	 * @param format
@@ -134,9 +134,7 @@ public class RiffFile implements Closeable {
 	}
 
 	/**
-	 * Returns the file of this {@code RIFF} container.
-	 * 
-	 * @return the file.
+	 * @return the file of this {@code RIFF} container.
 	 */
 	public File getFile() {
 		return this.file;
@@ -164,17 +162,13 @@ public class RiffFile implements Closeable {
 	}
 
 	/**
-	 * Returns the format of this container.
-	 * 
-	 * @return the format ID.
+	 * @return the format ID of this container.
 	 */
 	public byte[] getRiffFormat() {
 		return this.format;
 	}
 
 	/**
-	 * Returns if this {@code RIFF} file has a chunk with the specified ID.
-	 * 
 	 * @param id
 	 *            the chunk ID.
 	 * @return if a chunk with {@code id} is present, {@code false} otherwise.
@@ -184,41 +178,33 @@ public class RiffFile implements Closeable {
 	}
 
 	/**
-	 * Returns the IDs of all chunks present in this {@code RIFF} container.
-	 * 
-	 * @return the chunk IDs.
+	 * @return the IDs of all chunks present in this {@code RIFF} container.
 	 */
 	public Set<String> getChunkIds() {
 		return Collections.unmodifiableSet(chunkHeaders.keySet());
 	}
 
 	/**
-	 * Returns a chunk's header information by its ID.
-	 * 
 	 * @param id
 	 *            the chunk ID.
-	 * @return a {@code RiffChunkHeader} for chunk with {@code id}, {@code null}
-	 *         if none exists.
+	 * @return the header for chunk with {@code id}, {@code null} if none
+	 *         exists.
 	 */
 	public RiffChunkHeader getChunkHeader(String id) {
 		return chunkHeaders.get(id);
 	}
 
 	/**
-	 * Opens a new {@link RiffChunkInputStream} for a chunk of this {@code RIFF}
-	 * container by its ID.
-	 * <p>
 	 * Because the internal {@code RandomAccessFile} can only point to one chunk
 	 * at a time, only one chunk can be open at once. If a chunk been opened
 	 * previously, it will be closed automatically by the invocation of this
-	 * function.
+	 * method.
 	 * 
 	 * @param id
 	 *            the chunk ID.
 	 * @return a new {@code RiffChunkInputStream} to read the chunk.
 	 * @throws IOException
-	 *             if no chunk by {@code id} exists or another I/O error
-	 *             occurrs.
+	 *             if no chunk by {@code id} exists or another I/O error occurs.
 	 */
 	public RiffChunkInputStream openChunk(String id) throws IOException {
 		if (closed == true) {

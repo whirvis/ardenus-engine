@@ -24,8 +24,6 @@ public class RiffInputStream extends FilterInputStream
 	private final RandomAccessFile file;
 
 	/**
-	 * Creates a {@code RiffInputStream} for a {@code RandomAccessFile}.
-	 *
 	 * @param file
 	 *            the file to read from.
 	 * @throws NullPointerException
@@ -37,8 +35,6 @@ public class RiffInputStream extends FilterInputStream
 	}
 
 	/**
-	 * Returns the current offset of the file this input stream reads from.
-	 *
 	 * @return the offset from the beginning of the file, in bytes, at which the
 	 *         next read or write occurs.
 	 * @throws IOException

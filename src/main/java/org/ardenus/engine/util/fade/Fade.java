@@ -17,8 +17,6 @@ public abstract class Fade {
 	protected final double timeMillis;
 
 	/**
-	 * Constructs a new {@code Fade}.
-	 * 
 	 * @param start
 	 *            the starting value.
 	 * @param finish

@@ -8,8 +8,6 @@ import java.time.Duration;
 public class LinearFade extends Fade {
 
 	/**
-	 * Constructs a new {@code LinearFade}.
-	 * 
 	 * @param start
 	 *            the starting value.
 	 * @param finish

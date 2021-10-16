@@ -1,8 +1,5 @@
 package org.ardenus.engine.util;
 
-/**
- * Represents an operating system.
- */
 public enum OperatingSystem {
 
 	WINDOWS(0x00, "Windows", false, "win"),
@@ -12,8 +9,6 @@ public enum OperatingSystem {
 	SOLARIS(0x04, "Solaris", true, "solaris", "sun"),
 
 	/**
-	 * An unknown operating system.
-	 * <p>
 	 * If this value is ever returned, please contact the developers of the
 	 * engine and specify the operating system.
 	 */
@@ -33,21 +28,19 @@ public enum OperatingSystem {
 	}
 
 	/**
-	 * Returns if a system name signifies it is this operating system.
-	 * 
-	 * @param os_name
+	 * @param osName
 	 *            the name of the system.
 	 * @return {@code true} if {@code systemName} signifies it is this kind of
 	 *         operating system, {@code false} otherwise.
 	 */
-	public boolean isSystem(String os_name) {
-		if (os_name == null) {
+	public boolean isSystem(String osName) {
+		if (osName == null) {
 			return false;
 		}
 
-		os_name = os_name.toLowerCase();
+		osName = osName.toLowerCase();
 		for (String identifier : identifiers) {
-			if (os_name.contains(identifier)) {
+			if (osName.contains(identifier)) {
 				return true;
 			}
 		}

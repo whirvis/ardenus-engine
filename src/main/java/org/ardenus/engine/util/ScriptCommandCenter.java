@@ -21,8 +21,6 @@ public class ScriptCommandCenter extends CommandCenter {
 	private boolean executing;
 
 	/**
-	 * Creates a standard script-enabled command center.
-	 * 
 	 * @param name
 	 *            the name of this command center, to be used in logging.
 	 * @param events
@@ -36,8 +34,6 @@ public class ScriptCommandCenter extends CommandCenter {
 	}
 
 	/**
-	 * Creates a standard script-enabled command center.
-	 * 
 	 * @param name
 	 *            the name of this command center, to be used in logging.
 	 * @throws NullPointerException
@@ -48,8 +44,6 @@ public class ScriptCommandCenter extends CommandCenter {
 	}
 
 	/**
-	 * Creates a standard script-enabled command center.
-	 * 
 	 * @param events
 	 *            the event manager to send events to, may be {@code null}.
 	 */
@@ -57,9 +51,6 @@ public class ScriptCommandCenter extends CommandCenter {
 		this(ScriptCommandCenter.class.getSimpleName(), events);
 	}
 
-	/**
-	 * Creates a standard script-enabled command center.
-	 */
 	public ScriptCommandCenter() {
 		this(ScriptCommandCenter.class.getSimpleName(), null);
 	}
@@ -86,8 +77,6 @@ public class ScriptCommandCenter extends CommandCenter {
 	}
 
 	/**
-	 * Executes a script file containing commands.
-	 * <p>
 	 * Lines that begin with {@code "#"} will be treated as comments. Lines that
 	 * end with a backslash (and are not a comment) will have the next line
 	 * considered part of the same command.

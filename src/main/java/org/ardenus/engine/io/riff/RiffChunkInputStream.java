@@ -19,7 +19,8 @@ public class RiffChunkInputStream extends RiffInputStream {
 	private final RiffChunkHeader header;
 
 	/**
-	 * Creates a {@code RiffChunkInputStream} for a {@link RiffFile RIFF} chunk.
+	 * Creates a {@code RiffChunkInputStream} for a {@link RiffFile RIFF}
+	 * chunk.<br>
 	 * The chunk must be sought to before the construction of this input stream.
 	 *
 	 * @param file
@@ -31,7 +32,7 @@ public class RiffChunkInputStream extends RiffInputStream {
 	 * @throws RiffException
 	 *             if {@code this.ptr()} does not point to {@code header.ptr}.
 	 * @throws IOException
-	 *             if an I/O error occurrs.
+	 *             if an I/O error occurs.
 	 */
 	public RiffChunkInputStream(RandomAccessFile file, RiffChunkHeader header)
 			throws IOException {
@@ -43,8 +44,6 @@ public class RiffChunkInputStream extends RiffInputStream {
 	}
 
 	/**
-	 * Returns the header of the chunk this stream is reading from.
-	 * 
 	 * @return the chunk header, guaranteed not to be {@code null}.
 	 */
 	public RiffChunkHeader getHeader() {
@@ -52,8 +51,6 @@ public class RiffChunkInputStream extends RiffInputStream {
 	}
 
 	/**
-	 * Returns the file pointer at which the chunk ends.
-	 * 
 	 * @return the file pointer at which the chunk ends.
 	 */
 	private long getEndPtr() {

@@ -41,10 +41,8 @@ public abstract class Resource<T> {
 	}
 
 	/**
-	 * Returns the resource after having been loaded by {@link #offload()}
-	 * and/or {@link #load()}.
-	 * 
-	 * @return the loaded resource, may be {@code null}.
+	 * @return the resource after having been loaded by {@link #offload()}
+	 *         and/or {@link #load()}, may be {@code null}.
 	 */
 	public abstract T getLoaded();
 

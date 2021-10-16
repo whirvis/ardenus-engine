@@ -4,7 +4,7 @@ import static org.lwjgl.opengl.GL11.*;
 
 /**
  * Contains utility methods for working with handles. Typically, these handles
- * come from lower level APIs (OpenGL, OpenAL, etc.) Functions relating to
+ * come from lower level APIs (OpenGL, OpenAL, etc.) methods relating to
  * handles will be added to this class as they are needed.
  */
 public final class Handles {
@@ -26,7 +26,7 @@ public final class Handles {
 	 * </pre>
 	 * 
 	 * @param handle
-	 *            the OpenGL handle to check for noneness.
+	 *            the OpenGL handle to check.
 	 * @return {@code handle} if not {@code GL_NONE}.
 	 * @throws NoHandleException
 	 *             if {@code handle} is {@code GL_NONE}.
@@ -51,7 +51,7 @@ public final class Handles {
 	 * </pre>
 	 * 
 	 * @param handle
-	 *            the OpenGL handle to check for noneness.
+	 *            the OpenGL handle to check.
 	 * @param message
 	 *            detail message to be used in the event that a
 	 *            {@code NoneHandlException} is thrown.
