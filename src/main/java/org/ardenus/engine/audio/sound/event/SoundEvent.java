@@ -5,18 +5,13 @@ import java.util.Objects;
 import org.ardenus.engine.audio.AudioEvent;
 import org.ardenus.engine.audio.sound.Sound;
 
-/**
- * An event relating to a {@link Sound}.
- */
 public class SoundEvent extends AudioEvent {
 
 	private final Sound sound;
 
 	/**
-	 * Constructs a new {@code SoundEvent}.
-	 * 
 	 * @param sound
-	 *            the sound that triggered the event.
+	 *            the sound that triggered this event.
 	 * @throws NullPointerException
 	 *             if {@code sound} is {@code null}.
 	 */
@@ -25,10 +20,7 @@ public class SoundEvent extends AudioEvent {
 	}
 
 	/**
-	 * Returns the sound that triggered the event.
-	 * 
-	 * @return the sound that triggered the event, guaranteed not to be
-	 *         {@code null}.
+	 * @return the sound that triggered this event.
 	 */
 	public Sound getSound() {
 		return this.sound;

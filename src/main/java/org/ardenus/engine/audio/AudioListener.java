@@ -23,10 +23,8 @@ public class AudioListener {
 	private static final float[][] PVAL = new float[3][1];
 
 	/**
-	 * Fetches an OpenAL listener parameter and returns it.
-	 * 
 	 * @param alParam
-	 *            the OpenAL parameter.
+	 *            the OpenAL listener parameter.
 	 * @return the value of {@code alParam}.
 	 */
 	private static float getListenerf(int alParam) {
@@ -35,10 +33,8 @@ public class AudioListener {
 	}
 
 	/**
-	 * Sets the value of an OpenAL listener parameter.
-	 * 
 	 * @param alParam
-	 *            the OpenAL parameter.
+	 *            the OpenAL listener parameter.
 	 * @param value
 	 *            the parameter value.
 	 */
@@ -51,14 +47,14 @@ public class AudioListener {
 	 * Fetches a 3-dimensional OpenAL listener parameter and stores its
 	 * component values into the specified {@code Vector3f}.
 	 * <p>
-	 * This function exists purely for optimization. Since Java has no
-	 * references, LWJGL makes use of arrays to hack in references. However,
-	 * this can cumbersome and result in wasted resources. The use of a cached
+	 * This method exists purely for optimization. Since Java has no references,
+	 * LWJGL makes use of arrays to hack in references. However, this can
+	 * cumbersome and result in wasted resources. The use of a cached
 	 * {@code PVAL} array to store these values before storing them inside a
 	 * destination {@code Vector3f} acts as a workaround to this problem.
 	 * 
 	 * @param alParam
-	 *            the OpenAL parameter.
+	 *            the OpenAL listener parameter.
 	 * @param dest
 	 *            where to store the components.
 	 * @return {@code dest} now storing the components of {@code alParam}.
@@ -84,10 +80,8 @@ public class AudioListener {
 	}
 
 	/**
-	 * Sets the component values of a 3-dimension OpenAL listener parameter.
-	 * 
 	 * @param alParam
-	 *            the OpenAL parameter.
+	 *            the OpenAL listener parameter.
 	 * @param x
 	 *            the X-axis component of the value.
 	 * @param y
@@ -101,17 +95,17 @@ public class AudioListener {
 	}
 
 	/**
-	 * Fetches a 3-dimensional OpenAL listener parameter and stores its X-axis
+	 * Fetches a 2-dimensional OpenAL listener parameter and stores its X-axis
 	 * and Y-axis component values into the specified {@code Vector2f}.
 	 * <p>
-	 * This function exists purely for optimization. Since Java has no
-	 * references, LWJGL makes use of arrays to hack in references. However,
-	 * this can cumbersome and result in wasted resources. The use of a cached
+	 * This method exists purely for optimization. Since Java has no references,
+	 * LWJGL makes use of arrays to hack in references. However, this can
+	 * cumbersome and result in wasted resources. The use of a cached
 	 * {@code PVAL} array to store these values before storing them inside a
 	 * destination {@code Vector2f} acts as a workaround to this problem.
 	 * 
 	 * @param alParam
-	 *            the OpenAL parameter.
+	 *            the OpenAL listener parameter.
 	 * @param dest
 	 *            where to store the components.
 	 * @return {@code dest} now storing the components of {@code alParam}.
@@ -136,8 +130,6 @@ public class AudioListener {
 	}
 
 	/**
-	 * Returns the listener gain.
-	 * 
 	 * @return the listener gain.
 	 */
 	public static float getGain() {
@@ -145,8 +137,6 @@ public class AudioListener {
 	}
 
 	/**
-	 * Sets the gain of the listener.
-	 * 
 	 * @param gain
 	 *            the listener gain.
 	 */
@@ -155,8 +145,6 @@ public class AudioListener {
 	}
 
 	/**
-	 * Returns the listener position.
-	 * 
 	 * @param pos
 	 *            the {@code Vector3f} to store the position into.
 	 * @return {@code pos}, now storing the position.
@@ -166,8 +154,6 @@ public class AudioListener {
 	}
 
 	/**
-	 * Returns the listener position.
-	 * 
 	 * @param pos
 	 *            the {@code Vector2f} to store the position into.
 	 * @return {@code pos}, now storing the position.
@@ -177,8 +163,6 @@ public class AudioListener {
 	}
 
 	/**
-	 * Sets the position of the listener.
-	 * 
 	 * @param x
 	 *            the X-axis position.
 	 * @param y
@@ -191,11 +175,8 @@ public class AudioListener {
 	}
 
 	/**
-	 * Sets the position of the listener.
-	 * <p>
-	 * This function is a shorthand for
-	 * {@link #setPosition(float, float, float)}, with the {@code z} parameter
-	 * being set to {@code 0.0F}.
+	 * This method is a shorthand for {@link #setPosition(float, float, float)},
+	 * with the {@code z} parameter being set to {@code 0.0F}.
 	 * 
 	 * @param x
 	 *            the X-axis position.
@@ -207,8 +188,6 @@ public class AudioListener {
 	}
 
 	/**
-	 * Sets the position of the listener.
-	 * <p>
 	 * This method is a shorthand for {@link #setPosition(float, float, float)},
 	 * with the {@code x}, {@code y}, and {@code z} parameters being the
 	 * component vectors of {@code pos}.
@@ -221,8 +200,6 @@ public class AudioListener {
 	}
 
 	/**
-	 * Sets the position of the listener.
-	 * <p>
 	 * This method is a shorthand for {@link #setPosition(float, float, float)},
 	 * with the {@code x} and {@code y} parameters being the component vectors
 	 * of {@code pos}, and the {@code z} parameter being set to {@code 0.0F}.
@@ -235,8 +212,6 @@ public class AudioListener {
 	}
 
 	/**
-	 * Returns the listener velocity.
-	 * 
 	 * @param vel
 	 *            the {@code Vector3f} to store the velocity into.
 	 * @return {@code vel}, now storing the velocity.
@@ -257,8 +232,6 @@ public class AudioListener {
 	}
 
 	/**
-	 * Sets the velocity of the listener.
-	 * 
 	 * @param x
 	 *            the X-axis velocity.
 	 * @param y
@@ -271,11 +244,8 @@ public class AudioListener {
 	}
 
 	/**
-	 * Sets the velocity of the listener.
-	 * <p>
-	 * This function is a shorthand for
-	 * {@link #setVelocity(float, float, float)}, with the {@code z} parameter
-	 * being set to {@code 0.0F}.
+	 * This method is a shorthand for {@link #setVelocity(float, float, float)},
+	 * with the {@code z} parameter being set to {@code 0.0F}.
 	 * 
 	 * @param x
 	 *            the X-axis velocity.
@@ -287,8 +257,6 @@ public class AudioListener {
 	}
 
 	/**
-	 * Sets the velocity of the listener.
-	 * <p>
 	 * This method is a shorthand for {@link #setVelocity(float, float, float)},
 	 * with the {@code x}, {@code y}, and {@code z} parameters being the
 	 * component vectors of {@code vel}.
@@ -301,8 +269,6 @@ public class AudioListener {
 	}
 
 	/**
-	 * Sets the velocity of the listener.
-	 * <p>
 	 * This method is a shorthand for {@link #setVelocity(float, float, float)},
 	 * with the {@code x} and {@code y} parameters being the component vectors
 	 * of {@code vel}, and the {@code z} parameter being set to {@code 0.0F}.
@@ -315,8 +281,6 @@ public class AudioListener {
 	}
 
 	/**
-	 * Returns the listener orientation.
-	 * 
 	 * @param rot
 	 *            the {@code Vector3f} to store the orientation into.
 	 * @return {@code rot}, now storing the orientation.
@@ -326,8 +290,6 @@ public class AudioListener {
 	}
 
 	/**
-	 * Returns the listener orientation.
-	 * 
 	 * @param rot
 	 *            the {@code Vector2f} to store the orientation into.
 	 * @return {@code rot}, now storing the orientation.
@@ -337,8 +299,6 @@ public class AudioListener {
 	}
 
 	/**
-	 * Sets the orientation of the listener.
-	 * 
 	 * @param x
 	 *            the X-axis orientation.
 	 * @param y
@@ -351,9 +311,7 @@ public class AudioListener {
 	}
 
 	/**
-	 * Sets the orientation of the listener.
-	 * <p>
-	 * This function is a shorthand for
+	 * This method is a shorthand for
 	 * {@link #setOrientation(float, float, float)}, with the {@code z}
 	 * parameter being set to {@code 0.0F}.
 	 * 
@@ -367,8 +325,6 @@ public class AudioListener {
 	}
 
 	/**
-	 * Sets the orientation of the listener.
-	 * <p>
 	 * This method is a shorthand for
 	 * {@link #setOrientation(float, float, float)}, with the {@code x},
 	 * {@code y}, and {@code z} parameters being the component vectors of
@@ -382,8 +338,6 @@ public class AudioListener {
 	}
 
 	/**
-	 * Sets the orientation of the listener.
-	 * <p>
 	 * This method is a shorthand for
 	 * {@link #setOrientation(float, float, float)}, with the {@code x} and
 	 * {@code y} parameters being the component vectors of {@code rot}, and the

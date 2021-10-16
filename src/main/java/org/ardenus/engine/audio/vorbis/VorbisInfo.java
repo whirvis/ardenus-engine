@@ -13,8 +13,8 @@ import org.lwjgl.system.MemoryStack;
 public class VorbisInfo {
 
 	/**
-	 * Constructs a new {@link VorbisInfo} by getting the Vorbis info from a
-	 * {@code OGG} Vorbis decoder.
+	 * Constructs a new {@link VorbisInfo} by getting the info from the
+	 * {@code OGG} Vorbis decoder of a {@link VorbisFile}.
 	 * 
 	 * @param vorbis
 	 *            the {@code OGG} Vorbis file.
@@ -26,7 +26,7 @@ public class VorbisInfo {
 	 */
 	public static VorbisInfo get(VorbisFile vorbis) throws VorbisException {
 		/*
-		 * This function originally took in the handle of the stb_vorbis_info
+		 * This method originally took in the handle of the stb_vorbis_info
 		 * struct. However, passing in any invalid handle results in the JVM
 		 * crashing unrecoverably with an EXCEPTION_ACCESS_VIOLATION. Entrusting
 		 * the VorbisFile class to generate this structure beforehand reduces

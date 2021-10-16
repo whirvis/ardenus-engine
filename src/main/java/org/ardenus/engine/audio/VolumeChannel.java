@@ -3,30 +3,27 @@ package org.ardenus.engine.audio;
 import java.util.Objects;
 
 /**
- * A volume channel which sounds can be assigned to, allowing their volume to be
- * controlled in groups.
- * <p>
- * The volume of a channel acts as a volume multiplier for individual sounds.
- * This makes the volume of a sound assigned to a channel the following:
+ * A gain controller which individual sounds can be assigned to, allowing their
+ * volume to be controlled in groups. The volume of a channel acts as a volume
+ * multiplier for individual sounds. This makes the volume of a sound assigned
+ * to a channel the following:
  * 
  * <pre>
  * 
  * float volume = sound.getVolume() * channel.getVolume();
  * </pre>
  * 
- * For example, if the volume of one sound is {@code 0.5F}, and the volume of
+ * For example: if the volume of one sound is {@code 0.5F}, and the volume of
  * its channel is {@code 0.75F}, then its final volume will equal {@code 0.375F}
  * in playback.
  */
-public final class VolumeChannel {
+public class VolumeChannel {
 
 	public final String id;
 	public final String name;
 	private float volume;
 
 	/**
-	 * Creates a volume channel.
-	 * 
 	 * @param id
 	 *            the channel ID.
 	 * @param name
@@ -43,7 +40,7 @@ public final class VolumeChannel {
 	}
 
 	/**
-	 * Creates a volume channel with an initial volume of {@code 1.0F}.
+	 * Constructs a new {@code VolumeChannel} an initial volume of {@code 1.0F}.
 	 * 
 	 * @param id
 	 *            the channel ID.
@@ -57,8 +54,6 @@ public final class VolumeChannel {
 	}
 
 	/**
-	 * Returns the channel volume.
-	 * 
 	 * @return the channel volume, guaranteed to be between {@code 0.0F} and
 	 *         {@code 1.0F}.
 	 */
@@ -67,11 +62,9 @@ public final class VolumeChannel {
 	}
 
 	/**
-	 * Sets the channel volume.
-	 * 
 	 * @param volume
-	 *            the volume, will be capped between {@code 0.0F} and
-	 *            {@code 1.0F} if outside of that range.
+	 *            the volume to set the channel to. This value will be capped
+	 *            between {@code 0.0F} and {@code 1.0F}.
 	 */
 	public void setVolume(float volume) {
 		if (volume < 0.0F) {

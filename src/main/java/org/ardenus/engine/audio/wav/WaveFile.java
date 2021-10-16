@@ -21,24 +21,24 @@ public class WaveFile extends RiffFile implements AudioSource {
 
 	private static int alFormat(WaveFormat format) {
 		switch (format.channelCount) {
-			case 1:
-				if (format.bitsPerSample == 8) {
-					return AL_FORMAT_MONO8;
-				} else if (format.bitsPerSample == 16) {
-					return AL_FORMAT_MONO16;
-				} else {
-					throw new UnsupportedOperationException("bitrate");
-				}
-			case 2:
-				if (format.bitsPerSample == 8) {
-					return AL_FORMAT_STEREO8;
-				} else if (format.bitsPerSample == 16) {
-					return AL_FORMAT_STEREO16;
-				} else {
-					throw new UnsupportedOperationException("bitrate");
-				}
-			default:
-				throw new UnsupportedOperationException("channel count");
+		case 1:
+			if (format.bitsPerSample == 8) {
+				return AL_FORMAT_MONO8;
+			} else if (format.bitsPerSample == 16) {
+				return AL_FORMAT_MONO16;
+			} else {
+				throw new UnsupportedOperationException("bitrate");
+			}
+		case 2:
+			if (format.bitsPerSample == 8) {
+				return AL_FORMAT_STEREO8;
+			} else if (format.bitsPerSample == 16) {
+				return AL_FORMAT_STEREO16;
+			} else {
+				throw new UnsupportedOperationException("bitrate");
+			}
+		default:
+			throw new UnsupportedOperationException("channel count");
 		}
 	}
 
@@ -104,10 +104,10 @@ public class WaveFile extends RiffFile implements AudioSource {
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * Once the {@code data} chunk has been opened by
+	 * <b>Note:</b> Once the {@code data} chunk has been opened by
 	 * {@link #readPCM(int, byte[], int)}, no other chunks can be opened for
-	 * this {@code WAV} file. This is to prevent seemingly random closes of
-	 * later opened {@code RIFF} chunk input streams.
+	 * this {@code WAV} file. This is to prevent seemingly random closes for the
+	 * input streams of {@code RIFF} chunks that are opened later.
 	 */
 	@Override
 	public RiffChunkInputStream openChunk(String id) throws IOException {

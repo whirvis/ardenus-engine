@@ -28,7 +28,7 @@ import org.joml.Vector3f;
  * No sound is playable without an implementation that specifies how its data
  * should be loaded and played. The two built-in implementations are
  * {@link BufferedSound} and {@link StreamedSound}. Proper usage of these
- * implementations is usually dependant on what they will be playing.
+ * implementations usually depends on what they will be playing.
  */
 public abstract class Sound implements Closeable {
 
@@ -48,15 +48,14 @@ public abstract class Sound implements Closeable {
 	private boolean closed;
 
 	/**
-	 * Constructs a new {@code Sound} and generates an OpenAL source to
-	 * manipulate and pipe data to.
+	 * Generates an OpenAL source to manipulate.
 	 * 
 	 * @param audio
 	 *            the audio source to read from.
 	 * @param maintain
 	 *            if the sound should call {@link Audio#maintain(Sound)} at the
-	 *            end of construction. Should be {@code false} for any
-	 *            implemenations of {@code Sound} which have more to initialize
+	 *            end of construction. This should be {@code false} for any
+	 *            implementations of {@code Sound} which have more to initialize
 	 *            before {@link #update()} can be called.
 	 * @throws NullPointerException
 	 *             if {@code audio} is {@code null}.
@@ -88,8 +87,10 @@ public abstract class Sound implements Closeable {
 	}
 
 	/**
-	 * Constructs a new {@code Sound} and generates an OpenAL source to
-	 * manipulate and pipe data to.
+	 * Generates an OpenAL source to manipulate.
+	 * <p>
+	 * This constructor is a shorthand for {@link #Sound(AudioSource, boolean)},
+	 * with the argument for {@code maintain} being {@code true}.
 	 * 
 	 * @param audio
 	 *            the audio source to read from.
@@ -103,10 +104,8 @@ public abstract class Sound implements Closeable {
 	}
 
 	/**
-	 * Fetches an OpenAL listener source and returns it.
-	 * 
 	 * @param alParam
-	 *            the OpenAL parameter.
+	 *            the OpenAL source parameter.
 	 * @return the value of {@code alParam}.
 	 */
 	protected int getSourcei(int alParam) {
@@ -115,10 +114,8 @@ public abstract class Sound implements Closeable {
 	}
 
 	/**
-	 * Sets the value of an OpenAL source parameter.
-	 * 
 	 * @param alParam
-	 *            the OpenAL parameter.
+	 *            the OpenAL source parameter.
 	 * @param value
 	 *            the parameter value.
 	 */
@@ -128,10 +125,8 @@ public abstract class Sound implements Closeable {
 	}
 
 	/**
-	 * Fetches an OpenAL source parameter and returns it.
-	 * 
 	 * @param alParam
-	 *            the OpenAL parameter.
+	 *            the OpenAL source parameter.
 	 * @return the value of {@code alParam}.
 	 */
 	protected float getSourcef(int alParam) {
@@ -140,10 +135,8 @@ public abstract class Sound implements Closeable {
 	}
 
 	/**
-	 * Sets the value of an OpenAL source parameter.
-	 * 
 	 * @param alParam
-	 *            the OpenAL parameter.
+	 *            the OpenAL source parameter.
 	 * @param value
 	 *            the parameter value.
 	 */
@@ -156,14 +149,14 @@ public abstract class Sound implements Closeable {
 	 * Fetches a 3-dimensional OpenAL source parameter and stores its component
 	 * values into the specified {@code Vector3f}.
 	 * <p>
-	 * This function exists purely for optimization. Since Java has no
-	 * references, LWJGL makes use of arrays to hack in references. However,
-	 * this can cumbersome and result in wasted resources. The use of a cached
+	 * This method exists purely for optimization. Since Java has no references,
+	 * LWJGL makes use of arrays to hack in references. However, this can
+	 * cumbersome and result in wasted resources. The use of a cached
 	 * {@code pval} array to store these values before storing them inside a
 	 * destination {@code Vector3f} acts as a workaround to this problem.
 	 * 
 	 * @param alParam
-	 *            then OpenAL parameter.
+	 *            then OpenAL source parameter.
 	 * @param dest
 	 *            where to store the components.
 	 * @return {@code dest} now storing the components of {@code alParam}.
@@ -189,10 +182,8 @@ public abstract class Sound implements Closeable {
 	}
 
 	/**
-	 * Sets the component values of a 3-dimension OpenAL source parameter.
-	 * 
 	 * @param alParam
-	 *            the OpenAL parameter.
+	 *            the OpenAL source parameter.
 	 * @param x
 	 *            the X-axis component of the value.
 	 * @param y
@@ -206,17 +197,17 @@ public abstract class Sound implements Closeable {
 	}
 
 	/**
-	 * Fetches a 3-dimensional OpenAL source parameter and stores its X-axis and
+	 * Fetches a 2-dimensional OpenAL source parameter and stores its X-axis and
 	 * Y-axis component values into the specified {@code Vector2f}.
 	 * <p>
-	 * This function exists purely for optimization. Since Java has no
-	 * references, LWJGL makes use of arrays to hack in references. However,
-	 * this can cumbersome and result in wasted resources. The use of a cached
+	 * This method exists purely for optimization. Since Java has no references,
+	 * LWJGL makes use of arrays to hack in references. However, this can
+	 * cumbersome and result in wasted resources. The use of a cached
 	 * {@code pval} array to store these values before storing them inside a
 	 * destination {@code Vector2f} acts as a workaround to this problem.
 	 * 
 	 * @param alParam
-	 *            then OpenAL parameter.
+	 *            then OpenAL source parameter.
 	 * @param dest
 	 *            where to store the components.
 	 * @return {@code dest} now storing the components of {@code alParam}.
@@ -241,8 +232,6 @@ public abstract class Sound implements Closeable {
 	}
 
 	/**
-	 * Returns if this sound is playing.
-	 * 
 	 * @return {@code true} if this sound is playing, {@code false} otherwise.
 	 */
 	public boolean isPlaying() {
@@ -250,9 +239,6 @@ public abstract class Sound implements Closeable {
 		return alState == AL_PLAYING;
 	}
 
-	/**
-	 * Plays the sound.
-	 */
 	public void play() {
 		this.requireOpen();
 		alSourcePlay(h_alSource);
@@ -260,8 +246,6 @@ public abstract class Sound implements Closeable {
 	}
 
 	/**
-	 * Returns if the sound is paused.
-	 * 
 	 * @return {@code true} if the sound is paused, {@code false} otherwise.
 	 */
 	public boolean isPaused() {
@@ -270,10 +254,11 @@ public abstract class Sound implements Closeable {
 	}
 
 	/**
-	 * Pauses the sound.
-	 * <p>
-	 * This is different from stopping the sound. Pausing the sound will have it
-	 * resume from its position when paused when played.
+	 * Pausing a sound is not the same as stopping a sound. When a sound is
+	 * paused, it will continue from where it was when resumed via
+	 * {@link #play()}.
+	 * 
+	 * @see #stop()
 	 */
 	public void pause() {
 		this.requireOpen();
@@ -282,8 +267,6 @@ public abstract class Sound implements Closeable {
 	}
 
 	/**
-	 * Returns if the sound is stopped.
-	 * 
 	 * @return {@code true} if this sound is stopped, {@code false} otherwise.
 	 */
 	public boolean isStopped() {
@@ -292,11 +275,16 @@ public abstract class Sound implements Closeable {
 	}
 
 	/**
-	 * Stops the sound.
+	 * Stopping a sound is not the same as pausing a sound. When a sound is
+	 * stopped, it will start from the beginning when it is started again via
+	 * {@link #play()}.
 	 * <p>
-	 * If the sound is currently fading to another volume, the fade will be
-	 * prematurely finished and the volume set to its intended finishing value.
-	 * This is prevents seemingly random fades when the sound is started again.
+	 * <b>Note:</b> If the sound is currently fading to another volume, the fade
+	 * will be prematurely finished and the volume set to its intended finishing
+	 * value. This prevents seemingly random fades when the sound is started
+	 * again.
+	 * 
+	 * @see #pause()
 	 */
 	public void stop() {
 		this.requireOpen();
@@ -309,8 +297,6 @@ public abstract class Sound implements Closeable {
 	}
 
 	/**
-	 * Returns if the sound is looping.
-	 * 
 	 * @return {@code true} if this sound is looping, {@code false} otherwise.
 	 */
 	public boolean isLooping() {
@@ -319,8 +305,6 @@ public abstract class Sound implements Closeable {
 	}
 
 	/**
-	 * Sets whether or not the sound should be looping.
-	 * 
 	 * @param looping
 	 *            {@code true} if this sound should be looping, {@code false}
 	 *            otherwise.
@@ -331,8 +315,6 @@ public abstract class Sound implements Closeable {
 	}
 
 	/**
-	 * Returns the sound gain.
-	 * 
 	 * @return the sound gain.
 	 */
 	public float getGain() {
@@ -348,8 +330,6 @@ public abstract class Sound implements Closeable {
 	}
 
 	/**
-	 * Returns the pitch of the sound.
-	 * 
 	 * @return the pitch of the sound, guaranteed to be no less than
 	 *         {@code 0.0F}.
 	 */
@@ -358,8 +338,6 @@ public abstract class Sound implements Closeable {
 	}
 
 	/**
-	 * Sets the pitch of the sound.
-	 * 
 	 * @param pitch
 	 *            the pitch. If less than {@code 0.0F}, the pitch will be capped
 	 *            to a value of {@code 0.0F}.
@@ -369,8 +347,6 @@ public abstract class Sound implements Closeable {
 	}
 
 	/**
-	 * Returns the sound position.
-	 * 
 	 * @param pos
 	 *            the {@code Vector3f} to store the position into.
 	 * @return {@code pos}, now storing the position.
@@ -380,8 +356,6 @@ public abstract class Sound implements Closeable {
 	}
 
 	/**
-	 * Returns the sound position.
-	 * 
 	 * @param pos
 	 *            the {@code Vector2f} to store the position into.
 	 * @return {@code pos}, now storing the position.
@@ -391,8 +365,6 @@ public abstract class Sound implements Closeable {
 	}
 
 	/**
-	 * Sets the position of the sound.
-	 * 
 	 * @param x
 	 *            the X-axis position.
 	 * @param y
@@ -405,11 +377,8 @@ public abstract class Sound implements Closeable {
 	}
 
 	/**
-	 * Sets the position of the sound.
-	 * <p>
-	 * This function is a shorthand for
-	 * {@link #setPosition(float, float, float)}, with the {@code z} parameter
-	 * being set to {@code 0.0F}.
+	 * This method is a shorthand for {@link #setPosition(float, float, float)},
+	 * with the {@code z} parameter being set to {@code 0.0F}.
 	 * 
 	 * @param x
 	 *            the X-axis position.
@@ -421,8 +390,6 @@ public abstract class Sound implements Closeable {
 	}
 
 	/**
-	 * Sets the position of the sound.
-	 * <p>
 	 * This method is a shorthand for {@link #setPosition(float, float, float)},
 	 * with the {@code x}, {@code y}, and {@code z} parameters being the
 	 * component vectors of {@code pos}.
@@ -435,8 +402,6 @@ public abstract class Sound implements Closeable {
 	}
 
 	/**
-	 * Sets the position of the sound.
-	 * <p>
 	 * This method is a shorthand for {@link #setPosition(float, float, float)},
 	 * with the {@code x} and {@code y} parameters being the component vectors
 	 * of {@code pos}, and the {@code z} parameter being set to {@code 0.0F}.
@@ -449,8 +414,6 @@ public abstract class Sound implements Closeable {
 	}
 
 	/**
-	 * Returns the sound velocity.
-	 * 
 	 * @param vel
 	 *            the {@code Vector3f} to store the velocity into.
 	 * @return {@code vel}, now storing the velocity.
@@ -460,8 +423,6 @@ public abstract class Sound implements Closeable {
 	}
 
 	/**
-	 * Returns the sound velocity.
-	 * 
 	 * @param vel
 	 *            the {@code Vector2f} to store the velocity into.
 	 * @return {@code vel}, now storing the velocity.
@@ -471,8 +432,6 @@ public abstract class Sound implements Closeable {
 	}
 
 	/**
-	 * Sets the velocity of the sound.
-	 * 
 	 * @param x
 	 *            the X-axis velocity.
 	 * @param y
@@ -485,11 +444,8 @@ public abstract class Sound implements Closeable {
 	}
 
 	/**
-	 * Sets the velocity of the sound.
-	 * <p>
-	 * This function is a shorthand for
-	 * {@link #setVelocity(float, float, float)}, with the {@code z} parameter
-	 * being set to {@code 0.0F}.
+	 * This method is a shorthand for {@link #setVelocity(float, float, float)},
+	 * with the {@code z} parameter being set to {@code 0.0F}.
 	 * 
 	 * @param x
 	 *            the X-axis velocity.
@@ -501,8 +457,6 @@ public abstract class Sound implements Closeable {
 	}
 
 	/**
-	 * Sets the velocity of the sound.
-	 * <p>
 	 * This method is a shorthand for {@link #setVelocity(float, float, float)},
 	 * with the {@code x}, {@code y}, and {@code z} parameters being the
 	 * component vectors of {@code vel}.
@@ -515,8 +469,6 @@ public abstract class Sound implements Closeable {
 	}
 
 	/**
-	 * Sets the velocity of the sound.
-	 * <p>
 	 * This method is a shorthand for {@link #setVelocity(float, float, float)},
 	 * with the {@code x} and {@code y} parameters being the component vectors
 	 * of {@code vel}, and the {@code z} parameter being set to {@code 0.0F}.
@@ -529,8 +481,6 @@ public abstract class Sound implements Closeable {
 	}
 
 	/**
-	 * Returns the sound orientation.
-	 * 
 	 * @param rot
 	 *            the {@code Vector3f} to store the orientation into.
 	 * @return {@code rot}, now storing the orientation.
@@ -540,8 +490,6 @@ public abstract class Sound implements Closeable {
 	}
 
 	/**
-	 * Returns the sound orientation.
-	 * 
 	 * @param rot
 	 *            the {@code Vector2f} to store the orientation into.
 	 * @return {@code rot}, now storing the orientation.
@@ -551,8 +499,6 @@ public abstract class Sound implements Closeable {
 	}
 
 	/**
-	 * Sets the orientation of the sound.
-	 * 
 	 * @param x
 	 *            the X-axis orientation.
 	 * @param y
@@ -565,9 +511,7 @@ public abstract class Sound implements Closeable {
 	}
 
 	/**
-	 * Sets the orientation of the sound.
-	 * <p>
-	 * This function is a shorthand for
+	 * This method is a shorthand for
 	 * {@link #setOrientation(float, float, float)}, with the {@code z}
 	 * parameter being set to {@code 0.0F}.
 	 * 
@@ -581,8 +525,6 @@ public abstract class Sound implements Closeable {
 	}
 
 	/**
-	 * Sets the orientation of the sound.
-	 * <p>
 	 * This method is a shorthand for
 	 * {@link #setOrientation(float, float, float)}, with the {@code x},
 	 * {@code y}, and {@code z} parameters being the component vectors of
@@ -596,8 +538,6 @@ public abstract class Sound implements Closeable {
 	}
 
 	/**
-	 * Sets the orientation of the sound.
-	 * <p>
 	 * This method is a shorthand for
 	 * {@link #setOrientation(float, float, float)}, with the {@code x} and
 	 * {@code y} parameters being the component vectors of {@code rot}, and the
@@ -611,18 +551,14 @@ public abstract class Sound implements Closeable {
 	}
 
 	/**
-	 * Returns the amount of bytes that have played since this sound was
-	 * started, assuming it has not been stopped.
-	 * 
-	 * @return the byte offset.
+	 * @return the amount of bytes that have played since this sound was
+	 *         started, assuming it has not been stopped.
 	 */
 	public int getByteOffset() {
 		return this.getSourcei(AL_BYTE_OFFSET);
 	}
 
 	/**
-	 * Sets where the sound should be playing using a byte offset.
-	 * 
 	 * @param byteOffset
 	 *            the byte offset.
 	 * @throws IndexOutOfBoundsException
@@ -636,18 +572,14 @@ public abstract class Sound implements Closeable {
 	}
 
 	/**
-	 * Returns the amount of samples that have played since this sound was
-	 * started, assuming it has not been stopped.
-	 * 
-	 * @return the sample offset.
+	 * @return the amount of samples that have played since this sound was
+	 *         started, assuming it has not been stopped.
 	 */
 	public int getSampleOffset() {
 		return this.getSourcei(AL_SAMPLE_OFFSET);
 	}
 
 	/**
-	 * Sets where the sound should be playing using a sample offset.
-	 * 
 	 * @param sampleOffset
 	 *            the sample offset.
 	 * @throws IndexOutOfBoundsException
@@ -661,8 +593,6 @@ public abstract class Sound implements Closeable {
 	}
 
 	/**
-	 * Returns how many seconds of this sound have been played.
-	 * <p>
 	 * This method returns a {@code float} representing how many seconds have
 	 * been played. If {@code wholeSeconds} is {@code false}, this value is
 	 * calculated using the return value of {@link #getSampleOffset()}. This is
@@ -672,7 +602,7 @@ public abstract class Sound implements Closeable {
 	 * @param wholeSeconds
 	 *            {@code true} if the offset should be returned in whole
 	 *            seconds, {@code false} for sample precision.
-	 * @return the offset in seconds.
+	 * @return the offset of this sound in seconds.
 	 */
 	public float getOffset(boolean wholeSeconds) {
 		if (wholeSeconds == true) {
@@ -683,8 +613,6 @@ public abstract class Sound implements Closeable {
 	}
 
 	/**
-	 * Returns how many seconds of this sound have been played.
-	 * <p>
 	 * This method returns a {@code float} representing how many seconds have
 	 * been played. This value is calculated using the return value of
 	 * {@link #getSampleOffset()}. This is done because the value returned by
@@ -693,15 +621,13 @@ public abstract class Sound implements Closeable {
 	 * This method is a shorthand for {@link #getOffset(boolean)}, with the
 	 * {@code wholeSeconds} parameter being set to {@code false}.
 	 * 
-	 * @return the offset in seconds.
+	 * @return the offset of this sound in seconds.
 	 */
 	public float getOffset() {
 		return this.getOffset(false);
 	}
 
 	/**
-	 * Sets where the sound should be playing in at an offset in seconds.
-	 * 
 	 * @param offset
 	 *            the offset in seconds.
 	 * @throws IndexOutOfBoundsException
@@ -716,14 +642,12 @@ public abstract class Sound implements Closeable {
 	}
 
 	/**
-	 * Returns how many milliseconds of this sound have been played.
-	 * <p>
 	 * This method returns a {@code long} representing how many milliseconds
 	 * have been played. This value is calculated by taking the return value of
 	 * {@link #getOffset()}, multiplying it by {@code 1000L}, and casting it
 	 * back to a {@code long}.
 	 * 
-	 * @return the offset in milliseconds.
+	 * @return the offset of this sound in milliseconds.
 	 */
 	public long getOffsetMillis() {
 		double offset = this.getOffset();
@@ -731,8 +655,6 @@ public abstract class Sound implements Closeable {
 	}
 
 	/**
-	 * Sets where the sound should be playing in at an offset in milliseconds.
-	 * 
 	 * @param offsetMillis
 	 *            the offset in milliseconds.
 	 * @throws IndexOutOfBoundsException
@@ -746,14 +668,12 @@ public abstract class Sound implements Closeable {
 	}
 
 	/**
-	 * Returns the length of the sound in seconds.
-	 * <p>
-	 * Whether or not this is supported is dependent on the {@code audio}
+	 * Whether or not this method is supported depends on {@code audio}
 	 * supporting {@link AudioSource#pcmLength()}. Most audio sources reading
 	 * from a file can return how many bytes of PCM there are to read. However,
 	 * some cannot.
 	 * 
-	 * @return the length in seconds.
+	 * @return the length of this sound in seconds.
 	 * @throws UnsupportedOperationException
 	 *             if {@code audio} does not support
 	 *             {@link AudioSource#pcmLength()}.
@@ -770,14 +690,12 @@ public abstract class Sound implements Closeable {
 	}
 
 	/**
-	 * Returns the length of the sound in milliseconds.
-	 * <p>
-	 * Whether or not this is supported is dependent on the {@code audio}
+	 * Whether or not this method is supported depends on {@code audio}
 	 * supporting {@link AudioSource#pcmLength()}. Most audio sources reading
 	 * from a file can return how many bytes of PCM there are to read. However,
 	 * some cannot.
 	 * 
-	 * @return the length in seconds.
+	 * @return the length of this sound in milliseconds.
 	 * @throws UnsupportedOperationException
 	 *             if {@code audio} does not support
 	 *             {@link AudioSource#pcmLength()}.
@@ -788,17 +706,18 @@ public abstract class Sound implements Closeable {
 	}
 
 	/**
-	 * Returns how much of the sound has played on a scale of {@code 0.0F-1.0F}.
-	 * <p>
-	 * Whether or not this is supported is dependent on the {@code audio}
+	 * Whether or not this method is supported depends on {@code audio}
 	 * supporting {@link AudioSource#pcmLength()}. Most audio sources reading
 	 * from a file can return how many bytes of PCM there are to read. However,
 	 * some cannot.
 	 * 
-	 * @return the progression.
+	 * @return the progression of this sound, on a scale of {@code 0.0F} to
+	 *         {@code 1.0F}.
 	 * @throws UnsupportedOperationException
 	 *             if {@code audio} does not support
 	 *             {@link AudioSource#pcmLength()}.
+	 * @see #getLength()
+	 * @see #getOffset()
 	 */
 	public float getProgression() {
 		/* use bytes since less calculations required */
@@ -807,11 +726,10 @@ public abstract class Sound implements Closeable {
 	}
 
 	/**
-	 * Returns the sound volume.
-	 * <p>
-	 * <b>Note:</b> The return value of this function is not influenced by the
-	 * volume channel this sound is registered to, if any. Only the final gain
-	 * of the sound is influenced when {@link #update()} is called.
+	 * The return value of this method is not influenced by the volume channel
+	 * this sound is registered to, if any. Furthermore, the final gain of the
+	 * sound (which is not returned by this method) is influenced only when
+	 * {@link #update()} is called.
 	 * 
 	 * @return the sound volume, guaranteed to be no less than {@code 0.0F}.
 	 */
@@ -823,23 +741,21 @@ public abstract class Sound implements Closeable {
 		if (this.isFading() && fadeUpdate == false) {
 			throw new IllegalStateException("fading volume");
 		}
-		this.volume = volume > 0.0F ? volume : 0.0F;
+		this.volume = Math.max(volume, 0.0F);
 	}
 
 	/**
-	 * Sets the sound volume.
-	 * <p>
-	 * The sound volume determines the initial gain of the sound. If this sound
-	 * is registered to a {@link VolumeChannel}, it too will influence the gain
-	 * of this sound. The gain of a sound is equal to the volume multiplied by
-	 * the volume of its channel (or simply {@code 1.0F} if not registered to a
+	 * The volume determines the initial gain of the sound. If this sound is
+	 * registered to a {@link VolumeChannel}, it too will influence the gain of
+	 * this sound. The gain of a sound is equal to the volume multiplied by the
+	 * volume of its channel (or simply {@code 1.0F} if not registered to a
 	 * volume channel).
 	 * 
 	 * @param volume
 	 *            the volume. If less than {@code 0.0F}, the volume will be
 	 *            capped to a value of {@code 0.0F}.
 	 * @throws IllegalStateException
-	 *             if the sound is currently fading to another volume.
+	 *             if this sound is currently fading to another volume.
 	 * @see #setVolumeChannel(VolumeChannel)
 	 * @see #isFading()
 	 */
@@ -848,24 +764,20 @@ public abstract class Sound implements Closeable {
 	}
 
 	/**
-	 * Returns the volume channel of the sound.
-	 * 
-	 * @return the volume channel, may be {@code null} for no volume channel.
+	 * @return the volume channel, may be {@code null}.
 	 */
 	public VolumeChannel getVolumeChannel() {
 		return this.volumeChannel;
 	}
 
 	/**
-	 * Sets the volume channel of the sound.
-	 * <p>
 	 * The volume channel determines the final gain of the sound. When the sound
 	 * is registered to a volume channel, it will influence its gain. The gain
 	 * of a sound is equal to the sound of the volume multiplied by the volume
 	 * of the volume channel (or simply {@code 1.0F} if no volume channel).
 	 * 
 	 * @param volumeChannel
-	 *            the volume channel.
+	 *            the volume channel, may be {@code null}.
 	 * @see #setVolume(float)
 	 */
 	public void setVolumeChannel(VolumeChannel volumeChannel) {
@@ -873,8 +785,6 @@ public abstract class Sound implements Closeable {
 	}
 
 	/**
-	 * Returns if the sound is currently fading its volume.
-	 * 
 	 * @return {@code true} if this sound is currently fading its volume to
 	 *         another level, {@code false} otherwise.
 	 */
@@ -883,13 +793,10 @@ public abstract class Sound implements Closeable {
 	}
 
 	/**
-	 * Fades the sound volume to the end value of the specified fade. Calling
-	 * this method while another fade is ocurring will have it be cancelled out
-	 * in favor of the new one.
-	 * <p>
-	 * <b>Note:</b> The fade will not begin until the sound is playing, and will
-	 * not update when the sound is paused. If the sound is stopped during a
-	 * fade, the fade is cancelled out.
+	 * Calling this method while another fade is occurring will have it be
+	 * cancelled out in favor of the new one. Furthermore, the fade will not
+	 * begin until the sound is playing, and will not update when the sound is
+	 * paused. If the sound is stopped during a fade, the fade is cancelled out.
 	 * 
 	 * @param fade
 	 *            the fade, which will be updated automatically by the sound.
@@ -931,17 +838,8 @@ public abstract class Sound implements Closeable {
 	}
 
 	/**
-	 * Adds a sound trigger.
-	 * <p>
-	 * A sound trigger is used to indicate when a certain point in time has been
-	 * reached in a song. This is useful for adding in-game visual effects such
-	 * as an alarm blaring, a piston thrusting, etc.
-	 * <p>
-	 * <b>Note:</b> Sound triggers should be used <i>only</i> for cosmetic
-	 * effects.
-	 * 
 	 * @param trigger
-	 *            the trigger.
+	 *            the trigger to add.
 	 * @return {@code true} if {@code trigger} was added, {@code false}
 	 *         otherwise.
 	 * @throws NullPointerException
@@ -959,10 +857,8 @@ public abstract class Sound implements Closeable {
 	}
 
 	/**
-	 * Removes a sound trigger.
-	 * 
 	 * @param trigger
-	 *            the trigger.
+	 *            the trigger to remove.
 	 * @return {@code true} if {@code trigger} was removed, {@code false}
 	 *         otherwise.
 	 * @throws IllegalStateException
@@ -977,10 +873,8 @@ public abstract class Sound implements Closeable {
 	}
 
 	/**
-	 * Removes all sound triggers with a given ID.
-	 * 
 	 * @param id
-	 *            the sound trigger ID.
+	 *            the ID of the triggers to remove.
 	 * @return the amount of {@code SoundTrigger} instances with {@code id} that
 	 *         were removed.
 	 */
@@ -1007,8 +901,6 @@ public abstract class Sound implements Closeable {
 	}
 
 	/**
-	 * Updates the sound.
-	 * 
 	 * @throws IOException
 	 *             if an I/O error occurs.
 	 */

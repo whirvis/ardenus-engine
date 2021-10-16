@@ -67,8 +67,8 @@ public class WaveFormat {
 	public final short extraParamSize;
 
 	/**
-	 * A pointer to extra parameters of this {@code WAV} format. A value of
-	 * {@code -1} indicates that no extra parameters are present.
+	 * A pointer to extra parameters of this {@code WAV} format.<br>
+	 * A value of {@code -1} indicates that no extra parameters are present.
 	 */
 	public final long extraParamPtr;
 

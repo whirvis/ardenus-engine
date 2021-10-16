@@ -29,8 +29,6 @@ public class Audio {
 	private static AudioThread audioThread;
 
 	/**
-	 * Initializes the audio system.
-	 * 
 	 * @param eventManager
 	 *            the event manager, may be {@code null}.
 	 * @throws AudioException
@@ -71,8 +69,6 @@ public class Audio {
 	}
 
 	/**
-	 * Sends an {@link AudioEvent} to the audio system's event manager.
-	 * 
 	 * @param <T>
 	 *            the event type.
 	 * @param event
@@ -90,7 +86,8 @@ public class Audio {
 
 	/**
 	 * Maintains a sound by having it automatically updated on the audio
-	 * system's thread. Called automatically by {@code Sound} when initialized.
+	 * system's thread.<br>
+	 * This is called automatically by a {@code Sound} when initialized.
 	 * 
 	 * @param sound
 	 *            the sound to maintain.
@@ -105,8 +102,9 @@ public class Audio {
 	}
 
 	/**
-	 * Abandons a sound and has it no longer updated by the audio system's
-	 * thread. Called automatically by {@code Sound} when closed.
+	 * Abandons a sound and ensures that it is no longer updated by the audio
+	 * system's thread.<br>
+	 * This is called automatically by a {@code Sound} when closed.
 	 * 
 	 * @param sound
 	 *            the sound to abandon.
@@ -118,12 +116,6 @@ public class Audio {
 		audioThread.abandon(sound);
 	}
 
-	/**
-	 * Terminates the audio system.
-	 * <p>
-	 * If the audio system has not been initialized (or previously terminated
-	 * before another initialization), then this method will do nothing.
-	 */
 	public static void terminate() {
 		if (initialized == false) {
 			LOG.error("Already terminated");

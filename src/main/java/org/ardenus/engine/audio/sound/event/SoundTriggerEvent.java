@@ -5,9 +5,6 @@ import java.util.Objects;
 import org.ardenus.engine.audio.sound.Sound;
 import org.ardenus.engine.audio.sound.SoundTrigger;
 
-/**
- * Signals that a {@link SoundTrigger} has been triggered.
- */
 public class SoundTriggerEvent extends SoundEvent {
 
 	private final SoundTrigger trigger;
@@ -16,8 +13,6 @@ public class SoundTriggerEvent extends SoundEvent {
 	private final long delay;
 
 	/**
-	 * Constructs a new {@code SoundTriggerEvent}.
-	 * 
 	 * @param sound
 	 *            the sound which was triggered for.
 	 * @param trigger
@@ -41,17 +36,13 @@ public class SoundTriggerEvent extends SoundEvent {
 	}
 
 	/**
-	 * Returns the sound trigger.
-	 * 
-	 * @return the sound trigger, guaranteed not to be {@code null}.
+	 * @return the sound trigger.
 	 */
 	public SoundTrigger getTrigger() {
 		return this.trigger;
 	}
 
 	/**
-	 * Returns the trigger ID.
-	 * 
 	 * @return the trigger ID.
 	 * @see #getTrigger()
 	 */
@@ -61,8 +52,8 @@ public class SoundTriggerEvent extends SoundEvent {
 
 	/**
 	 * Returns how many time this trigger has gone off in relation to the
-	 * current offset of the sound. If the sound was rewound (thus causing a
-	 * trigger to go off again), the index will be appropiately lowered.
+	 * current offset of the sound. If the sound has been rewound (thus causing
+	 * a trigger to go off again), the index will be lowered appropriately.
 	 * 
 	 * @return the trigger index.
 	 */
@@ -71,12 +62,10 @@ public class SoundTriggerEvent extends SoundEvent {
 	}
 
 	/**
-	 * Returns the time the trigger intended to be triggered.
-	 * <p>
-	 * <b>Note:</b> This only returns the time the trigger <i>intended</i> to be
-	 * triggered, not actually when it was triggered. To see how late the
-	 * trigger was in being triggered, use {@link #getDelay()}. This can be used
-	 * to compensate for lost time if necessary.
+	 * This returns the time the trigger <i>intended</i> to be triggered, not
+	 * actually when it was triggered. To see how late the trigger was in being
+	 * triggered, use {@link #getDelay()}. This should be used to compensate for
+	 * lost time if necessary.
 	 * 
 	 * @return the intended trigger time in milliseconds.
 	 */
@@ -85,9 +74,6 @@ public class SoundTriggerEvent extends SoundEvent {
 	}
 
 	/**
-	 * Returns how late the the trigger was in being set off for this index, if
-	 * at all.
-	 * 
 	 * @return the trigger delay in milliseconds.
 	 */
 	public long getDelay() {

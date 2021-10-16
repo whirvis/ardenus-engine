@@ -16,13 +16,11 @@ import org.ardenus.engine.audio.AudioSource;
 import org.lwjgl.BufferUtils;
 
 /**
- * A playable sound that has all of its audio data buffered into memory as it is
- * being played.
+ * A playable sound which has audio data buffered into memory as it is played.
  * <p>
- * This should not be used to play smaller sound files, such as SFX. A
- * {@code StreamedSound} should be used only for large audio samples (such as
- * music). To play shorter sound files, a {@link BufferedSound} should be used
- * instead.
+ * A {@code StreamedSound} should not be used to play small sound files, such as
+ * SFX. They are intended for larger audio samples, such as music or narration.
+ * For smaller audio files, the usage of {@link BufferedSound} is recommended.
  */
 public class StreamedSound extends Sound {
 
@@ -36,10 +34,8 @@ public class StreamedSound extends Sound {
 	private static boolean warnedMaxBuf;
 
 	/**
-	 * Returns the minimum buffer size for each intsance of
-	 * {@code StreamedSound}.
-	 * 
-	 * @return the minimum buffer size.
+	 * @return the minimum buffer size for each instance of
+	 *         {@code StreamedSound}.
 	 * @see #setMinBufferSize(int)
 	 */
 	public static int getMinBufferSize() {
@@ -47,8 +43,6 @@ public class StreamedSound extends Sound {
 	}
 
 	/**
-	 * Sets the minimum buffer size for all streamed sounds.
-	 * <p>
 	 * This guarantees the internal buffer size of each {@code StreamedSound} is
 	 * no smaller than {@code bufSize}. If the current buffer size is less than
 	 * {@code bufSize} it will be increased accordingly on the next update.
@@ -125,9 +119,9 @@ public class StreamedSound extends Sound {
 	 * sound must stop to indicate this.
 	 * 
 	 * Additional note: While requireOpen() is manually called for some
-	 * overriding functions in this class, it is not done for others. That is
-	 * because these overriding functions call their corresponding super method,
-	 * which call requireOpen() themselves (TL;DR would be redundant).
+	 * overriding methods in this class, it is not done for others. That is
+	 * because these overriding methods call their corresponding super method,
+	 * which call requireOpen() themselves (TL;DR it would be redundant).
 	 */
 	private int alState;
 	private boolean looping;
@@ -141,8 +135,7 @@ public class StreamedSound extends Sound {
 	private boolean sectEnded;
 
 	/**
-	 * Constructs a new {@code StreamedSound} and prepares the audio data for
-	 * streamed playback.
+	 * Prepares an audio source for streamed playback.
 	 * 
 	 * @param audio
 	 *            the audio source.
@@ -173,8 +166,6 @@ public class StreamedSound extends Sound {
 	}
 
 	/**
-	 * Sets the buffer size.
-	 * <p>
 	 * Calling this will destroy the internal {@code readBuf} and
 	 * {@code heapBuf} and all of their contained data. The new buffers will
 	 * have a size of {@code bufSize}.
@@ -248,7 +239,7 @@ public class StreamedSound extends Sound {
 		try {
 			/*
 			 * The sound can only be paused if it was already playing. This
-			 * check mimics not only existing OpenAL behavior. It is also
+			 * check is not only to mimic existing OpenAL behavior. It is
 			 * necessary since it determines whether or not the audio data
 			 * buffers should be initialized when the sound is played.
 			 */
@@ -309,15 +300,14 @@ public class StreamedSound extends Sound {
 	}
 
 	/**
-	 * {@inheritDoc}
-	 * <p>
 	 * This increases/decreases the size of {@code readBuf} in accordance to
 	 * {@code pitch} if necessary. The new size is based on {@code minBufSize},
 	 * which is defined during construction. Any value of {@code pitch} below
 	 * {@code 1.0F} will set the size of {@code readBuf} to {@code minBufSize}.
 	 * <p>
 	 * <b>Note:</b> If the buffer size is increased as a result of calling this
-	 * method, it will not be decreased. This may be changed in the future.
+	 * method, it will not be decreased even if the pitch is lowered later. This
+	 * may be changed in the future, however there is no guarantee for this.
 	 */
 	@Override
 	public void setPitch(float pitch) {
@@ -407,9 +397,8 @@ public class StreamedSound extends Sound {
 	}
 
 	/**
-	 * Constrains playback to a section of audio.
-	 * <p>
-	 * This can be used both for sounds which loop and sounds which do not loop.
+	 * This can be used both for sounds which loop and sounds which do not
+	 * loop.<br>
 	 * It is recommended that constraints be set before playback begins.
 	 * 
 	 * @param sect
@@ -434,7 +423,7 @@ public class StreamedSound extends Sound {
 			this.sectEndBytes = getOffsetBytes(audio, sect.end);
 			this.sectLenBytes = sectEndBytes - sectStartBytes;
 
-			/* Ugh, this is just annoying. */
+			/* not sure who would do this, but whatever. */
 			if (sectLenBytes < BUF_MODULO) {
 				this.sectEndBytes = sectStartBytes + BUF_MODULO;
 				this.sectLenBytes = BUF_MODULO;
@@ -446,9 +435,6 @@ public class StreamedSound extends Sound {
 	}
 
 	/**
-	 * Fills an OpenAL buffer with the next chunk of audio data and queues it
-	 * into {@code alSource}.
-	 * <p>
 	 * The portion of audio data as well as the amount of data filled into the
 	 * buffer is determined by the value of {@code readPos} and the length of
 	 * {@code readBuf}. If not enough data is present to fill {@code heapBuf}
@@ -565,7 +551,7 @@ public class StreamedSound extends Sound {
 				super.play();
 			}
 
-			/**
+			/*
 			 * If looping a section, before queuing any buffers, ensure that the
 			 * readPos is at least at the start of the loop section. The later
 			 * buffer processing will catch when the end of the loop section has
@@ -586,16 +572,24 @@ public class StreamedSound extends Sound {
 
 			/*
 			 * When this sound should be playing but the super indicates it is
-			 * not, it usually indiciates buffers are not being filled fast
-			 * enough. As such, increase the minimum buffer size if possible.
-			 * Afterwards, restart the sound via super so as not to restart it
-			 * from the beginning.
+			 * not, that means the sound must be started again. However, the
+			 * reason as to why the sound is not playing is also important.
 			 * 
-			 * Note: It is not uncommon that the sound will be momentarily
-			 * stopped at the end of a looped section. This is likely caused by
-			 * read buffers being trimmed so that only the intended section is
-			 * played. When this happens, there's no need to increase the
-			 * minimum buffer size as the audio isn't actually falling behind.
+			 * If a section has finished playing, the sound being stopped is
+			 * likely the result of the read buffers being trimmed. Read buffers
+			 * are trimmed to ensure only the intended section is played. When
+			 * this happens, there's no need to increase the minimum buffer size
+			 * as the audio isn't actually falling behind.
+			 * 
+			 * If the current section has not ended (either because it was still
+			 * being played, or because no section was being played at all), it
+			 * indicates the buffer size is too small. When the buffer size is
+			 * too small, there isn't enough time to fill the next buffer with
+			 * before before the current buffer is finished playing. To fix
+			 * this, increase the minimum buffer size if possible.
+			 * 
+			 * Once everything is put in order, restart the sound via super so
+			 * as not to restart it from the beginning.
 			 */
 			if (this.isPlaying() && !super.isPlaying()) {
 				if (sectEnded == false) {

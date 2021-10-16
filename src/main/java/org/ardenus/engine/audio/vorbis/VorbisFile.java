@@ -33,12 +33,12 @@ public class VorbisFile implements AudioSource, Closeable {
 
 	private static int alFormat(VorbisInfo info) {
 		switch (info.channels) {
-			case 1:
-				return AL_FORMAT_MONO16;
-			case 2:
-				return AL_FORMAT_STEREO16;
-			default:
-				throw new UnsupportedOperationException("channel count");
+		case 1:
+			return AL_FORMAT_MONO16;
+		case 2:
+			return AL_FORMAT_STEREO16;
+		default:
+			throw new UnsupportedOperationException("channel count");
 		}
 	}
 
@@ -83,18 +83,14 @@ public class VorbisFile implements AudioSource, Closeable {
 	}
 
 	/**
-	 * Returns the {@code OGG} Vorbis file.
-	 * 
-	 * @return the file.
+	 * @return the {@code OGG} Vorbis file.
 	 */
 	public File getFile() {
 		return this.file;
 	}
 
 	/**
-	 * Returns the STB Vorbis decoder handle.
-	 * 
-	 * @return the decoder handle.
+	 * @return the STB Vorbis decoder handle.
 	 * @throws VorbisException
 	 *             if this Vorbis file has no decoder or is closed.
 	 */
@@ -148,7 +144,7 @@ public class VorbisFile implements AudioSource, Closeable {
 			/*
 			 * A ShortBuffer must be used here, since using a ByteBuffer and
 			 * passing it as a ShortBuffer using the asShortBuffer() method
-			 * causes some wacky stuff to go down (audio cutting out for no
+			 * causes some whacky stuff to go down (audio cutting out for no
 			 * reason, playback failing entirely, etc.) It is unknown why issues
 			 * arise when this happens, but a ShortBuffer must be used here.
 			 */

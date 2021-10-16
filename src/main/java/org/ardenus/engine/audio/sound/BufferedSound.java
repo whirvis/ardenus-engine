@@ -14,10 +14,9 @@ import org.lwjgl.BufferUtils;
 /**
  * A playable sound that has all of its audio data buffered into memory at once.
  * <p>
- * This should not be used to play larger sound files, such as music. A
- * {@code BufferedSound} should be used only for short audio samples (such as
- * SFX). To play longer sound files, a {@link StreamedSound} should be used
- * instead.
+ * A {@code BufferedSound} should not be used to play large sound files, such as
+ * music. They are intended for smaller audio samples, such as SFX. For larger
+ * audio files, the usage of {@link StreamedSound} is recommended.
  */
 public class BufferedSound extends Sound {
 
@@ -49,11 +48,9 @@ public class BufferedSound extends Sound {
 	}
 
 	/**
-	 * Creates a loadable {@code BufferedSound} resource.
-	 * 
 	 * @param audio
 	 *            the audio source.
-	 * @return the loadable {@code BufferedSound}.
+	 * @return the loadable {@code BufferedSound} resource.
 	 * @throws NullPointerException
 	 *             if {@code audio} is {@code null}.
 	 */
@@ -62,8 +59,6 @@ public class BufferedSound extends Sound {
 	}
 
 	/**
-	 * Loads all audio data from {@code audio} into an audio data buffer.
-	 * 
 	 * @param audio
 	 *            the audio source.
 	 * @return the generated buffer.
@@ -103,8 +98,8 @@ public class BufferedSound extends Sound {
 	}
 
 	/**
-	 * Loads the audio data from {@code audio} into memory and constructs a new
-	 * {@code BufferedSound} from it for immediate playback.
+	 * This method is a shorthand for {@link #loadData(AudioSource)}, with the
+	 * data it loads being used to construct a new {@code BufferedSound}.
 	 * 
 	 * @param audio
 	 *            the audio source.

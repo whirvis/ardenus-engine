@@ -7,7 +7,7 @@ import org.lwjgl.stb.STBVorbis;
 
 /**
  * Signals that an error relating to an {@link VorbisFile OGG} Vorbis file has
- * occured.
+ * occurred.
  */
 public class VorbisException extends IOException {
 
@@ -102,8 +102,6 @@ public class VorbisException extends IOException {
 	}
 
 	/**
-	 * Returns the STB Vorbis error code.
-	 * 
 	 * @return the error code, {@code -1} if none was specified during
 	 *         construction.
 	 */

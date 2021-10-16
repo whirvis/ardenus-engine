@@ -12,8 +12,7 @@ import org.ardenus.engine.audio.sound.Sound;
 public class AudioThread extends Thread {
 
 	protected Set<Sound> sounds;
-
-	protected Queue<Sound> abandonQueue;
+	protected Queue<Sound> abandoned;
 
 	protected AudioThread() {
 		/*
@@ -31,16 +30,23 @@ public class AudioThread extends Thread {
 	}
 
 	public void abandon(Sound sound) {
-		abandonQueue.add(sound);
+		abandoned.add(sound);
 	}
 
 	@Override
 	public void run() {
 		while (!this.isInterrupted()) {
 			try {
+				/* hack to lower CPU usage */
 				Thread.sleep(0, 1);
 			} catch (InterruptedException e) {
 				this.interrupt();
+			}
+			
+			Iterator<Sound> abandonedI = abandoned.iterator();
+			while(abandonedI.hasNext()) {
+				sounds.remove(abandonedI.next());
+				abandonedI.remove();
 			}
 
 			Iterator<Sound> soundI = sounds.iterator();

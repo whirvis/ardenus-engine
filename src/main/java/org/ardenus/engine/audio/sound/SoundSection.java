@@ -2,9 +2,9 @@ package org.ardenus.engine.audio.sound;
 
 /**
  * A portion of sound which shall be looped from a starting point to an end
- * point, with variations on behavior depending on the implemenation. This is
+ * point, with variations on behavior depending on the implementation. This is
  * useful for looping certain tracks without needing to split a single audio
- * source into multiple tracks, {@code Sound} instances, etc.
+ * source into multiple tracks, instances of {@code Sound}, etc.
  * 
  * @see StreamedSound#constrain(SoundSection)
  */
@@ -14,12 +14,10 @@ public class SoundSection {
 	public final float end;
 
 	/**
-	 * Constructs a new {@code SoundSection}.
-	 * 
 	 * @param start
-	 *            the point at which to start the loop.
+	 *            the point at which to start, in seconds.
 	 * @param duration
-	 *            how long the loop shall last.
+	 *            how long this section shall last, in seconds.
 	 * @throws IllegalArgumentException
 	 *             if {@code start} is negative or {@code duration} is not
 	 *             greater than zero.
@@ -35,16 +33,14 @@ public class SoundSection {
 	}
 
 	/**
-	 * Constructs a new {@code SoundSection}.
-	 * <p>
 	 * This constructor is a shorthand for {@link #SoundSection(float, float)}
-	 * with the {@code startMillis} and {@code durationMillis} parameters being
-	 * converted form milliseconds to seconds.
+	 * with {@code startMillis} and {@code durationMillis} being converted from
+	 * milliseconds to seconds.
 	 * 
 	 * @param startMillis
-	 *            the point in milliseconds at which to start the loop.
+	 *            the point at which to start, in milliseconds.
 	 * @param durationMillis
-	 *            how long in milliseconds the loop shall last.
+	 *            how long this section shall last, in milliseconds.
 	 * @throws IllegalArgumentException
 	 *             if {@code startMillis} is negative or {@code durationMillis}
 	 *             is not greater than zero.
