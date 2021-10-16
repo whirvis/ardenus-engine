@@ -18,6 +18,8 @@ import com.whirvex.event.EventManager;
  * The input system for the Ardenus Engine.
  * 
  * @see #init(EventManager)
+ * @see InputDevice
+ * @see DeviceSeeker
  */
 public class Input {
 
@@ -29,8 +31,6 @@ public class Input {
 	private static List<InputDevice> connected;
 
 	/**
-	 * Initializes the input system.
-	 * 
 	 * @param eventManager
 	 *            the event manager, may be {@code null}.
 	 * @see #sendEvent(InputEvent)
@@ -56,8 +56,6 @@ public class Input {
 	}
 
 	/**
-	 * Sends an {@link InputEvent} to the input system's event manager.
-	 * 
 	 * @param <T>
 	 *            the event type.
 	 * @param event
@@ -74,8 +72,6 @@ public class Input {
 	}
 
 	/**
-	 * Returns if the input system has a device seeker for a controller type.
-	 * 
 	 * @param type
 	 *            the controller type.
 	 * @return {@code true} if the input system has a device seeker registered
@@ -89,8 +85,6 @@ public class Input {
 	}
 
 	/**
-	 * Adds a device seeker to the input system.
-	 * <p>
 	 * Once a device seeker has been added, it will be polled automatically
 	 * alongside the rest of the input system (when {@link #poll()} is called.)
 	 * <p>
@@ -122,8 +116,6 @@ public class Input {
 	}
 
 	/**
-	 * Removes a device seeker from the input system.
-	 * <p>
 	 * Once a device seeker is removed, any devices that would have been
 	 * returned by {@link #connected()} and were registered by {@code seeker}
 	 * will no longer be returned. While the devices in question may still be
@@ -145,14 +137,12 @@ public class Input {
 	}
 
 	/**
-	 * Removes a device seeker from the input system.
-	 * <p>
 	 * Once a device seeker is removed, any devices that would have been
 	 * returned by {@link #connected()} and were registered by {@code seeker}
 	 * will no longer be returned. While the devices in question may still be
 	 * connected, this is done out of intuition.
 	 * <p>
-	 * This method is mostly a shorthand for {@link #removeSeeker(Class)} with
+	 * This method is mostly a shorthand for {@link #removeSeeker(Class)}, with
 	 * {@code type} being equal to {@code seeker.type}. However, a check is
 	 * performed to ensure that the current device seeker registered to
 	 * {@code seeker.type} is equal to {@code seeker}. Once this is verified,
@@ -172,8 +162,6 @@ public class Input {
 	}
 
 	/**
-	 * Returns all currently connected input devices.
-	 * <p>
 	 * For an input device to appear in this list, it first must have been found
 	 * by a registered device seeker. Secondly, it must return that it is in
 	 * this moment connected via its {@link InputDevice#isConnected()} method.
@@ -209,8 +197,6 @@ public class Input {
 	}
 
 	/**
-	 * Polls the input system.
-	 * <p>
 	 * Polling the input system is necessary for retrieving up to date input
 	 * information. If this is not done, it is possible a mix of both up to date
 	 * and out of date input data will be returned. As such, it is recommended
@@ -243,12 +229,6 @@ public class Input {
 		}
 	}
 
-	/**
-	 * Terminates the input system.
-	 * <p>
-	 * If the input system has not been initialized (or previously terminated
-	 * before another initialization), then this method will do nothing.
-	 */
 	public static void terminate() {
 		if (initialized == false) {
 			LOG.error("Already terminated");
