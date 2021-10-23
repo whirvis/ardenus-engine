@@ -13,13 +13,13 @@ import org.ardenus.engine.input.UnicodeInputEvent;
 import org.ardenus.engine.input.device.InputDevice;
 import org.ardenus.engine.input.device.Keyboard;
 import org.ardenus.engine.input.device.PsController;
-import org.ardenus.engine.input.device.SwitchController;
+import org.ardenus.engine.input.device.SwitchProController;
 import org.ardenus.engine.input.device.XboxController;
 import org.ardenus.engine.input.device.seeker.DeviceSeeker;
 import org.ardenus.engine.input.device.seeker.GlfwDeviceSeeker;
 import org.ardenus.engine.input.device.seeker.GlfwKeyboardSeeker;
 import org.ardenus.engine.input.device.seeker.GlfwPsSeeker;
-import org.ardenus.engine.input.device.seeker.GlfwSwitchSeeker;
+import org.ardenus.engine.input.device.seeker.GlfwSwitchProSeeker;
 import org.ardenus.engine.input.device.seeker.GlfwXboxSeeker;
 import org.lwjgl.glfw.GLFWErrorCallbackI;
 import org.lwjgl.system.MemoryUtil;
@@ -490,8 +490,8 @@ public class Window implements Closeable {
 			return new GlfwXboxSeeker(ptr_glfwWindow);
 		} else if (type == PsController.class) {
 			return new GlfwPsSeeker(ptr_glfwWindow);
-		} else if (type == SwitchController.class) {
-			return new GlfwSwitchSeeker(ptr_glfwWindow);
+		} else if (type == SwitchProController.class) {
+			return new GlfwSwitchProSeeker(ptr_glfwWindow);
 		} else {
 			throw new IllegalArgumentException("unsupported device");
 		}
