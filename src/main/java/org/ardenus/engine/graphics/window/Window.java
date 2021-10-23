@@ -12,13 +12,15 @@ import org.ardenus.engine.input.Input;
 import org.ardenus.engine.input.UnicodeInputEvent;
 import org.ardenus.engine.input.device.InputDevice;
 import org.ardenus.engine.input.device.Keyboard;
-import org.ardenus.engine.input.device.PsController;
+import org.ardenus.engine.input.device.Ps4Controller;
+import org.ardenus.engine.input.device.Ps5Controller;
 import org.ardenus.engine.input.device.SwitchProController;
 import org.ardenus.engine.input.device.XboxController;
 import org.ardenus.engine.input.device.seeker.DeviceSeeker;
 import org.ardenus.engine.input.device.seeker.GlfwDeviceSeeker;
 import org.ardenus.engine.input.device.seeker.GlfwKeyboardSeeker;
-import org.ardenus.engine.input.device.seeker.GlfwPsSeeker;
+import org.ardenus.engine.input.device.seeker.GlfwPs4Seeker;
+import org.ardenus.engine.input.device.seeker.GlfwPs5Seeker;
 import org.ardenus.engine.input.device.seeker.GlfwSwitchProSeeker;
 import org.ardenus.engine.input.device.seeker.GlfwXboxSeeker;
 import org.lwjgl.glfw.GLFWErrorCallbackI;
@@ -488,8 +490,10 @@ public class Window implements Closeable {
 			return new GlfwKeyboardSeeker(ptr_glfwWindow);
 		} else if (type == XboxController.class) {
 			return new GlfwXboxSeeker(ptr_glfwWindow);
-		} else if (type == PsController.class) {
-			return new GlfwPsSeeker(ptr_glfwWindow);
+		} else if (type == Ps4Controller.class) {
+			return new GlfwPs4Seeker(ptr_glfwWindow);
+		}  else if (type == Ps5Controller.class) {
+			return new GlfwPs5Seeker(ptr_glfwWindow);
 		} else if (type == SwitchProController.class) {
 			return new GlfwSwitchProSeeker(ptr_glfwWindow);
 		} else {
