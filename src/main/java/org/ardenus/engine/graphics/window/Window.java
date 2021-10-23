@@ -12,15 +12,15 @@ import org.ardenus.engine.input.Input;
 import org.ardenus.engine.input.UnicodeInputEvent;
 import org.ardenus.engine.input.device.InputDevice;
 import org.ardenus.engine.input.device.Keyboard;
-import org.ardenus.engine.input.device.PlayStationController;
+import org.ardenus.engine.input.device.PsController;
 import org.ardenus.engine.input.device.SwitchController;
 import org.ardenus.engine.input.device.XboxController;
 import org.ardenus.engine.input.device.seeker.DeviceSeeker;
-import org.ardenus.engine.input.device.seeker.GLFWDeviceSeeker;
-import org.ardenus.engine.input.device.seeker.GLFWKeyboardSeeker;
-import org.ardenus.engine.input.device.seeker.GLFWPlayStationControllerSeeker;
-import org.ardenus.engine.input.device.seeker.GLFWSwitchControllerSeeker;
-import org.ardenus.engine.input.device.seeker.GLFWXboxControllerSeeker;
+import org.ardenus.engine.input.device.seeker.GlfwDeviceSeeker;
+import org.ardenus.engine.input.device.seeker.GlfwKeyboardSeeker;
+import org.ardenus.engine.input.device.seeker.GlfwPsSeeker;
+import org.ardenus.engine.input.device.seeker.GlfwSwitchSeeker;
+import org.ardenus.engine.input.device.seeker.GlfwXboxSeeker;
 import org.lwjgl.glfw.GLFWErrorCallbackI;
 import org.lwjgl.system.MemoryUtil;
 
@@ -482,16 +482,16 @@ public class Window implements Closeable {
 	 *             if {@code type} is unsupported.
 	 * @see Input#addSeeker(DeviceSeeker)
 	 */
-	public GLFWDeviceSeeker createSeeker(Class<? extends InputDevice> type) {
+	public GlfwDeviceSeeker createSeeker(Class<? extends InputDevice> type) {
 		Objects.requireNonNull(type, "type");
 		if (type == Keyboard.class) {
-			return new GLFWKeyboardSeeker(ptr_glfwWindow);
+			return new GlfwKeyboardSeeker(ptr_glfwWindow);
 		} else if (type == XboxController.class) {
-			return new GLFWXboxControllerSeeker(ptr_glfwWindow);
-		} else if (type == PlayStationController.class) {
-			return new GLFWPlayStationControllerSeeker(ptr_glfwWindow);
+			return new GlfwXboxSeeker(ptr_glfwWindow);
+		} else if (type == PsController.class) {
+			return new GlfwPsSeeker(ptr_glfwWindow);
 		} else if (type == SwitchController.class) {
-			return new GLFWSwitchControllerSeeker(ptr_glfwWindow);
+			return new GlfwSwitchSeeker(ptr_glfwWindow);
 		} else {
 			throw new IllegalArgumentException("unsupported device");
 		}
@@ -510,10 +510,10 @@ public class Window implements Closeable {
 	 * @see Input#addSeekers(DeviceSeeker...)
 	 */
 	@SuppressWarnings("unchecked")
-	public GLFWDeviceSeeker[]
+	public GlfwDeviceSeeker[]
 			createSeekers(Class<? extends InputDevice>... types) {
 		Objects.requireNonNull(types, "types");
-		GLFWDeviceSeeker[] seekers = new GLFWDeviceSeeker[types.length];
+		GlfwDeviceSeeker[] seekers = new GlfwDeviceSeeker[types.length];
 		for (int i = 0; i < seekers.length; i++) {
 			seekers[i] = this.createSeeker(types[i]);
 		}
