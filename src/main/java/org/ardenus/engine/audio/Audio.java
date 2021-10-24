@@ -122,12 +122,16 @@ public class Audio {
 			return;
 		}
 
+		/*
+		 * The audio thread must be stopped first, otherwise sounds will get
+		 * updated after crucial audio systems have been shut down.
+		 */
+		LOG.info("Stopping thread...");
+		audioThread.interrupt();
+
 		LOG.info("Closing device...");
 		alcDestroyContext(context);
 		alcCloseDevice(device);
-
-		LOG.info("Stopping thread...");
-		audioThread.interrupt();
 
 		initialized = false;
 		LOG.info("Terminated system");
