@@ -21,8 +21,6 @@ import java.lang.annotation.Target;
 public @interface Uniform {
 
 	/**
-	 * Returns the uniform name.
-	 * <p>
 	 * By default, this will return an empty string.<br>
 	 * In this scenario, field name is assumed to be the uniform name.
 	 * 
@@ -31,8 +29,6 @@ public @interface Uniform {
 	public String value() default "";
 
 	/**
-	 * Returns whether or not this uniform may be absent.
-	 * <p>
 	 * By default, this will return {@code false}.<br>
 	 * In this scenario, the uniform is expected to be present.
 	 * 

@@ -25,31 +25,31 @@ public class Shader {
 
 	protected static String getShaderTypeName(int glShaderType) {
 		switch (glShaderType) {
-			case GL_VERTEX_SHADER:
-				return "GL_VERTEX_SHADER";
-			case GL_FRAGMENT_SHADER:
-				return "GL_FRAGMENT_SHADER";
-			case GL_GEOMETRY_SHADER:
-				return "GL_GEOMETRY_SHADER";
-			case GL_TESS_CONTROL_SHADER:
-				return "GL_TESS_CONTROL_SHADER";
-			case GL_TESS_EVALUATION_SHADER:
-				return "GL_TESS_EVALUATION_SHADER";
-			default:
-				return null;
+		case GL_VERTEX_SHADER:
+			return "GL_VERTEX_SHADER";
+		case GL_FRAGMENT_SHADER:
+			return "GL_FRAGMENT_SHADER";
+		case GL_GEOMETRY_SHADER:
+			return "GL_GEOMETRY_SHADER";
+		case GL_TESS_CONTROL_SHADER:
+			return "GL_TESS_CONTROL_SHADER";
+		case GL_TESS_EVALUATION_SHADER:
+			return "GL_TESS_EVALUATION_SHADER";
+		default:
+			return null;
 		}
 	}
 
 	private static int requireShaderType(int glShaderType) {
 		switch (glShaderType) {
-			case GL_VERTEX_SHADER:
-			case GL_FRAGMENT_SHADER:
-			case GL_GEOMETRY_SHADER:
-			case GL_TESS_CONTROL_SHADER:
-			case GL_TESS_EVALUATION_SHADER:
-				return glShaderType;
-			default:
-				throw new IllegalArgumentException("not an OpenGL shader type");
+		case GL_VERTEX_SHADER:
+		case GL_FRAGMENT_SHADER:
+		case GL_GEOMETRY_SHADER:
+		case GL_TESS_CONTROL_SHADER:
+		case GL_TESS_EVALUATION_SHADER:
+			return glShaderType;
+		default:
+			throw new IllegalArgumentException("not an OpenGL shader type");
 		}
 	}
 
@@ -62,8 +62,7 @@ public class Shader {
 	private boolean destroyed;
 
 	/**
-	 * Constructs a new {@code Shader} and generates an OpenGL shader to
-	 * manipulate and send instructions to.
+	 * Generates an OpenGL shader.
 	 * 
 	 * @param glShaderType
 	 *            the OpenGL shader type.
@@ -112,8 +111,6 @@ public class Shader {
 	}
 
 	/**
-	 * Updates the shader source.
-	 * <p>
 	 * Once the source code for a shader has been set, it must be compiled via
 	 * the {@link #compile()} method.
 	 * 
@@ -135,14 +132,12 @@ public class Shader {
 	}
 
 	/**
-	 * Updates the shader source.
-	 * <p>
 	 * Once the source code for a shader has been set, it must be compiled via
 	 * the {@link #compile()} method.
 	 * <p>
-	 * This function is a shorthand {@link #setSource(String)}, with the
-	 * contents of {@code in} being read into a string and passed as the value
-	 * for {@code src}.
+	 * This method is a shorthand {@link #setSource(String)}, with the contents
+	 * of {@code in} being read into a string and passed as the argument for
+	 * {@code src}.
 	 * 
 	 * @param in
 	 *            the stream whose contents to use as the shader source.
@@ -159,16 +154,14 @@ public class Shader {
 		String src = IOUtils.toString(in, (Charset) null);
 		return this.setSource(src);
 	}
-	
+
 	/**
-	 * Updates the shader source.
-	 * <p>
 	 * Once the source code for a shader has been set, it must be compiled via
 	 * the {@link #compile()} method.
 	 * <p>
-	 * This function is a shorthand {@link #setSource(InputStream)}, with the
-	 * contents of {@code url} being opened as a stream and passed as the value
-	 * for {@code in}.
+	 * This method is a shorthand {@link #setSource(InputStream)}, with the
+	 * contents of {@code url} being opened as a stream and passed as the
+	 * argument for {@code in}.
 	 * 
 	 * @param url
 	 *            the URL whose contents to use as the shader source.
@@ -187,14 +180,12 @@ public class Shader {
 	}
 
 	/**
-	 * Updates the shader source.
-	 * <p>
 	 * Once the source code for a shader has been set, it must be compiled via
 	 * the {@link #compile()} method.
 	 * <p>
-	 * This function is a shorthand {@link #setSource(InputStream)}, with the
+	 * This method is a shorthand {@link #setSource(InputStream)}, with the
 	 * contents of {@code file} being wrapped into a {@link FileInputStream} and
-	 * passed as the value for {@code in}.
+	 * passed as the argument for {@code in}.
 	 * 
 	 * @param file
 	 *            the file whose contents to use as the shader source.
@@ -212,8 +203,6 @@ public class Shader {
 	}
 
 	/**
-	 * Compiles the shader.
-	 * <p>
 	 * Once the shader has been compiled, it must be attached to a program via
 	 * the {@link Program#attach(Shader)} method. After the program has been
 	 * linked, this shader will be automatically closed. This will prevent the
@@ -246,7 +235,7 @@ public class Shader {
 	 * Usually, a method like this would be an implementation of Java's
 	 * {@code Closeable} interface. However, this method should only be called
 	 * after this shader has been compiled and attached to a linked OpenGL
-	 * program. Implementing the interface would prevent us from having this
+	 * program. Implementing the interface would prevent the method from being
 	 * marked as {@code protected} so only {@link Program} could call it.
 	 */
 	protected void destroy() {

@@ -247,8 +247,7 @@ public class Program implements Closeable {
 	private boolean closed;
 
 	/**
-	 * Constructs a new {@code Program} and generates an OpenGL program to
-	 * manipulate and send instructions to.
+	 * Generates an OpenGL program.
 	 * 
 	 * @throws GraphicsException
 	 *             if the program could not be created.
@@ -467,7 +466,7 @@ public class Program implements Closeable {
 	/**
 	 * Queries OpenGL for the location of a uniform based on its name.
 	 * <p>
-	 * This function is a shorthand for {@link #getUniformLoc(String, boolean)},
+	 * This method is a shorthand for {@link #getUniformLoc(String, boolean)},
 	 * with {@code optional} being set to {@code false}.
 	 * <p>
 	 * This is required for safe code that will consistently update the correct
@@ -698,9 +697,10 @@ public class Program implements Closeable {
 	/**
 	 * Installs the program for use into OpenGL.
 	 * <p>
-	 * It is possible to use multiple render programs in OpenGL. This is an
-	 * expensive operations. As such, it is recommended that shader programs
-	 * performing similar operations be merged into what's called an <a href=
+	 * It is possible to use multiple render programs in OpenGL. However,
+	 * switching programs is an expensive operation. As such, it is recommended
+	 * that shader programs performing similar operations be merged into what's
+	 * called an <a href=
 	 * "http://hacksoflife.blogspot.com/2009/02/uber-shaders-evolution-or-optimization.html">
 	 * Uber Shader</a>. However, this should only be done branching can be
 	 * avoided. If branching is used, <a href=
