@@ -4,9 +4,6 @@ import static org.lwjgl.opengl.GL43.*;
 
 import org.apache.logging.log4j.Level;
 
-/**
- * The severity of a debug message from OpenGL.
- */
 public enum GLMessageSeverity {
 
 	UNKNOWN(0, "Unknown", 0, Level.INFO),
@@ -29,14 +26,6 @@ public enum GLMessageSeverity {
 		this.logLevel = logLevel;
 	}
 
-	/**
-	 * Returns a {@code GLMessageSeverity} by its severity.
-	 * 
-	 * @param severity
-	 *            the message severity.
-	 * @return the {@code GLMessageSeverity} with a message severity identical
-	 *         to {@code severity}, {@code null} if none exists.
-	 */
 	public static GLMessageSeverity bySeverity(int severity) {
 		for (GLMessageSeverity debugSeverity : GLMessageSeverity.values()) {
 			if (debugSeverity.severity == severity) {

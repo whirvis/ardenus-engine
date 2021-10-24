@@ -6,9 +6,6 @@ import org.ardenus.engine.graphics.Graphics;
 import org.lwjgl.opengl.GLDebugMessageCallback;
 import org.lwjgl.system.MemoryUtil;
 
-/**
- * Logs debug messages sent from the OpenGL API to the console.
- */
 public class GLDebugLogger extends GLDebugMessageCallback {
 
 	private final Logger logger;
