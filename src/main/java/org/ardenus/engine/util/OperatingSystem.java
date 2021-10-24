@@ -2,24 +2,26 @@ package org.ardenus.engine.util;
 
 public enum OperatingSystem {
 
-	WINDOWS(0x00, "Windows", false, "win"),
-	MACOSX(0x01, "Mac OSX", true, "mac", "darwin"),
-	LINUX(0x02, "Linux", true, "linux"),
-	UBUNTU(0x03, "Ubuntu", true, "unbuntu"),
-	SOLARIS(0x04, "Solaris", true, "solaris", "sun"),
+	WINDOWS("windows", "Windows", false, "win"),
+	OSX("osx", "Mac OSX", true, "mac", "darwin"),
+	LINUX("linux", "Linux", true, "linux", "ubuntu"),
+	SOLARIS("solaris", "Solaris", true, "solaris", "sun"),
+
+	ANDROID("android", "Android", true),
+	IOS("ios", "IOS", true),
 
 	/**
 	 * If this value is ever returned, please contact the developers of the
 	 * engine and specify the operating system.
 	 */
-	UNKNOWN(0xFF, null, false);
+	UNKNOWN(null, null, false);
 
-	public final int id;
+	public final String id;
 	public final String name;
 	public final boolean isUnix;
 	private final String[] identifiers;
 
-	private OperatingSystem(int id, String name, boolean isUnix,
+	private OperatingSystem(String id, String name, boolean isUnix,
 			String... identifiers) {
 		this.id = id;
 		this.name = name;
@@ -45,6 +47,28 @@ public enum OperatingSystem {
 			}
 		}
 		return false;
+	}
+
+	private static OperatingSystem currentOs;
+
+	/**
+	 * @return the operating system this machine is running on,
+	 *         {@link OperatingSystem#UNKNOWN} if it could not be determined.
+	 */
+	public static OperatingSystem get() {
+		if (currentOs != null) {
+			return currentOs;
+		}
+
+		currentOs = OperatingSystem.UNKNOWN;
+		String osName = System.getProperty("os.name");
+		for (OperatingSystem os : OperatingSystem.values()) {
+			if (os.isSystem(osName)) {
+				currentOs = os;
+				break;
+			}
+		}
+		return currentOs;
 	}
 
 }
