@@ -24,9 +24,9 @@ import org.joml.Vector4f;
 import org.lwjgl.BufferUtils;
 
 /**
- * A drawable image.
+ * A 2D image which can be drawn to the screen.
  * <p>
- * No image is drawable without an implementation that specicies how its data
+ * No image can be drawn without an implementation that specifies how its data
  * should be loaded and rendered. Proper usage of implementations is dependent
  * on what image will be drawn to screen.
  */
@@ -38,8 +38,12 @@ public class Image implements Closeable {
 	private static final int IMG_VERT_ID = 0;
 	private static final int IMG_UV_ID = 1;
 
-	private static final int[] INDICES = new int[] { 0, 1, 2, 2, 3, 0 };
-	private static final float[] UV = new float[] { 0, 1, 0, 0, 1, 0, 1, 1 };
+	private static final int[] INDICES = new int[] {
+			0, 1, 2, 2, 3, 0
+	};
+	private static final float[] UV = new float[] {
+			0, 1, 0, 0, 1, 0, 1, 1
+	};
 
 	private static boolean initialized;
 	private static int h_glIndices;
@@ -47,8 +51,6 @@ public class Image implements Closeable {
 	private static int imgCount;
 
 	/**
-	 * Initializes the image system.
-	 * 
 	 * @throws GraphicsException
 	 *             if the index or UV buffer fail to generate.
 	 */
@@ -68,9 +70,6 @@ public class Image implements Closeable {
 		initialized = true;
 	}
 
-	/**
-	 * De-initializes the image system.
-	 */
 	private static void deinit() {
 		if (!initialized) {
 			return;
@@ -84,8 +83,8 @@ public class Image implements Closeable {
 	 * Allocates a buffer big enough to fit the given {@link BufferedImage} and
 	 * reads its pixels into a buffer that is fit for an OpenGL texture.
 	 * <p>
-	 * This function accounts for the fact that OpenGL UV coordinates are from
-	 * bottom to top, rather than top to bottom. To accomodate, the image is
+	 * This method accounts for the fact that OpenGL UV coordinates are from
+	 * bottom to top, rather than top to bottom. To accommodate, the image is
 	 * loaded upside down. ARGB pixels are also converted to RGBA.
 	 * 
 	 * @param img
@@ -99,7 +98,7 @@ public class Image implements Closeable {
 		ByteBuffer buffer = BufferUtils.createByteBuffer(
 				img.getWidth() * img.getHeight() * Integer.BYTES);
 
-		/**
+		/*
 		 * Because OpenGL is OpenGL, it's UV coordinates start from the bottom.
 		 * Since image coordinates start from the top, this results in them
 		 * being rendered upside down. To resolve this, the image must be loaded
@@ -147,8 +146,6 @@ public class Image implements Closeable {
 	private boolean closed;
 
 	/**
-	 * Constructs a new {@code Image} to handle and draw an OpenGL texture.
-	 * 
 	 * @param preserveTexture
 	 *            {@code true} if the image should not be deleted when this
 	 *            image is closed, {@code false} otherwise.
@@ -193,11 +190,9 @@ public class Image implements Closeable {
 	}
 
 	/**
-	 * Constructs a new {@code Image} to handle and draw an OpenGL texture.
-	 * <p>
-	 * The specified texture will not be deleted when this image is closed.<br>
-	 * To change this, use {@link #Image(boolean, int)} with
-	 * {@code preserveTexture} set to {@code false}.
+	 * Constructs a new {@code Image} to handle the specified OpenGL
+	 * texture.<br>
+	 * The texture will not be deleted when this image is closed.
 	 * 
 	 * @param h_glTexture
 	 *            the handle of the OpenGL texture.
@@ -209,10 +204,8 @@ public class Image implements Closeable {
 	}
 
 	/**
-	 * Constructs a new {@code Image} and generates an OpenGL texture to handle
-	 * and draw. The generated texture will be deleted automatically when this
-	 * image is closed. To use one's own texture, use
-	 * {@link #Image(boolean, int)}.
+	 * Generates an OpenGL texture to handle and draw.<br>
+	 * The texture will be deleted when this image is closed.
 	 * 
 	 * @throws NoHandleException
 	 *             if the texture fails to generate.
@@ -228,35 +221,28 @@ public class Image implements Closeable {
 	}
 
 	/**
-	 * Returns the image width.
-	 * 
-	 * @return the image width, in pixels.
+	 * @return the image width in pixels.
 	 */
 	public int getWidth() {
 		return size.x;
 	}
 
 	/**
-	 * Returns the image height.
-	 * 
-	 * @return the image height, in pixels.
+	 * @return the image height in pixels.
 	 */
 	public int getHeight() {
 		return size.y;
 	}
 
 	/**
-	 * Loads the vertices for the quad used to draw this image.
+	 * Called automatically by {@link #loadImage(BufferedImage)}. The arguments
+	 * are set to the width and height of the provided image. This should
+	 * <i>not</i> be used to resize the image. To draw the image at a different
+	 * resolution, use {@link #setDrawSize(float, float)}.
 	 * <p>
-	 * This is called automatically each time {@link #loadImage(BufferedImage)}
-	 * is called. The arguments are set to the width and height of the image
-	 * provided. While this can be used to resize the image, it should
-	 * <b>not</b> be. To have the image drawn at different resolutions, please
-	 * use {@link #setDrawSize(float, float)}.
-	 * <p>
-	 * If the image needs quad dimensions with no image, this is the function to
-	 * use. An example would be if this image was being rendered to with an
-	 * OpenGL framebuffer.
+	 * <b>Note:</b> This method can be used to give this image dimensions
+	 * without loading in actual image to draw. This enables features like
+	 * rendering to the image with an OpenGL framebuffer.
 	 * 
 	 * @param width
 	 *            the quad width in pixels.
@@ -272,14 +258,14 @@ public class Image implements Closeable {
 		size.y = height;
 
 		glBindBuffer(GL_ARRAY_BUFFER, h_glVerts);
-		float[] dimensions = { 0, 0, 0, height, width, height, width, 0 };
+		float[] dimensions = {
+				0, 0, 0, height, width, height, width, 0
+		};
 		glBufferData(GL_ARRAY_BUFFER, dimensions, GL_STATIC_DRAW);
 		return this;
 	}
 
 	/**
-	 * Clears the vertices for the quad used to draw this image.
-	 * 
 	 * @return this image.
 	 * @throws IllegalStateException
 	 *             if the image is closed.
@@ -292,8 +278,6 @@ public class Image implements Closeable {
 	}
 
 	/**
-	 * Loads the given {@link BufferedImage} as the image to draw.
-	 * <p>
 	 * The pixels from {@code image} are loaded into a buffer and set as the
 	 * data for the texture this image handles. If {@code img} is {@code null},
 	 * the contents of this image are cleared via {@link #clearDimensions()} and
@@ -328,8 +312,6 @@ public class Image implements Closeable {
 	}
 
 	/**
-	 * Clears the pixels inside of the texture this image handles.
-	 * <p>
 	 * If the pixels were set via {@link #loadImage(BufferedImage)}, this will
 	 * <b>not</b> clear the vertex buffer. To clear the vertex buffer also, use
 	 * {@link #clearDimensions()}.
@@ -347,12 +329,10 @@ public class Image implements Closeable {
 	}
 
 	/**
-	 * Sets the dimensions this image will draw at.
-	 * 
 	 * @param width
-	 *            the width to draw this image at, in pixels.
+	 *            the width to draw at, in pixels.
 	 * @param height
-	 *            the height to draw this image at, in pixels.
+	 *            the height to draw at, in pixels.
 	 * @return this image.
 	 * @throws IllegalStateException
 	 *             if the image is closed.
@@ -365,8 +345,6 @@ public class Image implements Closeable {
 	}
 
 	/**
-	 * Sets the color of the image.
-	 * 
 	 * @param awtColor
 	 *            the Java AWT color, may be {@code null}.
 	 * @param alpha
@@ -393,10 +371,8 @@ public class Image implements Closeable {
 	}
 
 	/**
-	 * Sets the color and alpha of the image.
-	 * <p>
-	 * This function is a shorthand for {@link #setColor(Color, boolean)}, with
-	 * the {@code alpha} parameter being set to {@code true}.
+	 * This method is a shorthand for {@link #setColor(Color, boolean)}, with
+	 * the argument for {@code alpha} being {@code true}.
 	 * 
 	 * @param awtColor
 	 *            the Java AWT color, may be {@code null}.
@@ -409,8 +385,6 @@ public class Image implements Closeable {
 	}
 
 	/**
-	 * Sets the alpha of the image.
-	 * <p>
 	 * This updates the image alpha by updating the alpha channel of the image
 	 * color.<br>
 	 * This channel is also modified by {@link #setColor(Color)}.
@@ -428,18 +402,16 @@ public class Image implements Closeable {
 	}
 
 	/**
-	 * Draws the image at the specified coordinates.
-	 * <p>
-	 * This function expects for an OpenGL image rendering program to be
-	 * installed when this is called. It also expects that the uniforms for such
-	 * shader have been resolved via {@link Program#resolveUniformLocs(Class)}.
-	 * An orthographic matrix nd view matrix must also be set for the image to
-	 * be drawn. These uniforms are also expected to be set before rendering.
+	 * An installed OpenGL image rendering program is expected when this method
+	 * is called. It also expects the uniform for the {@code Image} class to
+	 * have been resolved via {@link Program#resolveUniformLocs(Class)}.
+	 * Finally, an orthographic and view matrix must be set beforehand for the
+	 * image to render properly.
 	 * 
 	 * @param x
 	 *            the X-axis position, in pixels.
 	 * @param y
-	 *            the Y-axis positoin, in pixels.
+	 *            the Y-axis position, in pixels.
 	 * @throws IllegalStateException
 	 *             if the image is closed.
 	 * @see #setDrawSize(float, float)

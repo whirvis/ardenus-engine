@@ -17,12 +17,10 @@ public class Viewport {
 	public final Matrix4f ortho, perspective;
 
 	/**
-	 * Creates a viewport.
-	 * 
 	 * @param x
-	 *            the viewport X-axis position to the left.
+	 *            the X-axis position to the left.
 	 * @param y
-	 *            the viewport Y-axis position to the top.
+	 *            the Y-axis position to the top.
 	 * @param width
 	 *            the viewport width.
 	 * @param height

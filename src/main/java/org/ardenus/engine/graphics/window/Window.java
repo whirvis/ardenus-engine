@@ -12,6 +12,7 @@ import org.ardenus.engine.input.Input;
 import org.ardenus.engine.input.UnicodeInputEvent;
 import org.ardenus.engine.input.device.InputDevice;
 import org.ardenus.engine.input.device.Keyboard;
+import org.ardenus.engine.input.device.Mouse;
 import org.ardenus.engine.input.device.Ps4Controller;
 import org.ardenus.engine.input.device.Ps5Controller;
 import org.ardenus.engine.input.device.SwitchProController;
@@ -19,6 +20,7 @@ import org.ardenus.engine.input.device.XboxController;
 import org.ardenus.engine.input.device.seeker.DeviceSeeker;
 import org.ardenus.engine.input.device.seeker.GlfwDeviceSeeker;
 import org.ardenus.engine.input.device.seeker.GlfwKeyboardSeeker;
+import org.ardenus.engine.input.device.seeker.GlfwMouseSeeker;
 import org.ardenus.engine.input.device.seeker.GlfwPs4Seeker;
 import org.ardenus.engine.input.device.seeker.GlfwPs5Seeker;
 import org.ardenus.engine.input.device.seeker.GlfwSwitchProSeeker;
@@ -27,12 +29,11 @@ import org.lwjgl.glfw.GLFWErrorCallbackI;
 import org.lwjgl.system.MemoryUtil;
 
 /**
- * A window created and managed via the <a href="https://www.glfw.org">GLFW</a>
- * interface.
+ * A window created and managed via <a href="https://www.glfw.org">GLFW</a>.
  */
 public class Window implements Closeable {
 
-	private static final Logger LOGGER = LogManager.getLogger(Window.class);
+	private static final Logger LOG = LogManager.getLogger(Window.class);
 
 	private static boolean initialized;
 	private static String version;
@@ -54,21 +55,21 @@ public class Window implements Closeable {
 	 */
 	public static void init() {
 		if (initialized == true) {
-			LOGGER.error("Already initialized");
+			LOG.error("Already initialized");
 			return;
 		}
 
-		LOGGER.info("Initializing GLFW...");
+		LOG.info("Initializing GLFW...");
 		if (!glfwInit()) {
 			throw new WindowException("failed to initialize GLFW");
 		}
 
-		LOGGER.info("Setting GLFW error callback...");
-		glfwSetErrorCallback((error, description) -> LOGGER.error(
+		LOG.info("Setting GLFW error callback...");
+		glfwSetErrorCallback((error, description) -> LOG.error(
 				"Error " + error + ": " + MemoryUtil.memASCII(description)));
 
 		initialized = true;
-		LOGGER.info("Initialized windows");
+		LOG.info("Initialized windows");
 	}
 
 	/**
@@ -79,15 +80,15 @@ public class Window implements Closeable {
 	 */
 	public static void terminate() {
 		if (initialized == false) {
-			LOGGER.error("Already terminated");
+			LOG.error("Already terminated");
 			return;
 		}
 
-		LOGGER.info("Terminating GLFW...");
+		LOG.info("Terminating GLFW...");
 		glfwTerminate();
 
 		initialized = false;
-		LOGGER.info("Terminated windows");
+		LOG.info("Terminated windows");
 	}
 
 	/**
@@ -115,8 +116,6 @@ public class Window implements Closeable {
 	}
 
 	/**
-	 * Returns the current version of GLFW.
-	 * 
 	 * @return the current version of GLFW.
 	 */
 	public static String getVersion() {
@@ -138,7 +137,7 @@ public class Window implements Closeable {
 	private boolean destroyed;
 
 	/**
-	 * Creates a window.
+	 * Creates a GLFW window.
 	 * 
 	 * @param width
 	 *            the window width.
@@ -176,8 +175,6 @@ public class Window implements Closeable {
 	}
 
 	/**
-	 * Returns the X position of the window.
-	 * 
 	 * @return the X position of the window.
 	 */
 	public int getX() {
@@ -185,8 +182,6 @@ public class Window implements Closeable {
 	}
 
 	/**
-	 * Returns the Y position of the window.
-	 * 
 	 * @return the Y position of the window.
 	 */
 	public int getY() {
@@ -266,7 +261,7 @@ public class Window implements Closeable {
 	 * 
 	 * @return {@code true} if the cursor is visible, {@code false} otherwise.
 	 */
-	public boolean isCursorVisible() {
+	public boolean isCursorVisible() { // TODO: mouse module
 		return glfwGetInputMode(ptr_glfwWindow,
 				GLFW_CURSOR) == GLFW_CURSOR_NORMAL;
 	}
@@ -278,7 +273,7 @@ public class Window implements Closeable {
 	 *            {@code true} if the cursor should be visible, {@code false}
 	 *            otherwise.
 	 */
-	public void setCursorVisible(boolean visible) {
+	public void setCursorVisible(boolean visible) { // TODO: mouse module
 		glfwSetInputMode(ptr_glfwWindow, GLFW_CURSOR,
 				visible ? GLFW_CURSOR_NORMAL : GLFW_CURSOR_HIDDEN);
 	}
@@ -416,16 +411,14 @@ public class Window implements Closeable {
 	}
 
 	/**
-	 * Swaps the window buffers from the current buffer to the most next
-	 * rendered buffer.
+	 * Swaps the window buffers from the current buffer to the next rendered
+	 * buffer.
 	 */
 	public void swapBuffers() {
 		glfwSwapBuffers(ptr_glfwWindow);
 	}
 
 	/**
-	 * Returns if this window should close.
-	 * 
 	 * @return {@code true} if the window has been requested to close,
 	 *         {@code false} otherwise.
 	 */
@@ -488,11 +481,13 @@ public class Window implements Closeable {
 		Objects.requireNonNull(type, "type");
 		if (type == Keyboard.class) {
 			return new GlfwKeyboardSeeker(ptr_glfwWindow);
+		} else if (type == Mouse.class) {
+			return new GlfwMouseSeeker(ptr_glfwWindow);
 		} else if (type == XboxController.class) {
 			return new GlfwXboxSeeker(ptr_glfwWindow);
 		} else if (type == Ps4Controller.class) {
 			return new GlfwPs4Seeker(ptr_glfwWindow);
-		}  else if (type == Ps5Controller.class) {
+		} else if (type == Ps5Controller.class) {
 			return new GlfwPs5Seeker(ptr_glfwWindow);
 		} else if (type == SwitchProController.class) {
 			return new GlfwSwitchProSeeker(ptr_glfwWindow);
@@ -525,8 +520,6 @@ public class Window implements Closeable {
 	}
 
 	/**
-	 * Returns if the window has been destroyed.
-	 * 
 	 * @return {@code true} if this window has been destroyed, {@code false}
 	 *         otherwise.
 	 * @see #close()

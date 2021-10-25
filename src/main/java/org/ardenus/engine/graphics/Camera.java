@@ -18,8 +18,6 @@ public class Camera {
 	private final Matrix4f view;
 
 	/**
-	 * Creates a camera.
-	 * 
 	 * @param viewport
 	 *            the viewport this camera is bound to.
 	 * @throws NullPointerException
@@ -32,8 +30,6 @@ public class Camera {
 	}
 
 	/**
-	 * Returns the viewport the camera is bound to.
-	 * 
 	 * @return the viewport the camera is bound to.
 	 */
 	public Viewport getViewport() {
@@ -41,8 +37,6 @@ public class Camera {
 	}
 
 	/**
-	 * Returns the camera view matrix.
-	 * 
 	 * @return the camera view matrix.
 	 */
 	public Matrix4f view() {
