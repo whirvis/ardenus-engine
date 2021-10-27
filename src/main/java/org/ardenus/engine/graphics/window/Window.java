@@ -257,28 +257,6 @@ public class Window implements Closeable {
 	}
 
 	/**
-	 * Returns if the cursor is visible.
-	 * 
-	 * @return {@code true} if the cursor is visible, {@code false} otherwise.
-	 */
-	public boolean isCursorVisible() { // TODO: mouse module
-		return glfwGetInputMode(ptr_glfwWindow,
-				GLFW_CURSOR) == GLFW_CURSOR_NORMAL;
-	}
-
-	/**
-	 * Sets whether or not the cursor should be visible.
-	 * 
-	 * @param visible
-	 *            {@code true} if the cursor should be visible, {@code false}
-	 *            otherwise.
-	 */
-	public void setCursorVisible(boolean visible) { // TODO: mouse module
-		glfwSetInputMode(ptr_glfwWindow, GLFW_CURSOR,
-				visible ? GLFW_CURSOR_NORMAL : GLFW_CURSOR_HIDDEN);
-	}
-
-	/**
 	 * Returns if the window is focused.
 	 * 
 	 * @return {@code true} if this window is focused, {@code false} otherwise.
