@@ -8,13 +8,7 @@ public enum OperatingSystem {
 	SOLARIS("solaris", "Solaris", true, "solaris", "sun"),
 
 	ANDROID("android", "Android", true),
-	IOS("ios", "IOS", true),
-
-	/**
-	 * If this value is ever returned, please contact the developers of the
-	 * engine and specify the operating system.
-	 */
-	UNKNOWN(null, null, false);
+	IOS("ios", "IOS", true);
 
 	public final String id;
 	public final String name;
@@ -49,18 +43,18 @@ public enum OperatingSystem {
 		return false;
 	}
 
+	private static boolean determinedOs;
 	private static OperatingSystem currentOs;
 
 	/**
-	 * @return the operating system this machine is running on,
-	 *         {@link OperatingSystem#UNKNOWN} if it could not be determined.
+	 * @return the operating system this machine is running on, {@code null} if
+	 *         it could not be determined.
 	 */
 	public static OperatingSystem get() {
-		if (currentOs != null) {
+		if (determinedOs) {
 			return currentOs;
 		}
 
-		currentOs = OperatingSystem.UNKNOWN;
 		String osName = System.getProperty("os.name");
 		for (OperatingSystem os : OperatingSystem.values()) {
 			if (os.isSystem(osName)) {
@@ -68,6 +62,7 @@ public enum OperatingSystem {
 				break;
 			}
 		}
+		determinedOs = true;
 		return currentOs;
 	}
 
