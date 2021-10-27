@@ -107,24 +107,6 @@ public final class Program {
 	}
 
 	/**
-	 * Attemps to result the operating system this machine is running on.
-	 * 
-	 * @return the operating system this machine is running on,
-	 *         {@link OperatingSystem#UNKNOWN} if it could not be determined.
-	 */
-	public static OperatingSystem getOS() {
-		String os_name = System.getProperty("os.name");
-		OperatingSystem op_sys = OperatingSystem.UNKNOWN;
-		for (OperatingSystem os : OperatingSystem.values()) {
-			if (os.isSystem(os_name)) {
-				op_sys = os;
-				break;
-			}
-		}
-		return op_sys;
-	}
-
-	/**
 	 * The first 4-<code>byte</code>s found within every ZIP file.
 	 */
 	private static final int ZIP_FILE_HEADER_MAGIC = 0x504B0304;
